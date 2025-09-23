@@ -1,0 +1,10 @@
+.obsidian/workspace
+.obsidian/plugins
+.obsidian/themes
+*.sqlite
+*.zip
+*.png
+*.jpg
+*.mp4
+*.mp3
+
