@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Drawing 2025-09-24 18.41.23.excalidraw.md",
+                "file": "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Drawing 2025-09-24 18.41.23.excalidraw"
+              "title": "appunti"
             }
           }
         ]
@@ -145,6 +145,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "obsidian-excalidraw-plugin:New drawing": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -156,6 +157,8 @@
   },
   "active": "434f07f68a046724",
   "lastOpenFiles": [
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
     "Analisi I/2025-09-23 Insiemi, Funzioni.md",
     "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md",
     "Drawing 2025-09-24 18.41.23.excalidraw.md",
