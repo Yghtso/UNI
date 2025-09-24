@@ -4,17 +4,19 @@
     "type": "split",
     "children": [
       {
-        "id": "e1f998cc1997542b",
+        "id": "89e1931feaf34de6",
         "type": "tabs",
         "children": [
           {
-            "id": "9a64741a71bdbbbf",
+            "id": "06138814fb66cb1c",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "New tab"
+              "type": "excalidraw",
+              "state": {
+                "file": "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md"
+              },
+              "icon": "excalidraw-icon",
+              "title": "esempio dimostrazione.excalidraw"
             }
           }
         ]
@@ -74,7 +76,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5026054382324
+    "width": 392.5026054382324,
+    "collapsed": true
   },
   "right": {
     "id": "bd48c5ebe7aa618a",
@@ -131,21 +134,22 @@
             }
           },
           {
-            "id": "548ef0ec92ba6dd0",
+            "id": "f8dd84b062326082",
             "type": "leaf",
             "state": {
               "type": "outline",
               "state": {
+                "file": "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of esempio dimostrazione.excalidraw"
             }
           },
           {
-            "id": "cc30205287a254be",
+            "id": "680420c98a700c74",
             "type": "leaf",
             "state": {
               "type": "git-view",
@@ -174,12 +178,15 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "9a64741a71bdbbbf",
+  "active": "06138814fb66cb1c",
   "lastOpenFiles": [
-    "Analisi I/Excalidraw/2025-09-23.excalidraw.md",
-    "Analisi I/2025-09-23 Insiemi, Funzioni.md",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni",
+    "Analisi I/Lezioni",
     "Analisi I/Excalidraw",
-    "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md",
     "Excalidraw/Drawing 2025-09-24 17.38.25.excalidraw.md",
     "Analisi I/Esercizi",
     "Analisi I",
