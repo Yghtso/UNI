@@ -13,10 +13,10 @@
             "state": {
               "type": "excalidraw",
               "state": {
-                "file": "Drawing 2025-09-24 18.41.23.excalidraw.md"
+                "file": "2025-09-23.excalidraw.md"
               },
               "icon": "excalidraw-icon",
-              "title": "Drawing 2025-09-24 18.41.23.excalidraw"
+              "title": "2025-09-23.excalidraw"
             }
           }
         ]
@@ -76,8 +76,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5026054382324,
-    "collapsed": true
+    "width": 392.5026054382324
   },
   "right": {
     "id": "bd48c5ebe7aa618a",
@@ -180,7 +179,7 @@
   "active": "85e7ab601bd1c208",
   "lastOpenFiles": [
     "Analisi I/2025-09-23 Insiemi, Funzioni.md",
-    "Drawing 2025-09-24 18.41.23.excalidraw.md",
+    "2025-09-23.excalidraw.md",
     "Excalidraw",
     "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md",
     "Excalidraw/Drawing 2025-09-24 17.38.25.excalidraw.md",
