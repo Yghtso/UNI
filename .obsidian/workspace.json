@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "166291082c3cea30",
+        "id": "fa5686ddd148e6ca",
         "type": "tabs",
         "children": [
           {
-            "id": "087270e9f4fdd3ed",
+            "id": "6b2a7cb3d106b4bc",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Analisi I/2025-09-23 Insiemi, Funzioni.md",
+                "file": "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "2025-09-23 Insiemi, Funzioni"
+              "title": "2025-09-24 Grafico di funzioni, Insiemi di numeri"
             }
           }
         ]
@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 392.5026054382324
   },
   "right": {
     "id": "bd48c5ebe7aa618a",
@@ -147,13 +147,23 @@
               "icon": "lucide-list",
               "title": "Outline"
             }
+          },
+          {
+            "id": "cc30205287a254be",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -163,12 +173,18 @@
       "daily-notes:Open today's daily note": false,
       "templates:Insert template": false,
       "command-palette:Open command palette": false,
-      "bases:Create new base": false
+      "bases:Create new base": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "087270e9f4fdd3ed",
+  "active": "cc30205287a254be",
   "lastOpenFiles": [
+    "Excalidraw/Drawing 2025-09-24 17.38.25.excalidraw.md",
+    "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md",
+    "Excalidraw",
     "Analisi I/2025-09-23 Insiemi, Funzioni.md",
+    "Analisi I/Esercizi",
     "Analisi I",
     "Untitled.canvas",
     "Welcome.md"

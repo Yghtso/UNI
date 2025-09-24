@@ -116,3 +116,85 @@ La differenza tra due insiemi $A$ e $B$ è l'insieme che contiene gli elementi c
 
 # FUNZIONI
 
+## Cos'è una Funzione
+
+In matematica, una **funzione** è una relazione che lega due insiemi, chiamati dominio e codominio, associando a ogni elemento del dominio uno e un solo elemento del codominio.
+
+Per definire compiutamente una funzione $f$, è necessario specificare tre elementi fondamentali:
+
+1.  **Dominio ($D_f$ o $dom(f)$):** È l'insieme di tutti i possibili valori di input per la funzione.
+2.  **Codominio ($C_f$ o $codom(f)$):** È l'insieme che contiene tutti i possibili valori di output. È importante notare che non tutti gli elementi del codominio devono essere necessariamente immagini di un elemento del dominio.
+3.  **Legge di corrispondenza:** È la regola che associa in modo univoco a ogni elemento $x$ del dominio un unico elemento $y$ del codominio. Si indica con $y = f(x)$.
+
+### Definizione Formale
+
+Siano $A$ e $B$ due insiemi non vuoti. Una funzione $f$ da $A$ a $B$, che si scrive come:
+$$f: A \rightarrow B$$
+è una relazione che associa ad ogni elemento $x \in A$ uno e un solo elemento $y \in B$. L'elemento $y$ si indica con $f(x)$ e viene chiamato **immagine** di $x$ tramite $f$. L'elemento $x$ è detto **controimmagine** di $y$.
+
+## Iniettività di una Funzione
+
+Una funzione si dice **iniettiva** (o uno-a-uno) se elementi distinti del dominio hanno immagini distinte nel codominio. Questo garantisce che non ci siano due input diversi che producono lo stesso output.
+
+### Definizione Formale
+
+Una funzione $f: A \rightarrow B$ è iniettiva se e solo se :
+$$\forall x_1, x_2 \in A \;\; (x_1 \neq x_2 \implies f(x_1) \neq f(x_2))$$
+
+Equivalentemente, si può dire che:
+$$f(x_1) = f(x_2) \implies x_1 = x_2$$
+
+## Funzioni Crescenti e Decrescenti
+
+Una funzione si dice **monotòna** se il suo andamento si mantiene "costante", ovvero se è sempre crescente o sempre decrescente in un dato intervallo.
+
+### Funzione Crescente
+
+Sia $f$ una funzione definita su un intervallo $I \subseteq \mathbb{R}$.
+
+* **Strettamente crescente:** $f$ è strettamente crescente in $I$ se $$\forall x_1, x_2 \in I \;\; (x_1 < x_2 \implies f(x_1) < f(x_2))$$
+* **Debolmente crescente (o non decrescente):** $f$ è debolmente crescente in $I$ se per ogni $x_1, x_2 \in I$:
+$$x_1 < x_2 \implies f(x_1) \leq f(x_2)$$
+
+### Funzione Decrescente
+
+Sia $f$ una funzione definita su un intervallo $I \subseteq \mathbb{R}$.
+
+* **Strettamente decrescente:** $f$ è strettamente decrescente in $I$ se $$\forall x_1, x_2 \in I \;\; (x_1 < x_2 \implies f(x_1) > f(x_2))$$
+* **Debolmente decrescente (o non crescente):** $f$ è debolmente decrescente in $I$ se per ogni $x_1, x_2 \in I$:
+    $$x_1 < x_2 \implies f(x_1) \geq f(x_2)$$
+
+## Immagine di una Funzione
+
+L'**immagine** di una funzione $f$, indicata con $Im(f)$ o $f(A)$, è l'insieme di tutti i valori che la funzione assume effettivamente. In altre parole, è il sottoinsieme del codominio costituito da tutti gli elementi che sono immagine di almeno un elemento del dominio.
+
+### Definizione Formale
+
+Data una funzione $f: A \rightarrow B$, l'immagine di $f$ è definita come:
+$$Im(f) = \{ y \in B \mid \exists x \in A : y = f(x) \}$$
+Dalla definizione si evince che l'immagine è sempre un sottoinsieme del codominio:
+$$Im(f) \subseteq B$$
+Una funzione si dice **suriettiva** quando la sua immagine coincide con il codominio ($Im(f) = B$).
+
+## Chiarimento su $\sqrt{x}$
+
+È un errore comune, ma matematicamente scorretto, affermare che $\sqrt{4} = \pm 2$. La radice quadrata, quando intesa come **funzione**, deve avere un solo output per ogni input, altrimenti non rispetterebbe la definizione stessa di funzione.
+
+### La Funzione Radice Quadrata
+
+La funzione radice quadrata, $f(x) = \sqrt{x}$, è definita come segue:
+* **Dominio:** $[0, +\infty)$
+* **Codominio:** $[0, +\infty)$
+
+Per convenzione matematica, il simbolo $\sqrt{\cdot}$ indica la **radice quadrata principale**, ovvero l'unico valore *non negativo* che, elevato al quadrato, restituisce il radicando. Pertanto:
+$$\sqrt{4} = 2 \quad \text{e non} \quad \sqrt{4} \neq -2$$
+
+### L'Equazione $x^2 = a$
+
+La confusione nasce spesso dalla risoluzione di equazioni. L'equazione:
+$$x^2 = 4$$
+ammette due soluzioni, perché ci si chiede quali numeri, elevati al quadrato, diano 4. Le soluzioni sono $x = 2$ e $x = -2$, il che si può scrivere in modo compatto come:
+$$x = \pm \sqrt{4} \implies x = \pm 2$$
+In questo contesto, il simbolo $\pm$ non è parte della definizione di radice quadrata, ma è un modo sintetico per indicare le due possibili soluzioni dell'equazione.
+
+In sintesi, $\sqrt{x}$ è una **funzione** che restituisce un unico valore, mentre la risoluzione di $x^2 = a$ è un'**equazione** che può avere due soluzioni.
