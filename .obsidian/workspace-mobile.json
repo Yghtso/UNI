@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "3d8e15486e3321d1",
+        "id": "1643a054113aaf37",
         "type": "tabs",
         "children": [
           {
-            "id": "34a58c2aef349e87",
+            "id": "434f07f68a046724",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -154,10 +154,11 @@
       "bases:Create new base": false
     }
   },
-  "active": "59da8a8daea60906",
+  "active": "434f07f68a046724",
   "lastOpenFiles": [
-    "Drawing 2025-09-24 18.41.23.excalidraw.md",
     "Analisi I/2025-09-23 Insiemi, Funzioni.md",
-    "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md"
+    "Analisi I/2025-09-24 Grafico di funzioni, Insiemi di numeri.md",
+    "Drawing 2025-09-24 18.41.23.excalidraw.md",
+    "Untitled"
   ]
 }
