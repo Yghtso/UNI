@@ -11,10 +11,14 @@
             "id": "faa0ac598aab0767",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "appunti"
             }
           }
         ]
@@ -175,26 +179,30 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "680420c98a700c74",
+  "active": "faa0ac598aab0767",
   "lastOpenFiles": [
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
+    "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/appunti.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/esempio dimostrazione.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
+    "Algebra lineare/Lezioni/2025-09-23 Def di spazio vettoriale/appunti.md",
+    "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare",
+    "Algebra lineare/Lezioni/2025-09-23 Def di spazio vettoriale/esempio dimostrazione.excalidraw.md",
+    "Algebra lineare/Lezioni/2025-09-23 Def di spazio vettoriale",
+    "Untitled",
     "Algebra lineare/Esami",
     "Algebra lineare/Lezioni",
     "Algebra lineare",
     "Fondamenti di programmazione/Lezioni",
     "Analisi I/Esami",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/Drawing 2025-09-24 21.18.18.excalidraw.md",
-    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
     "Excalidraw/Drawing 2025-09-24 21.16.54.excalidraw.md",
-    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
     "Excalidraw",
     "Untitled.md",
     "Excalidraw/Drawing 2025-09-24 21.15.40.excalidraw.md",
-    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri",
-    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni",
-    "Analisi I/Lezioni",
-    "Analisi I/Excalidraw",
     "Excalidraw/Drawing 2025-09-24 17.38.25.excalidraw.md",
     "Untitled.canvas",
     "Welcome.md"
