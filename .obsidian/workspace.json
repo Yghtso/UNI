@@ -25,20 +25,6 @@
             "id": "c8c52ce97d04405c",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "dimostrazione N a Z biiettiva.excalidraw"
-            }
-          },
-          {
-            "id": "b6613401b47638ba",
-            "type": "leaf",
-            "state": {
               "type": "excalidraw",
               "state": {
                 "file": "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md"
@@ -48,7 +34,7 @@
             }
           }
         ],
-        "currentTab": 2
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -207,10 +193,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "b6613401b47638ba",
+  "active": "c8c52ce97d04405c",
   "lastOpenFiles": [
-    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/Drawing 2025-09-24 21.18.18.excalidraw.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/Drawing 2025-09-24 21.18.18.excalidraw.md",
     "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
     "Excalidraw/Drawing 2025-09-24 21.16.54.excalidraw.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
