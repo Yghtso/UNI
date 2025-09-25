@@ -91,8 +91,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5026054382324,
-    "collapsed": true
+    "width": 392.5026054382324
   },
   "right": {
     "id": "bd48c5ebe7aa618a",
@@ -193,8 +192,10 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "c8c52ce97d04405c",
+  "active": "e73988078cddd07e",
   "lastOpenFiles": [
+    "Fondamenti di programmazione/Lezioni",
+    "Analisi I/Esami",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/Drawing 2025-09-24 21.18.18.excalidraw.md",
     "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
