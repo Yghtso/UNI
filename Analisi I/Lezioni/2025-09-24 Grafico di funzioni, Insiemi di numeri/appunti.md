@@ -135,4 +135,82 @@ Questo implica due relazioni fondamentali tra una funzione e la sua inversa, not
     $$G(f^{-1}) = \{ (y, x) \in B \times A \mid (x, y) \in G(f) \}$$
     Nel piano cartesiano ($\mathbb{R}^2$), il grafico di $y = f^{-1}(x)$ è **simmetrico** al grafico di $y = f(x)$ rispetto alla bisettrice del primo e terzo quadrante, cioè la retta di equazione $y=x$.
 
----
+# Condizioni di Invertibilità di una Funzione
+
+Una funzione ammette un'inversa se e solo se è **biiettiva (o biunivoca)**. Una funzione $f: A \to B$ è biiettiva se possiede entrambe le seguenti proprietà:
+
+1.  **Iniettività (Funzione uno-a-uno)**: Elementi distinti del dominio hanno immagini distinte nel codominio.
+    * Formalmente: $\forall x_1, x_2 \in A, \quad x_1 \neq x_2 \implies f(x_1) \neq f(x_2)$.
+    * Graficamente (Test della Retta Orizzontale): Ogni retta orizzontale $y=k$ interseca il grafico della funzione al massimo in un punto.
+
+2.  **Suriettività (Funzione "su")**: Ogni elemento del codominio $B$ è immagine di almeno un elemento del dominio $A$.
+    * Formalmente: $\forall y \in B, \exists x \in A \text{ tale che } f(x) = y$.
+
+**Perché la biiettività è necessaria?**
+* L'**iniettività** garantisce che l'inversa sia una *funzione*: senza di essa, un elemento $y$ del codominio di $f$ potrebbe provenire da più di un $x$, e $f^{-1}(y)$ non avrebbe un valore unico.
+* La **suriettività** garantisce che l'inversa sia definita per *tutti* gli elementi del suo dominio (che è il codominio di $f$).
+
+## Come si Ottiene Formalmente l'Inversa
+
+Data una funzione biiettiva $y = f(x)$, per trovare l'espressione analitica della sua inversa $f^{-1}$ si segue questo procedimento:
+
+1.  Si pone $y = f(x)$.
+2.  Si **risolve l'equazione per $x$** in termini di $y$. Questo passaggio è possibile e produce una soluzione unica proprio grazie alla biiettività della funzione.
+3.  Si ottiene un'espressione del tipo $x = g(y)$. Questa è la funzione inversa: $f^{-1}(y) = g(y)$.
+4.  Per convenzione, si scambia la variabile $y$ con la $x$ per rappresentare la funzione inversa nella forma standard $y = f^{-1}(x)$.
+
+## Come Rendere una Funzione Invertibile: La Restrizione del Dominio
+
+Se una funzione non è iniettiva, non è invertibile su tutto il suo dominio. Tuttavia, è possibile renderla invertibile **restringendo il suo dominio** a un sottoinsieme in cui la funzione diventa iniettiva.
+
+La **restrizione di una funzione** $f: A \to B$ a un sottoinsieme $D \subset A$ è una nuova funzione, indicata con $f|_{D}$, che ha per dominio $D$ e agisce come $f$ su quegli elementi.
+
+### Notazione Formale della Restrizione
+
+La restrizione di $f$ al dominio $D$ si indica come:
+$$f|_{D}: D \to B$$
+dove $f|_{D}(x) = f(x)$ per ogni $x \in D$.
+
+L'obiettivo è scegliere un sottoinsieme $D$ del dominio originale tale che $f|_{D}$ sia iniettiva (e possibilmente anche suriettiva, o si restringe il codominio all'immagine $f(D)$), rendendola così invertibile.
+
+# Analisi di $\sqrt{x^2} = |x|$
+
+L'identità $\sqrt{x^2} = |x|$ deriva direttamente dalla definizione della funzione radice quadrata e dalla funzione quadrato.
+
+Consideriamo la funzione $f(x) = x^2$. Questa funzione **non è iniettiva** sul suo dominio naturale $\mathbb{R}$. Ad esempio, $f(2) = 4$ e $f(-2) = 4$.
+
+La funzione **radice quadrata**, indicata con $\sqrt{\cdot}$, è definita come l'inversa della restrizione della funzione quadrato all'intervallo $[0, +\infty)$.
+Sia $g(x) = x^2$ con dominio ristretto $D = [0, +\infty)$. La funzione $g: [0, +\infty) \to [0, +\infty)$ è biiettiva, e la sua inversa è $g^{-1}(x) = \sqrt{x}$.
+
+Per definizione, la radice quadrata di un numero non negativo $y$ è quel **numero non negativo** $z$ tale che $z^2 = y$.
+$$\sqrt{y} = z \iff z^2 = y \text{ e } z \ge 0$$
+
+Analizziamo ora $\sqrt{x^2}$:
+* Se $x \ge 0$ (ad es. $x=3$), allora $x^2 = 9$. La radice quadrata di 9 è quel numero non negativo che al quadrato dà 9, ovvero $3$. Quindi $\sqrt{3^2} = 3$. In questo caso, $\sqrt{x^2} = x$.
+* Se $x < 0$ (ad es. $x=-3$), allora $x^2 = 9$. La radice quadrata di 9 è sempre $3$. Quindi $\sqrt{(-3)^2} = 3$. In questo caso, $\sqrt{x^2} = -x$ (poiché $-(-3) = 3$).
+
+Queste due condizioni sono esattamente la definizione di **valore assoluto**:
+$$|x| = \begin{cases} x & \text{se } x \ge 0 \\ -x & \text{se } x < 0 \end{cases}$$
+
+Pertanto, per ogni $x \in \mathbb{R}$, si ha che $\sqrt{x^2} = |x|$.
+
+## Inversione della Funzione Seno: $\arcsin(x)$
+
+La funzione $f(x) = \sin(x)$ è definita su tutto $\mathbb{R}$ ma è **periodica** e quindi **non iniettiva**. Ad esempio, $\sin(0) = 0$, $\sin(\pi) = 0$, $\sin(2\pi)=0$.
+
+Per definire la sua funzione inversa, l'**arcoseno** ($\arcsin$), è necessario restringere il dominio di $\sin(x)$ a un intervallo in cui la funzione sia monotòna (e quindi iniettiva) e assuma tutti i valori del suo codominio (suriettività sull'immagine $[-1, 1]$).
+
+Per **convenzione internazionale**, si sceglie l'intervallo:
+$$D = \left[ -\frac{\pi}{2}, \frac{\pi}{2} \right]$$
+
+In questo intervallo:
+1.  La funzione seno è **strettamente crescente**.
+2.  I suoi valori coprono l'intera immagine $[-1, 1]$.
+
+La funzione ristretta $\sin|_{\left[ -\frac{\pi}{2}, \frac{\pi}{2} \right]}$ è quindi biiettiva se vista come:
+$$\sin: \left[ -\frac{\pi}{2}, \frac{\pi}{2} \right] \to [-1, 1]$$
+La sua funzione inversa è l'arcoseno:
+$$\arcsin: [-1, 1] \to \left[ -\frac{\pi}{2}, \frac{\pi}{2} \right]$$
+
+L'arcoseno di un valore $y \in [-1, 1]$ è definito come quell'**unico angolo** $\theta$ nell'intervallo $\left[ -\frac{\pi}{2}, \frac{\pi}{2} \right]$ tale che $\sin(\theta) = y$.
+Ad esempio, $\arcsin(1) = \frac{\pi}{2}$ e non $\frac{5\pi}{2}$, anche se $\sin(\frac{5\pi}{2})=1$, perché $\frac{5\pi}{2}$ non appartiene all'intervallo di definizione convenzionale dell'arcoseno.
