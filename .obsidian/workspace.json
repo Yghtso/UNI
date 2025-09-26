@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "c83edab8d6bff25b",
+        "id": "c728c3f89db3469d",
         "type": "tabs",
         "children": [
           {
-            "id": "faa0ac598aab0767",
+            "id": "6d7613499b023bec",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -165,7 +165,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 294.5
+    "width": 294.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -180,21 +181,22 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "faa0ac598aab0767",
+  "active": "6d7613499b023bec",
   "lastOpenFiles": [
+    "Algebra lineare/Lezioni/2025-09-25 Def di spazio vettoriale/appunti.md",
+    "Algebra lineare/Lezioni/2025-09-25 Def di spazio vettoriale",
+    "Algebra lineare/Lezioni",
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
     "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/appunti.md",
-    "Algebra lineare/Lezioni/2025-09-25 Def di spazio vettoriale/appunti.md",
-    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
+    "conflict-files-obsidian-git.md",
     "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
     "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/esempio dimostrazione.excalidraw.md",
     "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare",
     "Algebra lineare/Lezioni/2025-09-23 Def di spazio vettoriale/esempio dimostrazione.excalidraw.md",
-    "Algebra lineare/Lezioni/2025-09-25 Def di spazio vettoriale",
     "Untitled",
     "Algebra lineare/Esami",
-    "Algebra lineare/Lezioni",
     "Algebra lineare",
     "Fondamenti di programmazione/Lezioni",
     "Analisi I/Esami",

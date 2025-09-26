@@ -114,7 +114,7 @@ Data una funzione $f: A \to B$, la sua **funzione inversa**, se esiste, è una f
 
 ## Definizione Formale
 
-Sia $f: A \to B$ una funzione **biunivoca (biiettiva o biiettiva)**, ovvero sia iniettiva che suriettiva. Si definisce **funzione inversa** di $f$ la funzione $f^{-1}: B \to A$ tale che:
+Sia $f: A \to B$ una funzione **biunivoca (biiettiva o bigettiva)**, ovvero sia iniettiva che suriettiva. Si definisce **funzione inversa** di $f$ la funzione $f^{-1}: B \to A$ tale che:
 $$f^{-1}(y) = x \iff f(x) = y$$
 per ogni $x \in A$ e $y \in B$.
 
