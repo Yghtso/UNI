@@ -4,19 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "ab82004004bf178c",
+        "id": "18f805c8bea61032",
         "type": "tabs",
         "children": [
           {
-            "id": "0702b82028df4f80",
+            "id": "b42d21d91470fac0",
             "type": "leaf",
             "state": {
-              "type": "excalidraw",
-              "state": {
-                "file": "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/dimostrazione N a Z biiettiva soluzione.excalidraw.md"
-              },
-              "icon": "excalidraw-icon",
-              "title": "dimostrazione N a Z biiettiva soluzione.excalidraw"
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
             }
           }
         ]
@@ -177,7 +175,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "0702b82028df4f80",
+  "active": "e73988078cddd07e",
   "lastOpenFiles": [
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
