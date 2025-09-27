@@ -4,21 +4,19 @@
     "type": "split",
     "children": [
       {
-        "id": "c728c3f89db3469d",
+        "id": "ab82004004bf178c",
         "type": "tabs",
         "children": [
           {
-            "id": "6d7613499b023bec",
+            "id": "0702b82028df4f80",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "excalidraw",
               "state": {
-                "file": "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
-                "mode": "source",
-                "source": false
+                "file": "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/dimostrazione N a Z biiettiva soluzione.excalidraw.md"
               },
-              "icon": "lucide-file",
-              "title": "appunti"
+              "icon": "excalidraw-icon",
+              "title": "dimostrazione N a Z biiettiva soluzione.excalidraw"
             }
           }
         ]
@@ -78,8 +76,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 504.5,
-    "collapsed": true
+    "width": 504.5
   },
   "right": {
     "id": "bd48c5ebe7aa618a",
@@ -180,16 +177,17 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "6d7613499b023bec",
+  "active": "0702b82028df4f80",
   "lastOpenFiles": [
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
+    "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/dimostrazione N a Z biiettiva soluzione.excalidraw.md",
+    "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/appunti.md",
+    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
     "Algebra lineare/Lezioni/2025-09-25 Def di spazio vettoriale/appunti.md",
     "Algebra lineare/Lezioni/2025-09-25 Def di spazio vettoriale",
     "Algebra lineare/Lezioni",
-    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/dimostrazione N a Z biiettiva.excalidraw.md",
-    "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/appunti.md",
-    "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare/appunti.md",
     "conflict-files-obsidian-git.md",
-    "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/esempio dimostrazione.excalidraw.md",
     "Analisi I/Lezioni/2025-09-23 Insiemi, Funzioni/appunti.md",
     "Analisi I/Lezioni/2025-09-24 Grafico di funzioni, Insiemi di numeri/esempio dimostrazione.excalidraw.md",
     "Analisi I/Lezioni/2025-09-25 Def di R e disegualianza triangolare",
