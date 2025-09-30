@@ -137,3 +137,67 @@ $$
 E_4 = |a| \frac{|q|^4}{1-q} = \frac{3}{10} \cdot \frac{(1/10)^4}{1-1/10} = \frac{3}{10} \cdot \frac{1/10000}{9/10} = \frac{3}{100000} \cdot \frac{10}{9} = \frac{3}{90000} = \frac{1}{30000}
 $$
 Il risultato coincide. L'errore quantifica esattamente il valore della "coda" della serie che abbiamo ignorato, che inizia con il termine $3/10^5 = 0.00003$.
+
+# Limiti di Successioni e Funzioni Speciali
+
+## Definizione di Limite di una Successione
+
+Data una successione di numeri reali $(a_n)_{n \in \mathbb{N}}$, si dice che la successione **converge** al limite $L \in \mathbb{R}$ se i termini della successione si "avvicinano" indefinitamente a $L$ al crescere di $n$.
+
+Formalmente, si dice che $L$ è il limite della successione $a_n$ per $n$ che tende a infinito, e si scrive:
+$$
+\lim_{n \to \infty} a_n = L
+$$
+se, per ogni numero reale $\epsilon > 0$ piccolo a piacere, esiste un numero naturale $N$ (che in generale dipende da $\epsilon$) tale che per ogni indice $n > N$, la distanza tra $a_n$ e $L$ è minore di $\epsilon$.
+
+In simboli matematici, la definizione è:
+$$
+\forall \epsilon > 0 \quad \exists N \in \mathbb{N} \quad \text{tale che} \quad \forall n > N \implies |a_n - L| < \epsilon
+$$
+
+**Spiegazione dei termini:**
+
+* **$\forall \epsilon > 0$**: "Per ogni scelta di una tolleranza $\epsilon$ positiva". $\epsilon$ rappresenta una distanza arbitrariamente piccola dal limite $L$. Fissando $\epsilon$, si definisce un intorno di $L$, ovvero l'intervallo $(L-\epsilon, L+\epsilon)$.
+* **$\exists N \in \mathbb{N}$**: "esiste un indice $N$". Questo $N$ rappresenta una soglia. La definizione garantisce che è sempre possibile trovare un punto della successione a partire dal quale...
+* **$\forall n > N \implies |a_n - L| < \epsilon$**: "...tutti i termini successivi ($a_n$ con $n>N$) cadono all'interno dell'intorno di $L$ definito da $\epsilon$". In altre parole, da un certo punto in poi, la successione è "definitivamente" vicina al limite $L$ più di quanto specificato da $\epsilon$.
+## Parte Intera e Parte Frazionaria
+
+### Definizione Formale di Parte Intera `[x]` o `floor(x)`
+
+Dato un numero reale $x$, la sua **parte intera**, denotata con $[x]$, $\lfloor x \rfloor$ o `floor(x)`, è il più grande numero intero minore o uguale a $x$
+
+Formalmente, è definita come:
+$$
+\lfloor x \rfloor = \max \{ k \in \mathbb{Z} \mid k \le x \}
+$$
+La funzione parte intera associa quindi a ogni numero reale $x$ l'unico intero $k$ che soddisfa la relazione:
+$$
+k \le x < k+1
+$$
+
+**Esempi:**
+* $\lfloor 3.14 \rfloor = 3$
+* $\lfloor 7 \rfloor = 7$
+* $\lfloor -2.5 \rfloor = -3$ (attenzione ai numeri negativi: si cerca l'intero più grande che sia *minore* del numero)
+* $\lfloor -4 \rfloor = -4$
+
+### Definizione Formale di Parte Frazionaria (`{x}`)
+
+Dato un numero reale $x$, la sua **parte frazionaria** (o **mantissa**), denotata con $\{x\}$, è la differenza tra il numero stesso e la sua parte intera.
+
+Formalmente, è definita come:
+$$
+\{x\} = x - \lfloor x \rfloor
+$$
+Dalla definizione segue che ogni numero reale $x$ può essere scritto come la somma della sua parte intera e della sua parte frazionaria: $x = \lfloor x \rfloor + \{x\}$.
+
+La parte frazionaria è sempre un numero non negativo e strettamente minore di 1. Il suo codominio è l'intervallo $[0, 1)$.
+$$
+0 \le \{x\} < 1
+$$
+
+**Esempi:**
+* $\{3.14\} = 3.14 - \lfloor 3.14 \rfloor = 3.14 - 3 = 0.14$
+* $\{7\} = 7 - \lfloor 7 \rfloor = 7 - 7 = 0$
+* $\{-2.5\} = -2.5 - \lfloor -2.5 \rfloor = -2.5 - (-3) = 0.5$
+* $\{-4\} = -4 - \lfloor -4 \rfloor = -4 - (-4) = 0$
