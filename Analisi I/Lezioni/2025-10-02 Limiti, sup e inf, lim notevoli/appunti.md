@@ -158,3 +158,106 @@ Sappiamo che i limiti delle due successioni "carabinieri" sono:
 $$ \lim_{n \to \infty} -\frac{1}{n} = 0 \quad \text{e} \quad \lim_{n \to \infty} \frac{1}{n} = 0 $$
 Poiché le ipotesi del Teorema del Confronto sono verificate, concludiamo che:
 $$ \lim_{n \to \infty} \frac{\sin(n)}{n} = 0 $$
+# Insiemi Limitati, Convergenza e Estremi
+
+## Insiemi Limitati, Maggioranti e Minoranti
+
+### Intervallo e Insieme Limitato
+Un insieme (o un intervallo) $A \subseteq \mathbb{R}$ si dice **limitato** se è sia limitato superiormente sia limitato inferiormente.
+
+In simboli, un intervallo è limitato se i suoi estremi sono entrambi finiti (es. $(a,b)$, $[a,b]$). Un insieme è limitato se può essere "racchiuso" in un intervallo di ampiezza finita.
+
+Formalmente, un insieme $A$ è **limitato** se esiste un numero reale positivo $M > 0$ tale che per ogni elemento $x \in A$, il suo valore assoluto è minore o uguale a $M$.
+$$
+\exists M \in \mathbb{R}, M>0 \quad \text{tale che} \quad \forall x \in A \implies |x| \le M
+$$
+Questa condizione è equivalente a $-M \le x \le M$, che mostra come l'insieme sia "contenuto" nell'intervallo $[-M, M]$.
+
+### Maggiorante e Minorante
+Sia $A \subseteq \mathbb{R}$ un insieme non vuoto.
+* Un numero reale $K$ si definisce **maggiorante** (o *upper bound*) di $A$ se ogni elemento di $A$ è minore o uguale a $K$.
+    $$
+    K \text{ è un maggiorante di } A \iff \forall x \in A, x \le K
+    $$
+    Se un insieme ammette un maggiorante, si dice **limitato superiormente**.
+
+* Un numero reale $k$ si definisce **minorante** (o *lower bound*) di $A$ se ogni elemento di $A$ è maggiore o uguale a $k$.
+    $$
+    k \text{ è un minorante di } A \iff \forall x \in A, x \ge k
+    $$
+    Se un insieme ammette un minorante, si dice **limitato inferiormente**.
+
+Un insieme è **limitato** se e solo se è sia limitato superiormente sia inferiormente.
+
+---
+
+## Convergenza e Limitatezza di una Successione
+
+Il legame tra il fatto che una successione sia limitata e che ammetta limite è descritto da un teorema fondamentale. L'implicazione vale in una sola direzione.
+
+### Teorema: Ogni successione convergente è limitata
+
+**Ipotesi**:
+Sia $(a_n)_{n \in \mathbb{N}}$ una successione di numeri reali convergente a un limite finito $L$.
+$$ \lim_{n \to \infty} a_n = L \in \mathbb{R} $$
+**Tesi**:
+La successione $(a_n)$ è limitata.
+$$ \exists M > 0 \quad \text{tale che} \quad |a_n| \le M \quad \forall n \in \mathbb{N} $$
+**Dimostrazione**:
+1.  Dalla definizione di limite, fissiamo un valore arbitrario per $\epsilon$, ad esempio $\epsilon=1$. In corrispondenza di questo $\epsilon$, esiste un indice $N \in \mathbb{N}$ tale che per ogni $n > N$ si ha:
+    $$ |a_n - L| < 1 $$
+2.  Utilizzando la disuguaglianza triangolare ($|a| = |(a-b)+b| \le |a-b| + |b|$), possiamo scrivere:
+    $$ |a_n| = |(a_n - L) + L| \le |a_n - L| + |L| $$
+3.  Combinando i due punti precedenti, per ogni $n > N$ otteniamo:
+    $$ |a_n| < 1 + |L| $$
+    Questo dimostra che la "coda" della successione (cioè tutti i termini dall'indice $N+1$ in poi) è limitata.
+4.  Consideriamo ora i primi termini della successione, ovvero l'insieme finito $F = \{|a_0|, |a_1|, \dots, |a_N|\}$. Un insieme finito di numeri reali ammette sempre un massimo. Sia $K = \max(F)$.
+5.  A questo punto, possiamo definire un maggiorante per i valori assoluti di *tutti* i termini della successione. Sia $M$ il valore più grande tra $K$ e $1+|L|$:
+    $$ M = \max(K, 1+|L|) $$
+6.  Per qualsiasi $n \in \mathbb{N}$, abbiamo due possibilità:
+    * Se $n \le N$, allora $|a_n| \le K \le M$.
+    * Se $n > N$, allora $|a_n| < 1+|L| \le M$.
+7.  In entrambi i casi, $|a_n| \le M$ per ogni $n \in \mathbb{N}$. Abbiamo quindi trovato un $M$ che soddisfa la definizione di successione limitata.
+
+*Nota: Il viceversa non è vero*. Una successione limitata non è necessariamente convergente. Un classico controesempio è la successione $a_n = (-1)^n = \{-1, 1, -1, 1, \dots\}$, che è limitata (i suoi valori sono compresi in $[-1,1]$) ma non ammette limite.
+
+---
+
+## Estremo Superiore ed Estremo Inferiore
+
+### Definizione Formale di Estremo Superiore (sup)
+Sia $A \subseteq \mathbb{R}$ un insieme non vuoto e limitato superiormente. L'**estremo superiore** (o **supremum**) di $A$, denotato con $\sup(A)$, è il **più piccolo dei maggioranti** di $A$.
+
+Formalmente, un numero reale $S = \sup(A)$ deve soddisfare due proprietà:
+1.  $S$ è un maggiorante di $A$:
+    $$ \forall x \in A, \quad x \le S $$
+2.  Qualsiasi numero più piccolo di $S$ non è un maggiorante. Questo si formalizza dicendo che per ogni $\epsilon > 0$, è possibile trovare un elemento in $A$ che è "vicino" a $S$ (cioè si trova nell'intervallo $(S-\epsilon, S]$).
+    $$ \forall \epsilon > 0, \quad \exists x \in A \quad \text{tale che} \quad x > S - \epsilon $$
+
+### Definizione Formale di Estremo Inferiore (inf)
+Sia $A \subseteq \mathbb{R}$ un insieme non vuoto e limitato inferiormente. L'**estremo inferiore** (o **infimum**) di $A$, denotato con $\inf(A)$, è il **più grande dei minoranti** di $A$.
+
+Formalmente, un numero reale $s = \inf(A)$ deve soddisfare due proprietà:
+1.  $s$ è un minorante di $A$:
+    $$ \forall x \in A, \quad x \ge s $$
+2.  Qualsiasi numero più grande di $s$ non è un minorante.
+    $$ \forall \epsilon > 0, \quad \exists x \in A \quad \text{tale che} \quad x < s + \epsilon $$
+
+### Relazione con Massimo e Minimo
+* **Massimo**: Un numero $M$ è il **massimo** di $A$ se è un maggiorante di $A$ e **appartiene ad A** ($M \in A$).
+* **Minimo**: Un numero $m$ è il **minimo** di $A$ se è un minorante di $A$ e **appartiene ad A** ($m \in A$).
+
+La relazione è la seguente:
+* Se un insieme $A$ ammette un massimo, allora il suo estremo superiore coincide con il massimo: $\max(A) = \sup(A)$.
+* Se un insieme $A$ ammette un minimo, allora il suo estremo inferiore coincide con il minimo: $\min(A) = \inf(A)$.
+
+La differenza cruciale è che `sup` e `inf` esistono sempre per insiemi limitati (grazie all'assioma di completezza di $\mathbb{R}$), mentre `max` e `min` potrebbero non esistere.
+
+#### Esempi
+1.  **Insieme con massimo e minimo**: Sia $A = [2, 5]$.
+    * L'insieme dei maggioranti è $[5, +\infty)$. Il più piccolo è $5$. Poiché $5 \in A$, si ha $\max(A) = 5$ e $\sup(A)=5$.
+    * L'insieme dei minoranti è $(-\infty, 2]$. Il più grande è $2$. Poiché $2 \in A$, si ha $\min(A) = 2$ e $\inf(A)=2$.
+
+2.  **Insieme senza massimo ma con minimo**: Sia $B = [2, 5)$.
+    * L'insieme dei maggioranti è ancora $[5, +\infty)$, e il più piccolo è $5$. Quindi $\sup(B)=5$. Tuttavia, $5 \notin B$, quindi l'insieme $B$ **non ha un massimo**. Per qualsiasi $\epsilon>0$, possiamo trovare un elemento in B (es. $5-\epsilon/2$) che è più grande di $5-\epsilon$, soddisfacendo la seconda proprietà del sup.
+    * L'estremo inferiore e il minimo coincidono con $2$, poiché $2 \in B$.
