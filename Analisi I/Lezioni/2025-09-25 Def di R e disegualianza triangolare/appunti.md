@@ -2,7 +2,7 @@
 
 ## Immagine e Dominio dell'Inversa
 
-Data undimostrazione N a Z biiettiva soluzione.excalidrawa funzione $f: A \to B$, l' **immagine** di $f$, denotata con $Im(f)$, è il sottoinsieme di $B$ contenente tutti gli elementi che sono "raggiunti" da $f$. Formalmente:
+Data un a funzione $f: A \to B$, l' **immagine** di $f$, denotata con $Im(f)$, è il sottoinsieme di $B$ contenente tutti gli elementi che sono "raggiunti" da $f$. Formalmente:
 $$Im(f) = \{y \in B \mid \exists x \in A : f(x) = y\}$$
 
 Una funzione $f$ è invertibile se e solo se è **biiettiva**. Quando $f$ è invertibile, la sua funzione inversa $f^{-1}$ ha come dominio il codominio di $f$ e come codominio il dominio di $f$.
