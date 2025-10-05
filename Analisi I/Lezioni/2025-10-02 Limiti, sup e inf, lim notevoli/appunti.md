@@ -254,11 +254,71 @@ La relazione è la seguente:
 
 La differenza cruciale è che `sup` e `inf` esistono sempre per insiemi limitati (grazie all'assioma di completezza di $\mathbb{R}$), mentre `max` e `min` potrebbero non esistere.
 
-#### Esempi
-1.  **Insieme con massimo e minimo**: Sia $A = [2, 5]$.
-    * L'insieme dei maggioranti è $[5, +\infty)$. Il più piccolo è $5$. Poiché $5 \in A$, si ha $\max(A) = 5$ e $\sup(A)=5$.
-    * L'insieme dei minoranti è $(-\infty, 2]$. Il più grande è $2$. Poiché $2 \in A$, si ha $\min(A) = 2$ e $\inf(A)=2$.
+# Calcolo dell'Area del Settore Circolare
 
-2.  **Insieme senza massimo ma con minimo**: Sia $B = [2, 5)$.
-    * L'insieme dei maggioranti è ancora $[5, +\infty)$, e il più piccolo è $5$. Quindi $\sup(B)=5$. Tuttavia, $5 \notin B$, quindi l'insieme $B$ **non ha un massimo**. Per qualsiasi $\epsilon>0$, possiamo trovare un elemento in B (es. $5-\epsilon/2$) che è più grande di $5-\epsilon$, soddisfacendo la seconda proprietà del sup.
-    * L'estremo inferiore e il minimo coincidono con $2$, poiché $2 \in B$.
+## Definizione e Principio di Proporzionalità
+
+Un **settore circolare** è una porzione di un cerchio delimitata da due raggi e dall'arco di circonferenza compreso tra di essi. Può essere immaginato come uno "spicchio" del cerchio.
+
+Il principio fondamentale per il calcolo della sua area è la **diretta proporzionalità** tra l'area del settore e l'ampiezza del suo angolo al centro. Questo significa che il rapporto tra l'area di un settore e l'area dell'intero cerchio è uguale al rapporto tra l'angolo del settore e l'angolo giro completo.
+
+## Derivazione della Formula
+
+Siano:
+* $A_{settore}$ l'area del settore circolare.
+* $A_{cerchio}$ l'area dell'intero cerchio di riferimento.
+* $r$ il raggio del cerchio.
+* $\theta$ l'ampiezza dell'angolo al centro che definisce il settore.
+* $\theta_{giro}$ l'ampiezza dell'angolo giro.
+
+La relazione di proporzionalità può essere espressa formalmente come segue:
+$$
+\frac{A_{settore}}{A_{cerchio}} = \frac{\theta}{\theta_{giro}}
+$$
+Da questa proporzione, possiamo isolare l'area del settore:
+$$
+A_{settore} = A_{cerchio} \cdot \frac{\theta}{\theta_{giro}}
+$$
+Sapendo che l'area del cerchio è data dalla formula $A_{cerchio} = \pi r^2$, otteniamo:
+$$
+A_{settore} = \pi r^2 \cdot \frac{\theta}{\theta_{giro}}
+$$
+Questa formula generale può essere specializzata a seconda dell'unità di misura utilizzata per l'angolo $\theta$.
+
+## Formule Specifiche in Gradi e Radianti
+
+### Angolo in Gradi Sessagesimali
+Se l'angolo $\theta$ è misurato in gradi (indicato come $\theta_{deg}$), l'angolo giro completo è $\theta_{giro} = 360^\circ$. Sostituendo questo valore nella formula generale, si ottiene:
+$$
+A_{settore} = \pi r^2 \cdot \frac{\theta_{deg}}{360^\circ}
+$$
+
+### Angolo in Radianti
+Se l'angolo $\theta$ è misurato in radianti (indicato come $\theta_{rad}$), l'angolo giro completo è $\theta_{giro} = 2\pi$ radianti. Sostituendo, la formula diventa:
+$$
+A_{settore} = \pi r^2 \cdot \frac{\theta_{rad}}{2\pi}
+$$
+Semplificando il termine $\pi$, si ottiene una formula più compatta ed elegante, ampiamente utilizzata in matematica e fisica:
+$$
+A_{settore} = \frac{1}{2} r^2 \theta_{rad}
+$$
+
+## Applicazione all'Area dell'Intero Cerchio
+
+La formula per l'area dell'intero cerchio può essere vista come un caso particolare della formula per l'area del settore circolare. Un cerchio, infatti, non è altro che un settore circolare la cui ampiezza è l'angolo giro completo.
+
+Verifichiamo questa coerenza.
+
+* **Usando i gradi**:
+  Per coprire l'intero cerchio, l'angolo del settore deve essere $\theta_{deg} = 360^\circ$. Applicando la formula del settore:
+  $$
+  A_{cerchio} = \pi r^2 \cdot \frac{360^\circ}{360^\circ} = \pi r^2 \cdot 1 = \pi r^2
+  $$
+  La formula è confermata.
+
+* **Usando i radianti**:
+  Per coprire l'intero cerchio, l'angolo del settore deve essere $\theta_{rad} = 2\pi$. Applicando la formula semplificata per i radianti:
+  $$
+  A_{cerchio} = \frac{1}{2} r^2 \cdot (2\pi) = \pi r^2
+  $$
+  Anche in questo caso, otteniamo la nota formula per l'area del cerchio. Questo dimostra come la formula del settore circolare sia una generalizzazione coerente del calcolo dell'area dell'intera figura geometrica.
