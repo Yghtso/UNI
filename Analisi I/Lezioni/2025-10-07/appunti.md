@@ -144,20 +144,3 @@ Avendo dimostrato che $a_n$ è sia crescente che limitata superiormente, per il 
 
 Dalle dimostrazioni precedenti, abbiamo stabilito delle "barriere" naturali per il valore di $e$:
 $$2 < e < 4$$
-
-In realtà, si può dimostrare che $a_n < 3$ per ogni $n$, raffinando la stima a:
-$$2 < e < 3$$
-
-Il valore approssimato di $e$ è $2.71828...$
-
-### La Forma Indeterminata $1^\infty$
-
-Il limite che definisce $e$ è il caso più celebre della forma indeterminata $1^\infty$. **Attenzione:** la richiesta menzionava $0^\infty$, ma la forma indeterminata associata a $e$ è $1^\infty$.
-
-Una forma indeterminata del tipo $\lim_{x \to c} [f(x)]^{g(x)}$ si presenta quando:
-$$\lim_{x \to c} f(x) = 1 \quad \text{e} \quad \lim_{x \to c} g(x) = \infty$$
-In questo caso, non si può concludere nulla a priori sul valore del limite. Il risultato può essere $1$, $e$, un altro numero, $\infty$ o non esistere.
-
-Per risolvere questi limiti, si ricorre a una manipolazione algebrica basata sulla definizione di $e$, utilizzando l'identità $A^B = e^{B \ln A}$:
-$$\lim_{x \to c} [f(x)]^{g(x)} = \lim_{x \to c} e^{g(x) \ln(f(x))} = e^{\lim_{x \to c} [g(x) \ln(f(x))]}$$
-Poiché $f(x) \to 1$, allora $\ln(f(x)) \to \ln(1) = 0$. Il limite all'esponente diventa una forma indeterminata del tipo $\infty \cdot 0$, che è spesso più semplice da risolvere.
