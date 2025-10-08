@@ -1,8 +1,6 @@
-tttttt# Estremo Superiore e Convergenza di Successioni Monotone
-
 ## Estremo Superiore di un Insieme
 
-### Insieme Limitatato Superiormente
+### Insieme limitato Superiormente
 
 Sia $A \subset \mathbb{R}$ un insieme non vuoto.
 Un numero reale $M$ si definisce **maggiorante** di $A$ se ogni elemento di $A$ è minore o uguale a $M$. In simboli:
