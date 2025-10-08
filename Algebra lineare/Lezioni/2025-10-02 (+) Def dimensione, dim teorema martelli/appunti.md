@@ -212,5 +212,3 @@ Se avessimo supposto $n > m$, avremmo potuto ripetere lo stesso identico ragiona
 L'unica possibilità che non porta a una contraddizione è che $m = n$.
 
 Questo dimostra che il numero di elementi di una qualsiasi base di uno spazio vettoriale a dimensione finita è un invariante, cioè è sempre lo stesso.
-
-**Q.E.D.**
