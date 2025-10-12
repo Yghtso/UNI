@@ -59,8 +59,6 @@ $$ ||a_n| - |L|| \le |a_n - L| < \varepsilon $$
 Quindi, per lo stesso $\varepsilon$, possiamo scegliere lo stesso $N$ (cioè $N' = N$). Abbiamo così dimostrato che per ogni $\varepsilon > 0$ esiste un $N$ tale che per ogni $n > N$ si ha $||a_n| - |L|| < \varepsilon$.
 Questo corrisponde esattamente alla definizione di limite.
 
-**C.V.D.**
-
 ---
 
 ## Divergenza della Funzione Logaritmica
@@ -132,5 +130,3 @@ $$ 0 \le \lim_{n \to \infty} \frac{\log_a(n)}{n^\alpha} \le \lim_{k_n \to \infty
 Per il **Teorema del Confronto** (o dei Carabinieri), se una successione è compresa tra altre due che tendono allo stesso limite, allora anche quella successione tende a quel limite.
 Concludiamo quindi che:
 $$ \lim_{n \to \infty} \frac{\log_a(n)}{n^\alpha} = 0 $$
-
-**C.V.D.**
