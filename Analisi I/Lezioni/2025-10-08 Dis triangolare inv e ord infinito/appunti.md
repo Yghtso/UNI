@@ -92,8 +92,6 @@ Ma $\log_a(a^M) = M$. Quindi, abbiamo dimostrato che:
 $$ \forall n > N, \log_a(n) > M $$
 Questo completa la dimostrazione, poiché abbiamo trovato un $N$ adeguato per un $M$ arbitrario.
 
-**C.V.D.**
-
 ---
 
 ## Gerarchia degli Infiniti: Potenza vs Logaritmo
