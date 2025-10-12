@@ -232,3 +232,54 @@ Dove si assume che le costanti siano:
 5.  **Super-esponenziale (crescita più rapida)**: $n^n$
 
 Questa gerarchia è fondamentale nell'analisi della complessità degli algoritmi e nello studio del comportamento asintotico delle funzioni.
+# Divergenza della Radice n-esima di n!
+
+In questa sezione, si dimostra formalmente come la successione $\{\sqrt[n]{n!}\}$ diverga a più infinito, un risultato che può sembrare controintuitivo ma che si ottiene rigorosamente attraverso l'uso di strumenti di analisi asintotica come la formula di Stirling.
+
+## Enunciato
+
+Il limite per $n$ che tende a infinito della radice $n$-esima di $n!$ diverge a più infinito.
+$$ \lim_{n \to \infty} \sqrt[n]{n!} = +\infty $$
+
+## Strumento Utilizzato: La Formula di Stirling
+
+Per calcolare questo limite, utilizziamo un potente risultato dell'analisi matematica noto come **Formula di Stirling**, che fornisce un'approssimazione asintotica per la funzione fattoriale. La formula afferma che:
+$$ n! \sim \sqrt{2\pi n} \left(\frac{n}{e}\right)^n $$
+Il simbolo $\sim$ (asintoticamente equivalente) significa che il rapporto tra i due termini tende a 1 quando $n \to \infty$:
+$$ \lim_{n \to \infty} \frac{n!}{\sqrt{2\pi n} \left(\frac{n}{e}\right)^n} = 1 $$
+Questo ci permette di sostituire $n!$ con la sua approssimazione all'interno del calcolo del limite, poiché per $n$ molto grande i due valori sono proporzionalmente quasi identici.
+
+## Dimostrazione Formale
+
+Il nostro obiettivo è calcolare $\lim_{n \to \infty} \sqrt[n]{n!}$.
+
+1.  **Sostituzione con l'approssimazione di Stirling**: Sfruttando l'equivalenza asintotica, il limite della radice $n$-esima del termine originale è uguale al limite della radice $n$-esima della sua approssimazione.
+    $$ \lim_{n \to \infty} \sqrt[n]{n!} = \lim_{n \to \infty} \sqrt[n]{\sqrt{2\pi n} \left(\frac{n}{e}\right)^n} $$
+
+2.  **Scomposizione del termine**: Applichiamo le proprietà delle potenze per scomporre l'espressione all'interno del limite in parti più semplici:
+    $$ \sqrt[n]{\sqrt{2\pi n} \left(\frac{n}{e}\right)^n} = \left[ \left(\sqrt{2\pi n}\right) \left(\frac{n}{e}\right)^n \right]^{\frac{1}{n}} = \left(\sqrt{2\pi n}\right)^{\frac{1}{n}} \cdot \left[\left(\frac{n}{e}\right)^n\right]^{\frac{1}{n}} $$
+    Semplifichiamo ulteriormente i due fattori:
+    * Il primo fattore: $(\sqrt{2\pi n})^{\frac{1}{n}} = (2\pi)^{\frac{1}{2n}} \cdot n^{\frac{1}{2n}}$
+    * Il secondo fattore: $\left[\left(\frac{n}{e}\right)^n\right]^{\frac{1}{n}} = \frac{n}{e}$
+
+    Il nostro limite diventa quindi il prodotto dei limiti di questi fattori (per il teorema sul limite del prodotto):
+    $$ \lim_{n \to \infty} \left[ (2\pi)^{\frac{1}{2n}} \cdot n^{\frac{1}{2n}} \cdot \frac{n}{e} \right] = \left( \lim_{n \to \infty} (2\pi)^{\frac{1}{2n}} \right) \cdot \left( \lim_{n \to \infty} n^{\frac{1}{2n}} \right) \cdot \left( \lim_{n \to \infty} \frac{n}{e} \right) $$
+
+3.  **Calcolo dei singoli limiti**: Analizziamo ciascun limite separatamente.
+
+    * **Primo limite**: $\lim_{n \to \infty} (2\pi)^{\frac{1}{2n}}$
+        Quando $n \to \infty$, l'esponente $\frac{1}{2n} \to 0$. Poiché $c^0 = 1$ per ogni costante $c>0$, abbiamo:
+        $$ \lim_{n \to \infty} (2\pi)^{\frac{1}{2n}} = (2\pi)^0 = 1 $$
+
+    * **Secondo limite**: $\lim_{n \to \infty} n^{\frac{1}{2n}}$
+        Possiamo riscrivere il termine come $\left(n^{\frac{1}{n}}\right)^{\frac{1}{2}} = (\sqrt[n]{n})^{\frac{1}{2}}$. Utilizziamo il limite notevole fondamentale $\lim_{n \to \infty} \sqrt[n]{n} = 1$.
+        $$ \lim_{n \to \infty} n^{\frac{1}{2n}} = \left(\lim_{n \to \infty} \sqrt[n]{n}\right)^{\frac{1}{2}} = 1^{\frac{1}{2}} = 1 $$
+
+    * **Terzo limite**: $\lim_{n \to \infty} \frac{n}{e}$
+        Il numeratore $n$ diverge a $+\infty$ mentre il denominatore $e$ è una costante positiva. Pertanto:
+        $$ \lim_{n \to \infty} \frac{n}{e} = +\infty $$
+
+4.  **Conclusione**: Moltiplichiamo i risultati dei tre limiti:
+    $$ \lim_{n \to \infty} \sqrt[n]{n!} = 1 \cdot 1 \cdot (+\infty) = +\infty $$
+
+Abbiamo quindi dimostrato rigorosamente che la successione diverge a più infinito.
