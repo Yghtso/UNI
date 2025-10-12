@@ -163,48 +163,33 @@ La tesi è dimostrata per tutti i valori di $a>0$.
 ## Gerarchia degli Infiniti: Esponenziale vs Radice
 
 ### Enunciato
-Sia $a > 1$. La funzione esponenziale $a^n$ è un infinito di ordine superiore rispetto alla funzione $\sqrt[n]{n}$.
-$$ \lim_{n \to \infty} \frac{\sqrt[n]{n}}{a^n} = 0 $$
+
+Sia $a \in \mathbb{R}$ con $a > 1$ e $\alpha \in \mathbb{R}$ con $\alpha > 1$. La funzione esponenziale $a^n$ è un infinito di ordine superiore rispetto alla funzione radice $\sqrt[\alpha]{n} = n^{1/\alpha}$.
+$$ \lim_{n \to \infty} \frac{n^{1/\alpha}}{a^n} = 0 $$
 
 ### Dimostrazione
-La dimostrazione è una diretta conseguenza del calcolo separato dei limiti del numeratore e del denominatore.
-
-1.  **Limite del Numeratore**: Come dimostreremo nel prossimo punto, vale il limite notevole:
-    $$ \lim_{n \to \infty} \sqrt[n]{n} = 1 $$
-2.  **Limite del Denominatore**: Poiché per ipotesi $a > 1$, la successione esponenziale diverge a più infinito:
-    $$ \lim_{n \to \infty} a^n = +\infty $$
-3.  **Limite del Rapporto**: Combinando i due risultati, il limite del rapporto assume la forma $\frac{1}{+\infty}$:
-    $$ \lim_{n \to \infty} \frac{\sqrt[n]{n}}{a^n} = \frac{\lim_{n \to \infty} \sqrt[n]{n}}{\lim_{n \to \infty} a^n} = \frac{1}{+\infty} = 0 $$
-Questo conferma che la crescita di $a^n$ è nettamente più rapida di quella di $\sqrt[n]{n}$ (che, di fatto, non diverge nemmeno).
+TODO
 
 ---
 
-## Limite della Radice n-esima di n
+## Gerarchia degli Infiniti: Esponenziale vs Potenza
 
 ### Enunciato
+
+Sia $a \in \mathbb{R}$ con $a>1$ e $k \in \mathbb{R}$ con $k>0$. La funzione esponenziale $a^n$ è un infinito di ordine superiore rispetto a qualsiasi funzione potenza $n^k$.
+$$ \lim_{n \to \infty} \frac{n^k}{a^n} = 0 $$
+
+### Dimostrazione
+TODO
+
+---
+
+## Limite di $\sqrt[n]{n}$
+
+### Enunciato
+
 Il limite per $n$ che tende a infinito della radice $n$-esima di $n$ è 1.
 $$ \lim_{n \to \infty} \sqrt[n]{n} = 1 $$
 
 ### Dimostrazione
-Questa dimostrazione utilizza un approccio simile a quello per $\sqrt[n]{a}$, ma richiede uno strumento più potente della disuguaglianza di Bernoulli: il **binomio di Newton**.
-
-1.  Definiamo una nuova successione $x_n = \sqrt[n]{n} - 1$. Poiché per $n \ge 1$ si ha $\sqrt[n]{n} \ge 1$, ne consegue che $x_n \ge 0$.
-2.  Dalla definizione, abbiamo $\sqrt[n]{n} = 1 + x_n$. Eleviamo entrambi i membri alla $n$:
-    $$ n = (1 + x_n)^n $$
-3.  Sviluppiamo il membro di destra con la formula del binomio di Newton, per $n \ge 2$:
-    $$ (1 + x_n)^n = \binom{n}{0}1^n x_n^0 + \binom{n}{1}1^{n-1}x_n^1 + \binom{n}{2}1^{n-2}x_n^2 + \dots + \binom{n}{n}x_n^n $$
-    $$ n = 1 + nx_n + \frac{n(n-1)}{2}x_n^2 + \dots + x_n^n $$
-4.  Poiché tutti i termini dello sviluppo sono non-negativi (essendo $x_n \ge 0$), possiamo creare una disuguaglianza trascurando tutti i termini tranne quello con $x_n^2$:
-    $$ n \ge \frac{n(n-1)}{2}x_n^2 $$
-5.  Per $n \ge 2$, possiamo semplificare la disuguaglianza e isolare $x_n^2$:
-    $$ 1 \ge \frac{n-1}{2}x_n^2 \implies x_n^2 \le \frac{2}{n-1} $$
-6.  Abbiamo quindi "stretto" la successione $x_n^2$ in una disuguaglianza:
-    $$ 0 \le x_n^2 \le \frac{2}{n-1} $$
-7.  Calcolando il limite degli estremi per $n \to \infty$:
-    $$ \lim_{n \to \infty} 0 = 0 \quad \text{e} \quad \lim_{n \to \infty} \frac{2}{n-1} = 0 $$
-8.  Per il **Teorema del Confronto**, concludiamo che $\lim_{n \to \infty} x_n^2 = 0$.
-9.  Se il limite del quadrato di una successione non negativa è zero, anche il limite della successione stessa deve essere zero. Quindi, $\lim_{n \to \infty} x_n = 0$.
-10. Sostituendo la definizione originale di $x_n$, otteniamo:
-    $$ \lim_{n \to \infty} (\sqrt[n]{n} - 1) = 0 \implies \lim_{n \to \infty} \sqrt[n]{n} = 1 $$
-
-**C.V.D.**
+TODO
