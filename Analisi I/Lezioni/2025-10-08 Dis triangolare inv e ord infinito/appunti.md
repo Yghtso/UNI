@@ -130,3 +130,105 @@ $$ 0 \le \lim_{n \to \infty} \frac{\log_a(n)}{n^\alpha} \le \lim_{k_n \to \infty
 Per il **Teorema del Confronto** (o dei Carabinieri), se una successione è compresa tra altre due che tendono allo stesso limite, allora anche quella successione tende a quel limite.
 Concludiamo quindi che:
 $$ \lim_{n \to \infty} \frac{\log_a(n)}{n^\alpha} = 0 $$
+# Gerarchia degli Infiniti
+
+In questa sezione, si analizza la velocità con cui diverse funzioni tendono all'infinito, stabilendo un ordine gerarchico. Dimostreremo formalmente i limiti dei rapporti tra queste funzioni per validare tale gerarchia.
+
+---
+
+## Limite del Rapporto Esponenziale/Fattoriale
+
+### Enunciato
+
+Per ogni numero reale $a \in \mathbb{R}$, il limite della successione $\left\{\frac{a^n}{n!}\right\}$ è zero.
+$$ \lim_{n \to \infty} \frac{a^n}{n!} = 0 $$
+Questo dimostra che il fattoriale $n!$ è un infinito di ordine superiore rispetto a qualsiasi funzione esponenziale $a^n$.
+
+### Dimostrazione
+
+Possiamo considerare $a > 0$, poiché se prendiamo il valore assoluto $\frac{|a|^n}{n!}$ e dimostriamo che tende a zero, anche la successione originale tenderà a zero.
+
+Sia $x_n = \frac{a^n}{n!}$. Vogliamo dimostrare che $\forall \varepsilon > 0, \exists N' \in \mathbb{N}$ tale che $\forall n > N'$, $|x_n| < \varepsilon$.
+
+1.  **Scelta di un indice di soglia**: Fissiamo un numero intero $N$ che sia strettamente maggiore di $a$. Una scelta formale che utilizza la funzione *floor* è:
+    $$ N = \lfloor a \rfloor + 1 $$
+    Per questa scelta di $N$, e per ogni intero $k > N$, il rapporto $\frac{a}{k}$ sarà minore di 1. In particolare:
+    $$ \frac{a}{N+1} < 1, \quad \frac{a}{N+2} < 1, \quad \dots $$
+
+2.  **Scomposizione del termine $x_n$**: Per un indice $n > N$, possiamo scomporre il termine $x_n$ come segue:
+    $$ x_n = \frac{a^n}{n!} = \underbrace{\frac{a \cdot a \cdot \dots \cdot a}{1 \cdot 2 \cdot \dots \cdot N}}_{N \text{ termini}} \cdot \underbrace{\frac{a}{N+1} \cdot \frac{a}{N+2} \cdot \dots \cdot \frac{a}{n}}_{n-N \text{ termini}} $$
+    Il primo blocco è un valore costante che non dipende da $n$. Chiamiamolo $C$:
+    $$ C = \frac{a^N}{N!} $$
+    Quindi, per $n > N$, possiamo scrivere:
+    $$ x_n = C \cdot \frac{a}{N+1} \cdot \frac{a}{N+2} \cdot \dots \cdot \frac{a}{n} $$
+
+3.  **Maggiorazione**: Ciascuno dei termini nel secondo blocco è minore di una stessa quantità. Sia $r = \frac{a}{N+1}$. Per la nostra scelta di $N$, sappiamo che $0 < r < 1$. Ogni altro termine $\frac{a}{k}$ (con $k > N+1$) è ancora più piccolo di $r$.
+    $$ \frac{a}{N+1} = r, \quad \frac{a}{N+2} < r, \quad \dots, \quad \frac{a}{n} < r $$
+    Possiamo quindi maggiorare il prodotto:
+    $$ \frac{a}{N+1} \cdot \frac{a}{N+2} \cdot \dots \cdot \frac{a}{n} < \underbrace{r \cdot r \cdot \dots \cdot r}_{n-N \text{ volte}} = r^{n-N} $$
+
+4.  **Applicazione del Teorema del Confronto**: Mettendo tutto insieme, otteniamo la seguente disuguaglianza per $n > N$:
+    $$ 0 < x_n < C \cdot r^{n-N} $$
+    Riscriviamo il termine di destra come:
+    $$ C \cdot r^{n-N} = C \cdot \frac{r^n}{r^N} = \left(\frac{C}{r^N}\right) \cdot r^n $$
+    Poiché $C$ e $r^N$ sono costanti, chiamiamo $C' = \frac{C}{r^N}$. La disuguaglianza diventa:
+    $$ 0 < x_n < C' \cdot r^n $$
+    Ora consideriamo il limite per $n \to \infty$. Poiché $0 < r < 1$, il limite di $r^n$ è zero:
+    $$ \lim_{n \to \infty} 0 = 0 \quad \text{e} \quad \lim_{n \to \infty} C' \cdot r^n = 0 $$
+    Per il **Teorema del Confronto** (o dei Carabinieri), essendo la nostra successione $x_n$ "stretta" tra due successioni che tendono a zero, anche $x_n$ deve tendere a zero.
+    $$ \lim_{n \to \infty} \frac{a^n}{n!} = 0 $$
+
+---
+
+## Limite del Rapporto Fattoriale / n^n
+
+### Enunciato
+
+Il limite della successione $\left\{\frac{n!}{n^n}\right\}$ è zero.
+$$ \lim_{n \to \infty} \frac{n!}{n^n} = 0 $$
+Questo dimostra che la funzione $n^n$ è un infinito di ordine superiore rispetto al fattoriale $n!$.
+
+### Dimostrazione
+
+Consideriamo il termine generico della successione $y_n = \frac{n!}{n^n}$.
+
+1.  **Scomposizione del termine**: Possiamo scrivere $y_n$ espandendo sia il numeratore che il denominatore:
+    $$ y_n = \frac{1 \cdot 2 \cdot 3 \cdot \dots \cdot n}{n \cdot n \cdot n \cdot \dots \cdot n} $$
+    Raggruppando i termini verticalmente, otteniamo un prodotto di $n$ frazioni:
+    $$ y_n = \left(\frac{1}{n}\right) \cdot \left(\frac{2}{n}\right) \cdot \left(\frac{3}{n}\right) \cdot \dots \cdot \left(\frac{n}{n}\right) $$
+
+2.  **Maggiorazione**: Analizziamo i termini del prodotto:
+    * Il primo termine è $\frac{1}{n}$.
+    * Tutti gli altri termini $\frac{k}{n}$ per $k=2, \dots, n$ sono minori o uguali a 1.
+    $$ \frac{2}{n} \le 1, \quad \frac{3}{n} \le 1, \quad \dots, \quad \frac{n}{n} = 1 $$
+    Possiamo quindi maggiorare il prodotto isolando il primo termine e sostituendo tutti gli altri con 1:
+    $$ y_n = \left(\frac{1}{n}\right) \cdot \underbrace{\left(\frac{2}{n} \cdot \frac{3}{n} \cdot \dots \cdot \frac{n}{n}\right)}_{\le 1} \le \frac{1}{n} \cdot 1 = \frac{1}{n} $$
+
+3.  **Applicazione del Teorema del Confronto**: Abbiamo stabilito che per ogni $n \ge 1$, la nostra successione è limitata come segue:
+    $$ 0 < \frac{n!}{n^n} \le \frac{1}{n} $$
+    Consideriamo i limiti degli estremi di questa disuguaglianza per $n \to \infty$:
+    $$ \lim_{n \to \infty} 0 = 0 \quad \text{e} \quad \lim_{n \to \infty} \frac{1}{n} = 0 $$
+    Per il **Teorema del Confronto**, concludiamo che anche la successione intermedia deve convergere a zero.
+    $$ \lim_{n \to \infty} \frac{n!}{n^n} = 0 $$
+---
+
+## Gerarchia Completa degli Infiniti
+
+Sulla base delle dimostrazioni precedenti e di altri risultati noti, possiamo collocare le funzioni in un ordine crescente basato sulla loro "velocità" di divergenza a $+\infty$.
+Indicando con "$f(n) \ll g(n)$" il fatto che $\lim_{n \to \infty} \frac{f(n)}{g(n)} = 0$ (cioè, $g(n)$ è un infinito di ordine superiore a $f(n)$), abbiamo la seguente gerarchia:
+
+$$ \log_b(n) \ll n^\alpha \ll a^n \ll n! \ll n^n $$
+
+Dove si assume che le costanti siano:
+* Base del logaritmo: $b > 1$
+* Esponente della potenza: $\alpha > 0$
+* Base dell'esponenziale: $a > 1$
+
+**In dettaglio:**
+1.  **Logaritmo (crescita più lenta)**: $\log_b(n)$
+2.  **Potenza**: $n^\alpha$
+3.  **Esponenziale**: $a^n$
+4.  **Fattoriale**: $n!$
+5.  **Super-esponenziale (crescita più rapida)**: $n^n$
+
+Questa gerarchia è fondamentale nell'analisi della complessità degli algoritmi e nello studio del comportamento asintotico delle funzioni.
