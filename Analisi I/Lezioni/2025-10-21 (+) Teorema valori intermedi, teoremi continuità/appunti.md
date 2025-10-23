@@ -1,4 +1,4 @@
-# Analisi 1: Teoremi sulle Funzioni Continue
+# Teoremi sulle Funzioni Continue
 
 ---
 
