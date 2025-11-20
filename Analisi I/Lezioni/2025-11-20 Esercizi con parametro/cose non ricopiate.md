@@ -1,0 +1,1 @@
+esercizio studio di funzione f(x)=arctan(x) * e^(-x^2)
