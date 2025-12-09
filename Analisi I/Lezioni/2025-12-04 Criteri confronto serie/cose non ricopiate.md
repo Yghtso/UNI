@@ -1,0 +1,1 @@
+diversi esempi di applicazione dei criteri di convergenza
