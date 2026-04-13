@@ -4,3 +4,4 @@ esercizio con autovalori sui complessi
 
 dimostrazione martelli come esercizio di una applicazione lineare nilpotente
 
+![[Nota 21 nov 2025.pdf]]
