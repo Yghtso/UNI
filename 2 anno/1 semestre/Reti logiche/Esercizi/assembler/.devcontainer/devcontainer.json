@@ -1,0 +1,10 @@
+{
+	"name": "reti-logiche-assembler",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"runArgs": [
+		"--platform=linux/amd64",
+		"--security-opt", "seccomp=unconfined"
+	]
+}

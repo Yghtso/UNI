@@ -1,0 +1,6 @@
+{
+	"name": "reti-logiche-verilog",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+}

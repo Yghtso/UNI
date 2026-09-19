@@ -1,0 +1,6 @@
+{
+    "terminal.integrated.defaultProfile.linux": "pwsh",
+    // Sembra ovvio, ma a qualcuno va detto: non è permesso utilizzare LLM di alcun tipo all'esame.
+    // Altra cosa che sembrerebbe ovvia: non è un pericolo solo *durante* l'esame, ce ne accorgiamo anche *dopo*.
+    "chat.disableAIFeatures": true
+}
