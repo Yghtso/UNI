@@ -1,0 +1,41 @@
+:root {
+    --casella-chiara: #f0d9b5;
+    --casella-scura: #b58863;
+    --bordo: #3b2920;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background: #eee;
+}
+
+.scacchiera {
+    width: min(90vmin, 560px);
+    aspect-ratio: 1;
+    table-layout: fixed;
+    border: 10px solid var(--bordo);
+    border-collapse: collapse;
+    box-shadow: 0 10px 24px rgb(0 0 0 / 20%);
+}
+
+.scacchiera td {
+    width: 12.5%;
+    height: 12.5%;
+}
+
+.scacchiera tr:nth-child(odd) td:nth-child(odd),
+.scacchiera tr:nth-child(even) td:nth-child(even) {
+    background: var(--casella-chiara);
+}
+
+.scacchiera tr:nth-child(odd) td:nth-child(even),
+.scacchiera tr:nth-child(even) td:nth-child(odd) {
+    background: var(--casella-scura);
+}
