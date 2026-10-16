@@ -16,30 +16,40 @@ _main:
     cmp $0, %al
     je end
     mov %al, N
+    call newline
 
     call read_char
     mov %al, k
+    call newline
 
-    mov N, %ecx
+    movzbl N, %ecx
     mov $1, %ax
 
-print_line:
+    print_line:
 
-    push %ecx
-    
-    print_char:
-        negl %ecx                 # %ecx = -%ecx
-        addl N, %ecx              # %ecx = N - %ecx
-        incl %ecx                 # %ecx = N - %ecx + 1     
+        push %ecx
+        
+        movzbl N, %ebx              # %ebx = N (1 byte zero-extended to 32-bit)
+        negl %ecx                   # %ecx = -%ecx
+        leal 1(%ebx, %ecx), %ecx    # %ecx = N - %ecx + 1 (combines add and inc!)
 
-        call outdecimal_word
-        add k, %ax
-        loop print_line
+            print_char:
+            call outdecimal_word
+            
+            push %ax
+            mov $0x20, %al
+            call outchar
+            pop %ax
+            
+            add k, %ax
+            loop print_char
+        
         call newline
-    
-    pop %ecx
-    loop print_line
+        pop %ecx
+        loop print_line
 
+    call newline
+    jmp _main
 end:
     xor %eax, %eax
     ret
@@ -62,6 +72,5 @@ read_char:
         ja read_char_loop
 
     call outchar
-    call newline
     sub $'0', %al
     ret

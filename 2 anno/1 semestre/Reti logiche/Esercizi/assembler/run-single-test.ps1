@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 param(
     [string][Parameter(Mandatory=$true)]$executable,
     [string][Parameter(Mandatory=$true)]$inputFile,

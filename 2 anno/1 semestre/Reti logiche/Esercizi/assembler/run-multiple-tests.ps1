@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 param(
     [string][Parameter(Mandatory=$true)]$executable,
     [string][Parameter(Mandatory=$true)]$testsFolder
@@ -9,7 +10,7 @@ foreach ($input in $inputs) {
     $output = $input.FullName -replace "in_","out_";
     ./run-single-test.ps1 -executable $executable -inputFile $input -outputFile $output;
     $out_ref = $input.FullName -replace "in_","out_ref_";
-    if(((Get-Content -Raw $output) -replace "`r","") -eq (Get-Content -Raw $out_ref))
+    if(((Get-Content -Raw $output) -replace "`r","") -eq ((Get-Content -Raw $out_ref) -replace "`r",""))
     {
         Write-Host "Passed";
     }

@@ -1,3 +1,4 @@
+#!/usr/bin/env pwsh
 param (
     [string][Parameter(Mandatory=$true)]$executablePath,
     [switch][Alias('f')]$force = $false

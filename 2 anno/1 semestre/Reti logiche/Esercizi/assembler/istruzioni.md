@@ -11,7 +11,7 @@ PS /workspaces/assembler> ./assemble.ps1 ./test-ambiente.s
 PS /workspaces/assembler> ./test-ambiente                 
 Ok.
 PS /workspaces/assembler> ./debug.ps1 ./test-ambiente
-GNU gdb (Ubuntu 15.0.50.20240403-0ubuntu1) 15.0.50.20240403-git
+GNU gdb (Ubuntu 15.1-1ubuntu1~24.04.1) 15.1
 [output di poca utilità]
 Breakpoint 1, _main () at /workspaces/assembler/test-ambiente.s:7
 7       _main:  nop
