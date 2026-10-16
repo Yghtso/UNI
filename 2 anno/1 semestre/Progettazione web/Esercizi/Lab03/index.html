@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Lab03</title>
+    </head>
+    <body>
+        <nav class="menu">
+            <ul>
+                <li>Opzione 1</li>
+                <li>Opzione 2</li>
+                <li>Opzione 3</li>
+                <li>Opzione 4</li>
+            </ul>
+        </nav> 
+        <p class="animated">CIAONE</p>
+    </body>
+</html>
+
+<style>
+    .menu {
+        padding: 10px;
+        width: auto;
+        border: 1px solid black;
+        position: absolute;
+        left: -100px;
+    }
+
+    .menu:hover {
+        left: 0;
+        transition: left 0.5s ease-in-out;
+    }
+
+    .animated {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+        animation: identifier 2s infinite;
+    }
+
+    @keyframes identifier {
+        from {
+            top: 0;
+            left: 0;
+        }
+        to {
+            top: 50%;
+            left: 50%;
+            font-size: 48px;
+        }
+    }
+
+    .animated:hover {
+        animation-play-state: paused;
+    }
+    
+</style>
