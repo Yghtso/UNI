@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<!-- 
+  ==========================================================================
+  TOPIC 04: HTML TABLES & FORMS
+  Based on: Chapter 4 - Fundamentals of Web Development (Connolly & Hoar)
+  ==========================================================================
+  
+  PART 1: HTML TABLES
+  - Tables (<table >) represent tabular data (calendars, financial sheets, 
+    inventories) in a grid of rows (<tr>) and data cells (<td>) or header cells (<th>).
+  - CRITICAL WARNING: Never use HTML tables for page layout! Table layouts cause 
+    "table bloat" (deeply nested markup), lack semantic meaning, hurt screen-reader 
+    accessibility, increase file sizes, and suffer from browser rendering quirks.
+  - Spanning Cells:
+    * colspan="n": Makes a cell span across 'n' horizontal columns.
+    * rowspan="n": Makes a cell span down across 'n' vertical rows.
+  - Structural & Semantic Table Elements:
+    * <caption>: Title/description of the table (must be first child of <table>; great for accessibility).
+    * <colgroup> & <col>: Define column groups prior to headers so you can style entire columns.
+    * <thead>: Table header row group.
+    * <tbody>: Main table body data rows.
+    * <tfoot>: Table footer summary row group.
+      (HISTORICAL SPEC NOTE: In HTML 4 / early HTML5.0, <tfoot> had to be placed BEFORE 
+       <tbody> so browsers could render the footer before streaming thousands of data rows. 
+       Starting in HTML 5.1+ and the modern Living Standard, <tfoot> is placed AFTER <tbody>!).
+  - Accessibility Amplification: Adding `scope="col"` or `scope="row"` on `<th>` explicitly 
+    tells screen readers whether a header applies to a column or a row.
+  ==========================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>04 - HTML Tables &amp; Forms Documentation</title>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header.page-header, footer.page-footer {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    section.doc-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* =====================================================================
+       STYLING TABLES WITH CSS
+       - By default, tables with borders on both <table> and <td> show double borders.
+       - `border-collapse: collapse;` merges adjacent cell borders into a single clean border.
+       - If `border-collapse: separate;` (default) is used, `border-spacing: 10px;` 
+         controls the distance between adjacent cell borders.
+       - Zebra-striping: `tbody tr:nth-child(odd)` colors alternating rows for readability.
+       - Hover highlight: `tbody tr:hover` highlights the row under the user's cursor.
+       ===================================================================== */
+    table.paintings-table {
+      width: 100%;
+      font-size: 0.95rem;
+      border-collapse: collapse; /* Merges cell borders */
+      border-top: 4px solid #dca806;
+      border-bottom: 2px solid #dca806;
+      text-align: left;
+      margin: 16px 0;
+    }
+    table.paintings-table caption {
+      font-weight: bold;
+      padding: 0.4em 0;
+      text-align: left;
+      text-transform: uppercase;
+      color: #92400e;
+      letter-spacing: 0.5px;
+    }
+    table.paintings-table thead tr {
+      background-color: #cbd5e1;
+      color: #0f172a;
+    }
+    table.paintings-table th,
+    table.paintings-table td {
+      padding: 0.75em;
+      border: 1px solid #cbd5e1;
+    }
+    table.paintings-table tbody tr {
+      background-color: #f1f5f9;
+      color: #334155;
+    }
+    /* Zebra-striping with :nth-child(odd) */
+    table.paintings-table tbody tr:nth-child(odd) {
+      background-color: #ffffff;
+    }
+    /* Interactive row hover state */
+    table.paintings-table tbody tr:hover {
+      background-color: #fef08a;
+      color: #000000;
+    }
+    table.paintings-table tfoot tr {
+      background-color: #e2e8f0;
+      font-weight: bold;
+    }
+
+    /* Form layout styling for clean browser presentation */
+    fieldset {
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 20px;
+      background: #f8fafc;
+    }
+    legend {
+      font-weight: bold;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 4px 12px;
+      border-radius: 4px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    input[type="text"], input[type="password"], input[type="search"],
+    input[type="email"], input[type="url"], input[type="tel"],
+    input[type="number"], input[type="date"], input[type="time"],
+    input[type="datetime-local"], input[type="month"], input[type="week"],
+    select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>04 - HTML Tables &amp; Interactive Forms</h1>
+    <p>Complete reference for semantic tables, CSS zebra/hover table styling, HTTP GET/POST, and HTML5 form controls.</p>
+  </header>
+
+  <main>
+
+    <!-- ===================================================================
+         1. COMPLETE SEMANTIC TABLE WITH COLSPAN, ROWSPAN & STYLING
+         =================================================================== -->
+    <section class="doc-card">
+      <h2>1. Semantic HTML Table (<code>caption</code>, <code>colgroup</code>, <code>thead</code>, <code>tbody</code>, <code>tfoot</code>, <code>rowspan</code>, <code>colspan</code>)</h2>
+      <p>Hover over any body row below to see the <code>tbody tr:hover</code> effect, and notice the <code>:nth-child(odd)</code> zebra striping.</p>
+
+      <table class="paintings-table">
+        <caption>19th Century French Paintings Inventory</caption>
+        
+        <!-- Column definitions for styling hooks -->
+        <colgroup>
+          <col class="artist-col">
+          <col class="title-col">
+          <col class="year-col">
+          <col class="width-col">
+          <col class="height-col">
+        </colgroup>
+
+        <thead>
+          <tr>
+            <th scope="col">Artist</th>
+            <th scope="col">Title</th>
+            <th scope="col">Year</th>
+            <!-- colspan="2" makes this header cell span across both Width and Height columns! -->
+            <th scope="col" colspan="2">Size (Width &times; Height)</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <!-- rowspan="2" makes Jacques-Louis David span vertically across 2 rows!
+                 Notice the next <tr> only needs 4 <td> cells instead of 5. -->
+            <td rowspan="2"><strong>Jacques-Louis David</strong> (<code>rowspan="2"</code>)</td>
+            <td>The Death of Marat</td>
+            <td>1793</td>
+            <td>162cm</td>
+            <td>128cm</td>
+          </tr>
+          <tr>
+            <!-- First column is already occupied by the rowspan="2" cell above! -->
+            <td>The Intervention of the Sabine Women</td>
+            <td>1799</td>
+            <td>385cm</td>
+            <td>522cm</td>
+          </tr>
+          <tr>
+            <td><strong>Gustave Courbet</strong></td>
+            <td>Burial at Ornans</td>
+            <td>1849</td>
+            <td>314cm</td>
+            <td>663cm</td>
+          </tr>
+          <tr>
+            <td><strong>Eugène Delacroix</strong></td>
+            <td>Liberty Leading the People</td>
+            <td>1830</td>
+            <td>260cm</td>
+            <td>325cm</td>
+          </tr>
+        </tbody>
+
+        <!-- In HTML 5.1+, <tfoot> comes after <tbody> -->
+        <tfoot>
+          <tr>
+            <td colspan="4">Total Number of Cataloged Paintings (<code>colspan="4"</code>)</td>
+            <td>4</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- ===================================================================
+         2. HTML FORMS: ARCHITECTURE, GET vs. POST & URL ENCODING
+         ===================================================================
+         HOW FORMS INTERACT WITH SERVERS:
+         1. User fills out form controls and clicks Submit.
+         2. Browser packages the values of all controls that have a `name` attribute 
+            into a Query String: `title=Central+Park&where=United+States`
+            (IMPORTANT: If an input does NOT have a `name="..."` attribute, its value 
+             will NEVER be sent to the server!).
+         3. Special characters and spaces in the query string are URL-Encoded:
+            Spaces become `+` (or `%20`), and non-ASCII characters like `é` become hex 
+            bytes like `%E9` (e.g., `artist=Pablo+Jos%E9+Picasso`).
+
+         TWO ESSENTIAL <form> ATTRIBUTES:
+         - `action="process.php"`: The URL of the server-side script that processes the data.
+         - `method="get | post"`: How the query string is transmitted in the HTTP request:
+           * GET (`method="get"`):
+             - Appends query string directly to the URL: `GET /process.php?title=Central+Park`
+             - Data is visible in the browser address bar, stored in browser history/cache, 
+               and can be bookmarked.
+             - Has a character length limit. Ideal for search boxes and filters (idempotent reads).
+           * POST (`method="post"`):
+             - Sends the query string inside the HTTP Request Body (hidden from the URL bar).
+             - Not stored in browser history or bookmarks.
+             - No character limit and can transmit binary files (when paired with 
+               `enctype="multipart/form-data"`). Ideal for passwords, file uploads, and database writes.
+    -->
+    <section class="doc-card">
+      <h2>2. Complete HTML5 Form Controls Reference</h2>
+      <p>
+        This interactive form uses <code>method="get"</code> and <code>action="#form-submitted"</code> so that if you click 
+        <strong>Submit Form</strong>, you can inspect the URL-encoded query string right in your browser's address bar!
+      </p>
+
+      <!-- 
+        NOTE ON FILE UPLOADS:
+        When uploading files with <input type="file">, you MUST use:
+        <form method="post" enctype="multipart/form-data" action="...">
+      -->
+      <form id="form-submitted" method="get" action="#form-submitted" oninput="sumOutput.value = parseInt(rateInput.value) + parseInt(happyInput.value)">
+
+        <!-- FIELDSET 1: CLASSIC & HTML5 TEXT INPUT CONTROLS -->
+        <fieldset>
+          <legend>1. Classic &amp; HTML5 Text Input Controls</legend>
+          <div class="form-grid">
+            
+            <!-- Explicit <label for="id"> association improves accessibility: clicking the label focuses the input! -->
+            <div class="form-group">
+              <label for="titleInput">Single-Line Text (<code>type="text"</code>):</label>
+              <input type="text" id="titleInput" name="title" placeholder="e.g., Central Park" required>
+            </div>
+
+            <div class="form-group">
+              <label for="passInput">Password (<code>type="password"</code> - masks characters):</label>
+              <input type="password" id="passInput" name="secret" placeholder="Enter password">
+            </div>
+
+            <div class="form-group">
+              <label for="searchInput">Search Box (<code>type="search"</code> - adds clear 'x' button):</label>
+              <input type="search" id="searchInput" name="q" placeholder="Search keywords...">
+            </div>
+
+            <div class="form-group">
+              <label for="emailInput">Email (<code>type="email"</code> - validates @ format):</label>
+              <input type="email" id="emailInput" name="user_email" placeholder="person@somewhere.com">
+            </div>
+
+            <div class="form-group">
+              <label for="urlInput">Website URL (<code>type="url"</code> - validates http/https):</label>
+              <input type="url" id="urlInput" name="website" placeholder="https://www.example.com">
+            </div>
+
+            <div class="form-group">
+              <label for="telInput">Telephone (<code>type="tel"</code> - opens phone keypad on mobile):</label>
+              <input type="tel" id="telInput" name="phone" placeholder="+1-800-922-0579">
+            </div>
+
+            <!-- PATTERN ATTRIBUTE (RegEx client-side validation) -->
+            <div class="form-group">
+              <label for="postalInput">Regex Pattern (<code>pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]"</code>):</label>
+              <input type="text" id="postalInput" name="postal" placeholder="L#L #L# (e.g., K1A 0B1)" 
+                     pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]"
+                     title="Canadian Postal Code format: Letter-Number-Letter Space Number-Letter-Number">
+            </div>
+
+            <!-- DATALIST (Autocomplete suggestions for a text input) -->
+            <div class="form-group">
+              <label for="cityInput">Autocomplete Datalist (<code>list="cities"</code>):</label>
+              <input type="text" id="cityInput" name="city" list="cities" placeholder="Type P or L to see suggestions...">
+              <datalist id="cities">
+                <option value="Calcutta"></option>
+                <option value="Calgary"></option>
+                <option value="London"></option>
+                <option value="Los Angeles"></option>
+                <option value="Paris"></option>
+                <option value="Prague"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <!-- MULTILINE TEXTAREA -->
+          <div class="form-group">
+            <label for="bioInput">Multiline Textarea (<code>&lt;textarea rows="3"&gt;</code>):</label>
+            <textarea id="bioInput" name="comments" rows="3" placeholder="Enter multiline review or comments here..."></textarea>
+          </div>
+        </fieldset>
+
+        <!-- FIELDSET 2: SELECT LISTS, RADIO BUTTONS & CHECKBOXES -->
+        <fieldset>
+          <legend>2. Select Lists (<code>&lt;select&gt;</code>, <code>&lt;optgroup&gt;</code>), Radios &amp; Checkboxes</legend>
+          <div class="form-grid">
+
+            <!-- 
+              SELECT & OPTGROUP:
+              - <option selected> sets the default choice.
+              - If 'value' attribute is present on <option value="2">Second</option>, "2" is sent to the server (?choices=2).
+                If 'value' is omitted, the inner text "Second" is sent (?choices=Second).
+              - Adding `size="3"` turns the dropdown into a scrollable list box; adding `multiple` allows selecting multiple items.
+            -->
+            <div class="form-group">
+              <label for="destSelect">Dropdown with <code>&lt;optgroup&gt;</code> &amp; <code>value</code>:</label>
+              <select id="destSelect" name="destination">
+                <option value="">-- Choose a City --</option>
+                <optgroup label="North America">
+                  <option value="YYC">Calgary (Sends value="YYC")</option>
+                  <option value="LAX">Los Angeles (Sends value="LAX")</option>
+                </optgroup>
+                <optgroup label="Europe">
+                  <option value="LHR" selected>London (Default selected)</option>
+                  <option value="CDG">Paris</option>
+                  <option value="PRG">Prague</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- 
+              RADIO BUTTONS (<input type="radio">):
+              - Mutually exclusive (only ONE can be selected) because they share the exact same `name="continent"` attribute!
+              - `checked` sets the default active choice.
+            -->
+            <div class="form-group">
+              <label>Radio Buttons (Share <code>name="continent"</code> for mutual exclusion):</label>
+              <label style="font-weight:normal;"><input type="radio" name="continent" value="1"> North America (value="1")</label>
+              <label style="font-weight:normal;"><input type="radio" name="continent" value="2" checked> South America (value="2", checked)</label>
+              <label style="font-weight:normal;"><input type="radio" name="continent" value="3"> Asia (value="3")</label>
+            </div>
+
+            <!-- 
+              CHECKBOXES (<input type="checkbox">):
+              - Allow zero, one, or multiple selections.
+              - Can share the same `name="visit"` so all checked values are sent (`?visit=canada&visit=germany`).
+            -->
+            <div class="form-group">
+              <label>Checkboxes (Multiple choices allowed):</label>
+              <label style="font-weight:normal;"><input type="checkbox" name="visit" value="canada" checked> Canada</label>
+              <label style="font-weight:normal;"><input type="checkbox" name="visit" value="france"> France</label>
+              <label style="font-weight:normal;"><input type="checkbox" name="visit" value="germany" checked> Germany</label>
+            </div>
+
+          </div>
+        </fieldset>
+
+        <!-- FIELDSET 3: NUMBERS, RANGES, COLORS, DATES, FILES & FEEDBACK ELEMENTS -->
+        <fieldset>
+          <legend>3. Specialized Controls: Numbers, Dates, Color, File &amp; Output</legend>
+          <div class="form-grid">
+
+            <!-- NUMBER & RANGE (Eliminate the need for JS numeric validation, though server-side validation is ALWAYS still required!) -->
+            <div class="form-group">
+              <label for="rateInput">Number Spinner (<code>type="number" min="1" max="5"</code>):</label>
+              <input type="number" id="rateInput" name="rate" min="1" max="5" value="4">
+            </div>
+
+            <div class="form-group">
+              <label for="happyInput">Range Slider (<code>type="range" min="0" max="10" step="1"</code>):</label>
+              Grumpy <input type="range" id="happyInput" name="happiness" min="0" max="10" step="1" value="8" style="width:60%;"> Ecstatic
+            </div>
+
+            <!-- COLOR PICKER -->
+            <div class="form-group">
+              <label for="colorInput">Color Picker (<code>type="color"</code>):</label>
+              <input type="color" id="colorInput" name="bg_color" value="#0284c7">
+            </div>
+
+            <!-- FILE UPLOAD & HIDDEN INPUT -->
+            <div class="form-group">
+              <label for="fileInput">File Upload (<code>type="file"</code>):</label>
+              <input type="file" id="fileInput" name="photo">
+              <!-- Hidden input sends invisible metadata to the server without displaying a control -->
+              <input type="hidden" name="form_version" value="v2.6">
+            </div>
+
+            <!-- HTML5 DATE & TIME CONTROLS -->
+            <div class="form-group">
+              <label for="dateInput">Date (<code>type="date"</code> -> YYYY-MM-DD):</label>
+              <input type="date" id="dateInput" name="trip_date" value="2026-10-17">
+            </div>
+
+            <div class="form-group">
+              <label for="timeInput">Time (<code>type="time"</code> -> HH:MM:SS):</label>
+              <input type="time" id="timeInput" name="trip_time" value="14:30">
+            </div>
+
+            <div class="form-group">
+              <label for="dtLocalInput">DateTime-Local (<code>type="datetime-local"</code> - no timezone):</label>
+              <input type="datetime-local" id="dtLocalInput" name="local_dt" value="2026-10-17T14:30">
+            </div>
+
+            <div class="form-group">
+              <label for="monthInput">Month (<code>type="month"</code> -> YYYY-MM) &amp; Week (<code>type="week"</code>):</label>
+              <div style="display:flex; gap:8px;">
+                <input type="month" id="monthInput" name="trip_month" value="2026-10">
+                <input type="week" name="trip_week" value="2026-W42">
+              </div>
+            </div>
+          </div>
+
+          <!-- PROGRESS, METER & OUTPUT ELEMENTS -->
+          <div style="border-top:1px solid #cbd5e1; padding-top:12px; margin-top:8px;">
+            <p>
+              <strong>Feedback Elements:</strong>
+              Upload Progress (<code>&lt;progress&gt;</code>): <progress value="70" max="100">70%</progress> |
+              Disk Usage Gauge (<code>&lt;meter&gt;</code>): <meter value="0.8" min="0" max="1" low="0.3" high="0.7" optimum="0.2">80%</meter> |
+              Live Calculation (<code>&lt;output&gt;</code> = Rate + Happiness): 
+              <strong><output name="sumOutput" for="rateInput happyInput">12</output></strong>
+            </p>
+          </div>
+        </fieldset>
+
+        <!-- 
+          BUTTON CONTROLS:
+          1. <input type="submit">: Submits form data to the server.
+          2. <input type="reset">: Resets all form controls back to their initial default values.
+          3. <input type="button" value="Click Me">: Custom button (requires JS to do anything).
+          4. <input type="image" src="...">: Graphical submit button.
+          5. <button type="submit | reset | button">: Rich button container that can hold 
+             HTML elements like <img>, <strong>, or <i> inside it, making it much easier to style!
+        -->
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <button type="submit" style="background:#0284c7; color:white; border:none; padding:10px 18px; border-radius:6px; cursor:pointer;">
+            <strong>&#10004; Submit Form (<code>&lt;button type="submit"&gt;</code>)</strong>
+          </button>
+          <input type="reset" value="Reset Form (type='reset')" style="padding:10px 16px; cursor:pointer;">
+          <input type="button" value="Custom JS Button (type='button')" onclick="alert('Custom button clicked!');" style="padding:10px 16px; cursor:pointer;">
+        </div>
+
+      </form>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <small>Chapter 4 Documentation — HTML Tables &amp; Forms.</small>
+  </footer>
+
+</body>
+</html>

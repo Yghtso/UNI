@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<!-- 
+  ==========================================================================
+  TOPIC 02: HTML OVERVIEW, SYNTAX, SEMANTICS & EMBEDDED CONTENT
+  Based on: Chapter 2 - Fundamentals of Web Development (Connolly & Hoar)
+  ==========================================================================
+  2
+  1. WHAT IS HTML & ITS HISTORY?
+  - HTML (HyperText Markup Language) is a markup language: a system of 
+    annotations distinct from the text being annotated, instructing the 
+    browser about the structure and meaning of the content.
+  - Versions Timeline:
+    * HTML 1.0 (1993): Basic structuring (headings, lists, paragraphs).
+    * HTML 2.0 (1995): Introduction of forms and <table> for tabular data.
+    * HTML 3.2 (1997): Upgraded forms, improved images, extended character set, CSS support.
+    * HTML 4.01 (1999): External style sheets, <fieldset>, <legend>, upgraded tables.
+    * XHTML 1.0 (2000): Re-formulation of HTML in XML. Stricter syntax rules 
+      (all tags lowercase, all tags must close, empty tags need trailing slash />, 
+      attribute values must be quoted).
+    * XHTML 2.0 (Mid-2000s): Proposed revolutionary change that dropped backwards 
+      compatibility and made browsers unforgiving of invalid markup.
+    * WHATWG & HTML5 (2008-2014+): Developers at Opera and Mozilla formed the 
+      Web Hypertext Application Technology Working Group (WHATWG) because they 
+      disagreed with W3C's abandonment of backwards compatibility. By 2009, W3C 
+      stopped XHTML 2.0 and adopted WHATWG's work as HTML5.
+  
+  2. THREE MAIN AIMS OF HTML5:
+    1) Specify unambiguously how browsers should deal with invalid markup.
+    2) Provide an open, non-proprietary programming framework (via JavaScript APIs, 
+       Web Workers, Local Storage, <audio>, <video>) for rich web applications.
+    3) Be backwards compatible with the existing web.
+  
+  3. LIVING STANDARD & VALIDATION:
+    - HTML5 is a "living language" that evolves continuously.
+    - Check feature support across browsers at: https://caniuse.com or MDN.
+    - Validate markup against standards at: https://validator.w3.org
+  ==========================================================================
+-->
+
+<!-- 
+  ROOT ELEMENT: <html>
+  Contains all other HTML elements in the document.
+  Note: In HTML5, <html>, <head>, and <body> are technically optional according 
+  to the parser spec, but they were required in XHTML and are universally used 
+  by developers for clarity and structure.
+  The 'lang' attribute declares the primary language of the document for 
+  screen readers and search engines.
+-->
+<html lang="en">
+
+<!-- 
+  DOCUMENT HEAD: <head>
+  Contains descriptive metadata about the document (character encoding, title, 
+  stylesheets, scripts). Nothing inside <head> is rendered directly in the 
+  browser viewport.
+-->
+<head>
+  <!-- 
+    METADATA (<meta>):
+    1. charset="utf-8": Declares the character encoding. UTF-8 supports almost 
+       all characters and symbols in the world.
+  -->
+  <meta charset="utf-8">
+
+  <!-- 
+    2. Named Meta Elements (name="..." content="..."):
+       - author: Name of the document's author.
+       - description: Brief summary of the page used by search engines.
+       - generator: Software used to generate the document (e.g., Notepad++, VS Code).
+       - keywords: Comma-separated keywords (can be filtered by 'lang' attribute 
+         for different locales, e.g., lang="en-us" vs lang="en" vs lang="fr").
+  -->
+  <meta name="author" content="Web Development Study Guide">
+  <meta name="description" content="Complete HTML5 documentation with code comments and visual examples.">
+  <meta name="generator" content="VS Code">
+  <meta name="keywords" lang="en-us" content="HTML5, semantic markup, documentation, vacation">
+  <meta name="keywords" lang="en-gb" content="HTML5, semantic markup, documentation, holiday">
+  <meta name="keywords" lang="fr" content="HTML5, balisage sémantique, vacances">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 
+    DOCUMENT TITLE (<title>):
+    Displayed in the browser's title bar or tab, and used as the default 
+    bookmark name and search engine result heading.
+  -->
+  <title>02 - HTML5 Complete Documentation & Visual Reference</title>
+
+  <!-- 
+    THE <base> ELEMENT (Commented out so it doesn't break local anchor links!):
+    Allows authors to specify the document base URL for resolving all relative URLs 
+    on the page.
+    Example: If <base href="http://www.example.com/news/"> is set in <head>, 
+    then <a href="archives.html"> will resolve to "http://www.example.com/news/archives.html".
+    AMPLIFICATION: A document can have at most ONE <base> element, and it can also 
+    include a 'target' attribute (e.g., target="_blank") to set the default target 
+    for all links on the page.
+  -->
+  <!-- <base href="http://www.example.com/news/"> -->
+
+  <!-- 
+    THE <link> ELEMENT:
+    Defines the relationship between the current document and an external resource.
+    Attributes:
+    - href: URL of the linked resource.
+    - rel: Relationship (stylesheet, icon, alternate, author, help, license, next, prev, prefetch, search).
+    - media: Media query specifying which device/medium the resource is optimized for (e.g., "print", "screen").
+    - type: MIME type hint (e.g., "text/css").
+    - hreflang: Language of the linked resource.
+    - sizes: Icon dimensions when rel="icon" (e.g., "32x32").
+    
+    Example of separate stylesheets for screen and printing:
+    <link rel="stylesheet" type="text/css" href="theme.css">
+    <link rel="stylesheet" type="text/css" href="print.css" media="print">
+  -->
+
+  <!-- 
+    THE <script> ELEMENT:
+    References an external JavaScript file or embeds inline script.
+    Historical note from slides: <script src="js/html5shiv.js"></script> was used 
+    in early HTML5 days so older Internet Explorer versions (< IE9) would recognize 
+    new HTML5 semantic elements like <header>, <article>, and <section>.
+  -->
+
+  <!-- Minimal embedded CSS purely to make the visual examples clean and readable in the browser -->
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      color: #222;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f8f9fa;
+    }
+    header.page-header, footer.page-footer {
+      background: #1e293b;
+      color: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    header.page-header a, footer.page-footer a { color: #38bdf8; }
+    nav.toc ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0 0;
+    }
+    section.doc-section {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .demo-box {
+      background: #f1f5f9;
+      border-left: 4px solid #0284c7;
+      padding: 15px;
+      margin: 12px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    code {
+      background: #e2e8f0;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: 0.9em;
+    }
+    pre code {
+      display: block;
+      padding: 12px;
+      overflow-x: auto;
+      background: #0f172a;
+      color: #e2e8f0;
+    }
+    table.ref-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    table.ref-table th, table.ref-table td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      text-align: left;
+    }
+    table.ref-table th { background: #e2e8f0; }
+    aside.sidebar-demo {
+      background: #fef9c3;
+      border: 1px solid #fde047;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<!-- 
+  DOCUMENT BODY: <body>
+  Contains all the content that will be displayed by the browser in the viewport.
+-->
+<body id="top">
+
+  <!-- =====================================================================
+       SECTION: SEMANTIC PAGE HEADER (<header>) & NAVIGATION (<nav>)
+       =====================================================================
+       - <header>: Used for recognizable page headers (site logo, title, 
+         subtitles/taglines, horizontal navigation) OR inside <article>/<section> 
+         to hold that section's title, author, and publication date.
+       - <nav>: Represents a major navigation block containing links to other 
+         pages or to parts within the same page. Browsers do not apply special 
+         visual styling to <nav> by default.
+  -->
+  <header class="page-header">
+    <h1>02 - HTML5 Syntax, Structure &amp; Semantics</h1>
+    <p>Open this file in your code editor to read the detailed comments, and view it in your browser to inspect the rendered examples.</p>
+    
+    <!-- 
+      IN-PAGE TABLE OF CONTENTS (Fragment Identifier Links):
+      Using href="#id_name" jumps directly to the element with id="id_name".
+      Historical Note: HTML4 used <a name="top"></a> to define an anchor target.
+      In HTML5, the 'name' attribute on <a> is obsolete! Always put the 'id' 
+      attribute directly on the target heading or section element (e.g., <h2 id="sec1">).
+    -->
+    <nav class="toc" aria-label="Table of Contents">
+      <strong>Quick Jump:</strong>
+      <ul>
+        <li><a href="#sec-syntax">1. Syntax &amp; DOM Tree</a></li>
+        <li><a href="#sec-headings-grouping">2. Headings &amp; Grouping</a></li>
+        <li><a href="#sec-links-urls">3. Links, URIs &amp; Relative Paths</a></li>
+        <li><a href="#sec-lists">4. Lists (ul, ol, dl)</a></li>
+        <li><a href="#sec-text-semantics">5. Text-Level Semantics &amp; Entities</a></li>
+        <li><a href="#sec-semantic-layout">6. HTML5 Semantic Structure</a></li>
+        <li><a href="#sec-embedded">7. Embedded Media &amp; Image Maps</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- 
+    THE <main> ELEMENT:
+    Represents the dominant, unique content of the <body> of a document.
+    RULES FOR <main>:
+    1. It excludes content repeated across documents (site nav, copyright, logos, search bars).
+    2. Authors MUST NOT include more than ONE visible <main> element in a document.
+    3. It replaces old pre-HTML5 <div id="main"> or <div id="main-content">.
+  -->
+  <main>
+
+    <!-- ===================================================================
+         1. HTML SYNTAX, EMPTY ELEMENTS & NESTING HIERARCHY
+         =================================================================== -->
+    <section id="sec-syntax" class="doc-section">
+      <h2>1. HTML Syntax, Elements, Attributes &amp; Nesting</h2>
+      
+      <!-- 
+        ANATOMY OF AN HTML ELEMENT:
+        <a href="http://www.centralpark.com">Central Park</a>
+        - Opening tag: <a href="...">
+        - Element name: a
+        - Attribute: href="http://www.centralpark.com" (name="value" pair)
+        - Content: Central Park (may be text or other nested HTML elements)
+        - Closing tag: </a>
+        
+        EMPTY (VOID) ELEMENTS:
+        Do not contain any text content and have no closing tag; they are an 
+        instruction to the browser to do something (e.g., <img>, <br>, <hr>, <meta>, <link>, <wbr>).
+        - In XHTML: Empty elements HAD to be terminated by a trailing slash: <img src="file.gif" alt="text" />
+        - In HTML5: The trailing slash is completely optional: <img src="file.gif" alt="text">
+        
+        PROPER NESTING & DOM RELATIONSHIPS:
+        Elements contained inside another element form a family tree (Document Object Model / DOM):
+        - Ancestor: Any enclosing element further up the tree.
+        - Parent: The direct container element.
+        - Child: An element directly contained inside a parent.
+        - Descendant: Any element contained within a child (children, grandchildren, etc.).
+        - Sibling: Elements that share the exact same parent.
+        
+        CRITICAL RULE: A child's ending tag MUST occur before its parent's ending tag!
+        - CORRECT:   <h1>Share Your <strong>Travels</strong></h1>
+        - INCORRECT: <h1>Share Your <strong>Travels</h1></strong>
+      -->
+      <p>
+        An HTML element consists of an opening tag, optional attributes, content, and a closing tag. 
+        Empty (void) elements like <code>&lt;img&gt;</code>, <code>&lt;br&gt;</code>, and <code>&lt;hr&gt;</code> have no closing tag.
+      </p>
+
+      <div class="demo-box">
+        <!-- Here, <div> is the parent of <p> and <h4> (making <h4> and <p> siblings).
+             <span> and <strong> are children of <p>, and descendants of <div>. -->
+        <h4>DOM Family Tree Visualized</h4>
+        <p>
+          In this box, the <code>&lt;div&gt;</code> is the <strong>parent</strong> of this 
+          <code>&lt;p&gt;</code>, while this <span>inline <code>&lt;span&gt;</code></span> is a 
+          <strong>child</strong> of the paragraph and a <strong>descendant</strong> of the div.
+        </p>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         2. HEADINGS & GROUPING CONTENT ELEMENTS
+         =================================================================== -->
+    <section id="sec-headings-grouping" class="doc-section">
+      <h2>2. Headings (h1–h6) &amp; Grouping Content Elements</h2>
+
+      <!-- 
+        HEADINGS (<h1> through <h6>):
+        - HTML provides 6 levels of headings. <h1> is highest importance, <h6> is lowest.
+        - SEMANTIC RULE: Never choose a heading level because of its default visual font size 
+          (e.g., picking <h3> just because you want 16pt bold text). Choose it based on 
+          its structural hierarchy in the document outline, and use CSS to style its appearance!
+      -->
+      <div class="demo-box">
+        <h1>h1: Main Document / Outline Heading</h1>
+        <h2>h2: Major Section Heading</h2>
+        <h3>h3: Sub-section Heading</h3>
+        <h4>h4: Fourth-level Heading</h4>
+        <h5>h5: Fifth-level Heading</h5>
+        <h6>h6: Sixth-level Heading</h6>
+      </div>
+
+      <!-- 
+        PARAGRAPHS (<p>) vs. MORE SPECIFIC ELEMENTS:
+        - <p> is the most basic unit of text and can contain text and inline elements.
+        - RULE: <p> should NOT be used when a more specific semantic element is appropriate!
+          * Bad (Technically valid, semantically poor):
+            <p>Last modified: 2001-04-23</p>
+            <p>Author: fred@example.com</p>
+          * Better (Semantically accurate):
+            <footer>Last modified: 2001-04-23</footer>
+            <address>Author: fred@example.com</address>
+      -->
+
+      <!-- 
+        THEMATIC BREAK (<hr>):
+        - Represents a paragraph-level thematic break (e.g., a scene change in a story, 
+          or a transition to another topic within a section).
+        - Note: You do NOT need an <hr> between <section> elements, because <section> 
+          and headings already imply a thematic change.
+      -->
+      <p>Above a thematic break (scene one).</p>
+      <hr>
+      <p>Below a thematic break (<code>&lt;hr&gt;</code> — scene two).</p>
+
+      <!-- 
+        PREFORMATTED TEXT (<pre>):
+        - Represents a block of preformatted text where whitespace, line breaks, and 
+          tabs are preserved literally by the browser (rendered in a monospace font).
+        - Ideal for: Computer code fragments (combined with <code>), emails with 
+          blank-line paragraphs, or ASCII art.
+      -->
+      <h3>Preformatted Code Block (<code>&lt;pre&gt;&lt;code&gt;</code>)</h3>
+      <pre><code>// Inside <pre>, all spaces and line breaks are preserved!
+function Panel(element, canClose, closeHandler) {
+    this.element = element;
+    this.canClose = canClose;
+    this.closeHandler = function () { if (closeHandler) closeHandler(); };
+}</code></pre>
+
+      <!-- 
+        BLOCKQUOTE (<blockquote>):
+        - Represents a section of content quoted from another source.
+        - Can optionally include a citation inside a <cite> or <footer> element.
+        - AMPLIFICATION: Can also take a 'cite="URL"' attribute to machine-link the source URL.
+      -->
+      <h3>Blockquote (<code>&lt;blockquote&gt;</code>)</h3>
+      <div class="demo-box">
+        <blockquote cite="http://en.wikipedia.org/wiki/Herbert_Marcuse">
+          "The people recognize themselves in their commodities; they find their soul in their automobile, hi-fi set, split-level home, kitchen equipment."
+          <footer>
+            — <cite><a href="http://en.wikipedia.org/wiki/Herbert_Marcuse">Herbert Marcuse</a></cite>
+          </footer>
+        </blockquote>
+      </div>
+
+      <!-- 
+        FIGURE & FIGCAPTION (<figure> and <figcaption>):
+        - Represents self-contained flow content (illustrations, diagrams, photos, poems, 
+          code listings) referenced as a single unit from the main flow.
+        - Key Rule: A <figure> is essential to the document, but its exact position is 
+          movable (if moved to an appendix or sidebar, the main text still makes sense).
+        - Do NOT wrap every image (like site logos, decorative banners) in <figure>!
+        - The first <figcaption> child (placed either at the top or bottom inside <figure>) 
+          provides the caption.
+      -->
+      <h3>Figure &amp; Figcaption (Poems &amp; Images)</h3>
+      <div class="demo-box">
+        <figure>
+          <p>
+            'Twas brillig, and the slithy toves<br>
+            Did gyre and gimble in the wabe;<br>
+            All mimsy were the borogoves,<br>
+            And the mome raths outgrabe.
+          </p>
+          <figcaption>
+            <cite>Jabberwocky</cite> (first verse). Lewis Carroll, 1832–98
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         3. LINKS (<a>), URIs (URL vs URN) & RELATIVE REFERENCING
+         =================================================================== -->
+    <section id="sec-links-urls" class="doc-section">
+      <h2>3. Hyperlinks (<code>&lt;a&gt;</code>), URI/URL/URN &amp; Path Referencing</h2>
+
+      <!-- 
+        URI, URL, and URN:
+        - URI (Uniform Resource Identifier): Codifies the address/identity of a web resource.
+          Syntax: <scheme>:<scheme-specific-part> (e.g., http://www.w3.org/TR)
+          A URI can be a URL, a URN, or both:
+          * URL (Uniform Resource Locator): Identifies a resource AND specifies the 
+            means/location of obtaining it (like a person's street address).
+            Example: http://www.w3.org/TR
+          * URN (Uniform Resource Name): Identifies a resource by unique name within a 
+            namespace without specifying where to find a copy (like a person's name or ISBN).
+            Example: urn:isbn:0-395-36341-1
+        
+        ABSOLUTE vs. RELATIVE REFERENCING:
+        - Absolute URL: Required for external sites. Includes protocol (https://), domain, 
+          path, and filename: https://www.centralpark.com/images/logo.gif
+        - Relative URL: Used for resources on the SAME server. Uses Unix forward slashes (/).
+          1) Same directory:              href="example.html"
+          2) Child directory:             href="images/logo.gif"
+          3) Grandchild directory:        href="css/images/background.gif"
+          4) Parent directory (..):       href="../about.html"
+          5) Grandparent directory:       href="../../about.html"
+          6) Sibling directory:           href="../images/logo.gif"
+          7) Root reference (starts w/ /): href="/about.html" (NOTE: Only works on a live web server, not file://!)
+          8) Default document:            href="members/" (Server automatically serves index.html on Apache or default.html on IIS).
+
+        ANCHOR (<a>) ATTRIBUTES:
+        - href: Destination address (URL, #fragment, mailto:, tel:, javascript:).
+        - target: Browsing context where the linked URL opens:
+            * _self: Current tab/frame (Default).
+            * _blank: New tab or window. (AMPLIFICATION: When using target="_blank", 
+              modern security best practice is to add rel="noopener noreferrer" so the 
+              newly opened page cannot manipulate your page via window.opener!).
+            * _parent: Parent browsing context (if inside an <iframe>).
+            * _top: Topmost browsing context (breaks out of all nested iframes).
+        - download: Instructs browser to download the linked resource rather than navigating to it.
+        - rel: Relationship between current doc and destination (author, help, license, nofollow, noreferrer, next, prev, tag).
+        - hreflang: Language code of the linked resource.
+        - type: MIME type hint of the linked resource.
+      -->
+      <div class="demo-box">
+        <ul>
+          <!-- 1. External link opening in a new tab -->
+          <li>External Site (<code>target="_blank"</code>): <a href="https://www.w3.org" target="_blank" rel="noopener noreferrer">W3C Website</a></li>
+          
+          <!-- 2. Same-page fragment link -->
+          <li>Same-Page Anchor (<code>href="#top"</code>): <a href="#top">Jump to Top of Document</a></li>
+          
+          <!-- 3. Specific location on another page -->
+          <li>Another Page + Fragment: <code>&lt;a href="productX.html#reviews"&gt;Reviews for Product X&lt;/a&gt;</code></li>
+          
+          <!-- 4. Email link (launches user's email client) -->
+          <li>Email Link (<code>mailto:</code>): <a href="mailto:person@somewhere.com">Email person@somewhere.com</a></li>
+          
+          <!-- 5. Telephone link (auto-dials on smartphones) -->
+          <li>Telephone Link (<code>tel:</code>): <a href="tel:+18009220579">Call Toll Free (800) 922-0579</a></li>
+          
+          <!-- 6. Download attribute -->
+          <li>Download Attribute: <a href="data:text/plain;charset=utf-8,Hello%20HTML5!" download="sample-note.txt">Download sample-note.txt</a></li>
+          
+          <!-- 7. JavaScript pseudo-protocol (Supported, though modern JS prefers addEventListener) -->
+          <li>JavaScript Instruction: <a href="javascript:alert('Executed via javascript: URI!');">Run JavaScript Alert</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         4. LISTS: UNORDERED (<ul>), ORDERED (<ol>), DEFINITION (<dl>)
+         =================================================================== -->
+    <section id="sec-lists" class="doc-section">
+      <h2>4. HTML Lists: Unordered, Ordered &amp; Definition Lists</h2>
+
+      <!-- 
+        THREE TYPES OF HTML LISTS:
+        1. Unordered List (<ul>): Bulleted collection of items in no particular order.
+           - Contains <li> (list item) children.
+           - Note: In HTML5, the closing </li> tag is technically optional in simple lists, 
+             functionality shown in the slides, though closing it is strongly recommended!
+        2. Ordered List (<ol>): Numbered/lettered collection of items where sequence matters.
+           - Specific <ol> attributes:
+             * reversed: Boolean attribute; numbers the list backwards (countdown).
+             * start="number": Ordinal integer value of the first item (e.g., start="10").
+             * type="1|a|A|i|I": Marker type:
+               - "1": Decimal numbers (default)
+               - "a": Lowercase Latin alphabet (a, b, c...)
+               - "A": Uppercase Latin alphabet (A, B, C...)
+               - "i": Lowercase Roman numerals (i, ii, iii...)
+               - "I": Uppercase Roman numerals (I, II, III...)
+           - Specific <li> attribute inside <ol>:
+             * value="integer": Overrides the ordinal number for that specific list item and subsequent items.
+           - NESTING LISTS RULE: When nesting a sublist inside an item, the nested <ol> or <ul> 
+             MUST be placed INSIDE the parent <li> BEFORE the closing </li> tag!
+        3. Definition / Description List (<dl>):
+           - Collection of name/term (<dt>) and description/value (<dd>) pairs (e.g., glossaries, FAQs, metadata).
+           - Multiple <dt> terms can share a single <dd> definition (and vice versa).
+      -->
+      <div class="demo-box">
+        <h3>A. Nested Ordered List (Notice where <code>&lt;/li&gt;</code> closes!)</h3>
+        <ol>
+          <li>First item</li>
+          <li>
+            Second item (contains a nested list before its closing <code>&lt;/li&gt;</code> tag!)
+            <!-- Closing </li> tag is NOT here! The nested <ol> goes inside the <li> -->
+            <ol type="i">
+              <li>Second item — first subitem</li>
+              <li>Second item — second subitem</li>
+            </ol>
+          </li><!-- Here is the closing </li> tag for the second item -->
+          <li>Third item</li>
+        </ol>
+
+        <h3>B. Reversed Alphabetical Ordered List (<code>&lt;ol reversed type="a" start="5"&gt;</code>)</h3>
+        <ol reversed type="a" start="5">
+          <li><cite>Finding Nemo</cite>, 2003</li>
+          <li><cite>The Incredibles</cite>, 2004</li>
+          <li><cite>Ratatouille</cite>, 2007</li>
+        </ol>
+
+        <h3>C. Definition List (<code>&lt;dl&gt;</code>, <code>&lt;dt&gt;</code>, <code>&lt;dd&gt;</code>)</h3>
+        <dl>
+          <dt lang="en-US"><dfn>color</dfn></dt>
+          <dt lang="en-GB"><dfn>colour</dfn></dt>
+          <dd>
+            A sensation which (in humans) derives from the ability of the fine structure 
+            of the eye to distinguish three differently filtered analyses of a view.
+          </dd>
+        </dl>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. TEXT-LEVEL SEMANTICS, EDITS & CHARACTER ENTITIES
+         =================================================================== -->
+    <section id="sec-text-semantics" class="doc-section">
+      <h2>5. Inline Text-Level Semantics, Edits &amp; Character Entities</h2>
+      
+      <!-- 
+        INLINE (PHRASING) ELEMENTS:
+        Do not disrupt the flow of text (they do not start a new block/line).
+        
+        COMPLETE REFERENCE OF INLINE ELEMENTS COVERED IN SLIDES:
+        - <em>: Stress emphasis of its contents (changes the meaning of a sentence when spoken).
+        - <strong>: Strong importance, seriousness, or urgency.
+        - <small>: Side comments and small print (e.g., copyright, legal disclaimers).
+        - <s>: Contents that are no longer accurate or no longer relevant (e.g., old retail price).
+        - <cite>: Reference to a creative work (book, movie, paper, author).
+        - <q cite="...">: Short inline quotation from another source (browser adds quotation marks).
+        - <dfn>: The defining instance of a term (its nearest parent <p>, <dl>, or <section> must contain the definition).
+        - <abbr title="...">: Abbreviation or acronym; 'title' attribute must hold the full expansion and nothing else.
+        - <code>: Fragment of computer code.
+        - <var>: A mathematical or programming variable.
+        - <samp>: Sample output from a computer program.
+        - <kbd>: User input (typically keyboard keys or voice commands).
+        - <sup> / <sub>: Superscript and subscript.
+        - <i>: Alternate voice or mood, taxonomic designation, technical term, idiomatic phrase in another language, thought, or ship name.
+        - <b>: Utilitarian attention drawn without extra importance (e.g., keywords in an abstract, product names in a review).
+        - <mark>: Highlighted/marked text for reference purposes due to relevance in another context (e.g., search query matches).
+        - <time datetime="...">: Machine-readable date/time.
+        - <span>: Generic inline container with no semantic meaning of its own; used with class, id, lang, or dir.
+        - <br>: Line break (empty element; use only when line breaks are part of the content like addresses or poems, NOT for spacing!).
+        - <wbr>: Word break opportunity (empty element; tells browser where it is allowed to break a super-long word if needed).
+        
+        DOCUMENT EDITS (<ins> and <del>):
+        - <ins>: Represents an addition/insertion to the document.
+        - <del>: Represents a removal/deletion from the document.
+        - Both accept optional 'cite="URL"' (explaining the change) and 'datetime="YYYY-MM-DDThh:mmTZD"' attributes.
+      -->
+      <div class="demo-box">
+        <p>
+          <strong>1. Emphasis, Importance &amp; Small Print:</strong>
+          Example Corp today announced <em>record profits</em> for the second quarter 
+          <small>(Full Disclosure: Foo News is a subsidiary of Example Corp)</small>, 
+          <strong>leading to speculation about a third-quarter merger</strong>.
+        </p>
+
+        <p>
+          <strong>2. Inaccurate Text (<code>&lt;s&gt;</code>) vs. Edits (<code>&lt;del&gt;</code> / <code>&lt;ins&gt;</code>):</strong><br>
+          <s>Recommended retail price: $3.99 per bottle</s> <strong>Now selling for just $2.99!</strong><br>
+          Project Status: <del datetime="2026-10-10T23:38-07:00">Drafting</del> <ins datetime="2026-10-17T08:00+02:00">Published</ins>
+        </p>
+
+        <p>
+          <strong>3. Inline Quote (<code>&lt;q&gt;</code>) &amp; Citation (<code>&lt;cite&gt;</code>):</strong>
+          The W3C page <cite>About W3C</cite> says their mission is 
+          <q cite="http://www.w3.org/Consortium/">To lead the World Wide Web to its full potential</q>.
+        </p>
+
+        <p>
+          <strong>4. Definition (<code>&lt;dfn&gt;</code>) &amp; Abbreviation (<code>&lt;abbr&gt;</code>):</strong>
+          The <dfn id="gdo"><abbr title="Garage Door Opener">GDO</abbr></dfn> is a device that allows off-world teams to open the iris. 
+          Later, Teal'c activated his <a href="#gdo"><abbr title="Garage Door Opener">GDO</abbr></a> (hover over GDO to see the tooltip!).
+        </p>
+
+        <p>
+          <strong>5. Technical &amp; Math Semantics (<code>&lt;code&gt;</code>, <code>&lt;var&gt;</code>, <code>&lt;sub&gt;</code>, <code>&lt;sup&gt;</code>, <code>&lt;kbd&gt;</code>, <code>&lt;samp&gt;</code>):</strong><br>
+          The coordinate of the <var>i</var><sup>th</sup> point is 
+          <code>(<var>x<sub>i</sub></var>, <var>y<sub>i</sub></var>)</code>. 
+          Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy; the terminal will output <samp>Copied 1 file.</samp>
+        </p>
+
+        <p>
+          <strong>6. Alternate Voice (<code>&lt;i&gt;</code>), Utilitarian Bold (<code>&lt;b&gt;</code>), Highlight (<code>&lt;mark&gt;</code>) &amp; Word Break (<code>&lt;wbr&gt;</code>):</strong><br>
+          The <i>Tyrannosaurus rex</i> is discussed in our <b>Product Overview</b> with <mark>highlighted search terms</mark>. 
+          Long string with <code>&lt;wbr&gt;</code>: "there<wbr>is<wbr>no<wbr>way<wbr>you<wbr>are<wbr>ever<wbr>going<wbr>to<wbr>catch<wbr>me"!
+        </p>
+      </div>
+
+      <!-- 
+        CHARACTER ENTITIES:
+        Used for reserved HTML characters (<, >, &) or symbols not easily typed on a keyboard.
+        Can be written via Entity Name (&copy;) or Entity Number (&#169;).
+      -->
+      <h3>Common HTML Character Entities</h3>
+      <table class="ref-table">
+        <thead>
+          <tr>
+            <th>Entity Name</th>
+            <th>Rendered Symbol</th>
+            <th>Description &amp; Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><code>&amp;nbsp;</code></td><td>&nbsp; (Space)</td><td>Non-breakable space (prevents automatic line wrap between two words)</td></tr>
+          <tr><td><code>&amp;lt;</code></td><td>&lt;</td><td>Less-than symbol (reserved in HTML for opening tags)</td></tr>
+          <tr><td><code>&amp;gt;</code></td><td>&gt;</td><td>Greater-than symbol (reserved in HTML for closing tags)</td></tr>
+          <tr><td><code>&amp;amp;</code></td><td>&amp;</td><td>Ampersand (reserved in HTML for starting character entities)</td></tr>
+          <tr><td><code>&amp;copy;</code></td><td>&copy;</td><td>Copyright symbol</td></tr>
+          <tr><td><code>&amp;trade;</code></td><td>&trade;</td><td>Trademark symbol</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===================================================================
+         6. HTML5 SEMANTIC STRUCTURE ELEMENTS (REPLACING "DIV-TASTIC" CHAOS)
+         =================================================================== -->
+    <section id="sec-semantic-layout" class="doc-section">
+      <h2>6. HTML5 Semantic Structure Elements</h2>
+
+      <!-- 
+        WHY SEMANTIC MARKUP MATTERS:
+        1. Maintainability: Easier to read, update, and modify than "div soup" (<div class="wrapper"><div class="inner">...).
+        2. Faster: Less presentation bloat means smaller files and faster authoring/downloading.
+        3. Accessibility: Screen readers use semantic landmarks (<nav>, <main>, <article>, <aside>) to navigate pages.
+        4. SEO (Search Engine Optimization): Helps search engines identify what content is most important.
+
+        WHEN TO USE <section> vs. <article> vs. <div> vs. <aside>:
+        - <article>: An independent, self-contained composition that could be syndicated or 
+          read independently on its own (e.g., blog post, news story, forum post).
+        - <section>: A thematic grouping of content, typically with a heading, that belongs 
+          explicitly in the document's outline.
+        - <div>: A generic container with NO semantic meaning. Use <div> ONLY when you need 
+          a wrapper purely for CSS styling or JavaScript scripting!
+        - <aside>: Content tangentially related to the surrounding content (sidebars, pull quotes, ads).
+        - <details> & <summary>: Interactive disclosure widget where clicking <summary> 
+          expands/collapses the rest of the <details> content natively without JavaScript!
+      -->
+      <div class="demo-box">
+        <article>
+          <header>
+            <h3>Sample Independent Article (<code>&lt;article&gt;</code>)</h3>
+            <p>By <em>Randy Connolly</em> on <time datetime="2012-09-30">September 30, 2012</time></p>
+          </header>
+          <p>
+            This <code>&lt;article&gt;</code> represents a self-contained story that has its own 
+            internal <code>&lt;header&gt;</code> and <code>&lt;footer&gt;</code>.
+          </p>
+
+          <!-- Interactive <details> and <summary> widget -->
+          <details>
+            <summary><strong>Click to expand: Girl with a Pearl Earring (<code>&lt;details&gt;</code> &amp; <code>&lt;summary&gt;</code>)</strong></summary>
+            <p>
+              <strong>Artist:</strong> Jan Vermeer<br>
+              <strong>Date:</strong> 1665 | <strong>Medium:</strong> Oil on Canvas<br>
+              <strong>Museum:</strong> Royal Picture Gallery Mauritshuis, The Hague
+            </p>
+          </details>
+
+          <aside class="sidebar-demo">
+            <strong>Aside (<code>&lt;aside&gt;</code>):</strong> Did you know? You can add the boolean attribute 
+            <code>open</code> to <code>&lt;details open&gt;</code> to make it expanded by default when the page loads!
+          </aside>
+
+          <footer>
+            <p><small>Article Footer — Category: Web Standards</small></p>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. EMBEDDED CONTENT: IMAGES, IMAGE MAPS, IFRAME, VIDEO, AUDIO, OBJECT
+         =================================================================== -->
+    <section id="sec-embedded" class="doc-section">
+      <h2>7. Embedded Content: Images, Image Maps, Iframes &amp; Media</h2>
+
+      <!-- 
+        1. IMAGES (<img>):
+        - Semantic Rule: Use <img> ONLY when the image is actual content (e.g., photo gallery, 
+          product photo, diagram). For purely decorative images (gradients, borders, background patterns), 
+          use CSS background-image instead!
+        - Key Attributes:
+          * src: URL of the image.
+          * alt: Brief description of the image's content for screen readers or when the image fails to load. 
+                 (Required for validity!).
+          * title: Optional tooltip text displayed on mouse hover.
+          * width / height: Dimensions in pixels.
+        
+        2. IMAGE MAPS (<map> and <area>):
+        - Allows specifying clickable geometric regions on an image.
+        - <img usemap="#mapname"> links the image to <map name="mapname">.
+        - Inside <map>, empty <area> elements define clickable regions:
+          * shape="rect"   -> coords="left-x, top-y, right-x, bottom-y"
+          * shape="circle" -> coords="center-x, center-y, radius"
+          * shape="poly"   -> coords="x1, y1, x2, y2, ..., xN, yN"
+          * shape="default"-> covers the entire remaining area.
+          * Other <area> attributes: href, alt, target, download.
+      -->
+      <div class="demo-box">
+        <h3>A. Interactive Image Map (<code>&lt;img usemap="#planetmap"&gt;</code> + <code>&lt;map&gt;</code> + <code>&lt;area&gt;</code>)</h3>
+        <p>Click on the Sun (rectangle) or the two planets (circles) in the SVG image below:</p>
+        
+        <!-- Self-contained inline SVG data URI so the image map works directly in your browser -->
+        <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='120'><rect width='260' height='120' fill='%230f172a'/><rect x='10' y='10' width='80' height='100' fill='%23f59e0b' rx='8'/><text x='32' y='65' fill='white' font-family='sans-serif' font-weight='bold'>SUN</text><circle cx='145' cy='60' r='18' fill='%2394a3b8'/><text x='122' y='95' fill='white' font-family='sans-serif' font-size='11'>Mercury</text><circle cx='215' cy='60' r='26' fill='%23eab308'/><text x='198' y='105' fill='white' font-family='sans-serif' font-size='11'>Venus</text></svg>" 
+             width="260" height="120" alt="Solar System Diagram" title="Interactive Solar System" usemap="#planetmap">
+
+        <map name="planetmap">
+          <area shape="rect" coords="10,10,90,110" alt="Sun" href="javascript:alert('You clicked the Sun (shape=rect, coords=10,10,90,110)!');">
+          <area shape="circle" coords="145,60,18" alt="Mercury" href="javascript:alert('You clicked Mercury (shape=circle, coords=145,60,18)!');">
+          <area shape="circle" coords="215,60,26" alt="Venus" href="javascript:alert('You clicked Venus (shape=circle, coords=215,60,26)!');">
+        </map>
+      </div>
+
+      <!-- 
+        3. NESTED BROWSING CONTEXT (<iframe>):
+        - Embeds another HTML page inside the current page.
+        - Attributes:
+          * src: URL of the document to embed.
+          * srcdoc: Raw HTML content to render directly inside the iframe.
+          * name: Context name so <a href="..." target="iframe_name"> can load links inside the iframe!
+      -->
+      <div class="demo-box">
+        <h3>B. Iframe with <code>srcdoc</code> &amp; Targeted Link (<code>target="iframe_demo"</code>)</h3>
+        <iframe name="iframe_demo" 
+                srcdoc="<body style='font-family:sans-serif;background:#e0f2fe;padding:10px;'><h4>Initial Iframe Content (via srcdoc)</h4><p>Click the link below this iframe to load a new document into this browsing context!</p></body>" 
+                width="100%" height="110" style="border:1px solid #0284c7; border-radius:4px;">
+          <p>Your browser does not support iframes.</p>
+        </iframe>
+        <p>
+          <a href="data:text/html;charset=utf-8,%3Cbody%20style%3D'font-family%3Asans-serif%3Bbackground%3A%23dcfce7%3Bpadding%3A10px%3B'%3E%3Ch4%3ELoaded%20via%20target%3D%22iframe_demo%22!%3C%2Fh4%3E%3Cp%3EBecause%20the%20link's%20target%20matches%20the%20iframe's%20name%2C%20it%20opened%20inside%20the%20iframe.%3C%2Fp%3E%3C%2Fbody%3E" 
+             target="iframe_demo"><strong>Click here to load new content inside the iframe above</strong></a>
+        </p>
+      </div>
+
+      <!-- 
+        4. EXTERNAL PLUGINS & OBJECTS (<embed>, <object>, <param>):
+        - <embed src="movie.mp4" type="video/mp4" width="320" height="240" title="...">:
+          Integration point for an external application or interactive plugin.
+        - <object data="file.pdf" type="application/pdf" width="500" height="800" typemustmatch>:
+          Represents an external resource treated as an image, nested browsing context (like PDF viewer), 
+          or plugin. Can contain <param name="..." value="..."> children to pass parameters to plugins, 
+          plus fallback HTML content if the object cannot be rendered.
+
+        5. NATIVE HTML5 MEDIA (<video>, <audio>, <source>):
+        - <video> attributes:
+          * src: URL of video file (or use nested <source> elements).
+          * controls: Displays play/pause/volume UI controls.
+          * autoplay: Starts playing automatically as soon as ready (usually requires 'muted' in modern browsers).
+          * loop: Restarts automatically every time it finishes.
+          * muted: Mutes audio output by default.
+          * poster="url": Image shown while video downloads or until user hits play.
+          * preload="auto | metadata | none": Hints how much video to preload on page load.
+          * width / height: Video player dimensions in pixels.
+        - <audio>: Represents a sound or audio stream. Supports controls, autoplay, loop, muted, preload.
+        - <source src="..." type="MIME_type">: Allows specifying multiple alternative media formats 
+          (e.g., .mp4 and .ogg) inside <video> or <audio> so the browser picks the first one it supports. 
+          Text inside <video>/<audio> is fallback content shown only in legacy browsers that don't support the tags.
+      -->
+      <div class="demo-box">
+        <h3>C. Native HTML5 <code>&lt;video&gt;</code> &amp; <code>&lt;audio&gt;</code> with Multiple <code>&lt;source&gt;</code> Elements</h3>
+        <video width="320" height="140" controls preload="none" 
+               poster="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='140'><rect width='320' height='140' fill='%231e293b'/><text x='55' y='75' fill='white' font-family='sans-serif' font-size='15'>Video Poster Image (320x140)</text></svg>">
+          <source src="movie.mp4" type="video/mp4">
+          <source src="movie.ogg" type="video/ogg">
+          Your browser does not support the video tag.
+        </video>
+        <br><br>
+        <audio controls preload="none">
+          <source src="applause.ogg" type="audio/ogg">
+          <source src="applause.mp3" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       SECTION: SEMANTIC PAGE FOOTER (<footer>) & CONTACT (<address>)
+       =====================================================================
+       - <footer>: Contains less prominent material (copyright notices, privacy 
+         policy links, social media links, smaller nav).
+       - <address>: Represents contact information for its nearest <article> or 
+         <body> ancestor. MUST NOT be used for arbitrary postal addresses unless 
+         they are the relevant contact info for the document/article author!
+  -->
+  <footer class="page-footer">
+    <address>
+      Document Contact (<code style="color:#0f172a;">&lt;address&gt;</code>): For more details, contact 
+      <a href="mailto:js@example.com">John Smith</a>.
+    </address>
+    <p><small>Copyright &copy; 2026 Fundamentals of Web Development Study Guide &trade;. <a href="#top">Back to Top</a></small></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<!-- 
+  ==========================================================================
+  TOPIC 05: ADVANCED CSS LAYOUT (POSITIONING, FLOATS, FLEXBOX, GRID, 
+            RESPONSIVE DESIGN, FILTERS, TRANSITIONS & ANIMATIONS)
+  Based on: Chapter 5 - Fundamentals of Web Development (Connolly & Hoar)
+  ==========================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- 
+    VIEWPORT META TAG (Essential Component #3 of Responsive Design!):
+    Without this tag, mobile browsers render the page on a virtual 960px desktop 
+    viewport and shrink it down to fit a 320px/390px phone screen, making text tiny.
+    `width=device-width` instructs the mobile browser to set the layout viewport width 
+    equal to the actual physical device screen width in CSS pixels!
+  -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05 - Advanced CSS Layout, Responsive Design &amp; Animations</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background: #f8fafc;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-bottom: 60px;
+    }
+    header.page-header, footer.page-footer {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+    section.layout-section {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .stage {
+      background: #f1f5f9;
+      border: 1px dashed #64748b;
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 6px;
+    }
+
+    /* =====================================================================
+       1. NORMAL FLOW & THE `display` PROPERTY
+       =====================================================================
+       - Normal Flow: How the browser lays out elements by default from top-to-bottom 
+         (block elements) and left-to-right (inline elements).
+         * Block-level (<p>, <div>, <h1>, <ul>, <table>): Sit on their own line and 
+           fill 100% of their parent's width by default.
+         * Inline (<em>, <a>, <img>, <span>, <strong>): Flow horizontally inside a line; 
+           reflow onto the next line when the container width runs out.
+       - Changing behavior with `display`:
+         * `span { display: block; }` makes an inline span stack vertically like a div.
+         * `li { display: inline; }` places list items horizontally on the same line.
+    */
+    ul.inline-nav-demo {
+      padding: 0;
+      margin: 0;
+    }
+    ul.inline-nav-demo li {
+      display: inline; /* Converts block <li> elements into horizontal inline items */
+      background: #0284c7;
+      color: white;
+      padding: 4px 12px;
+      margin-right: 6px;
+      border-radius: 4px;
+    }
+
+    /* =====================================================================
+       2. POSITIONING ELEMENTS (`static`, `relative`, `absolute`, `fixed`, `z-index`)
+       =====================================================================
+       - `position: static;` (Default): Positioned according to normal flow.
+       - `position: relative;`: Moved relative to its normal flow position using 
+         `top`, `left`, `right`, `bottom`. IMPORTANT: Surrounding elements "remember" 
+         its original spot, so the original space is PRESERVED!
+       - `position: absolute;`: Completely removed from normal flow (no space is preserved!). 
+         Positioned relative to its NEAREST POSITIONED ANCESTOR (any ancestor with `position` 
+         other than `static`). If no positioned ancestor exists, it positions relative to `<html>`.
+       - `position: fixed;`: Locked to a specific coordinate in the browser viewport window; 
+         does NOT move when the user scrolls the page.
+       - AMPLIFICATION (`position: sticky;`): Modern hybrid that acts like `relative` until 
+         the user scrolls past a threshold (e.g., `top: 0`), at which point it sticks like `fixed`!
+
+       Z-INDEX & NESTING STACKING CONTEXTS:
+       - `z-index` controls front-to-back stacking order (higher number = closer to viewer).
+       - ONLY works on positioned elements (`relative`, `absolute`, `fixed`, `sticky`).
+       - NESTING QUIRK FROM SLIDES: If `<figcaption>` is nested inside `<figure>`, setting 
+         `figure { z-index: 5; }` and `figcaption { z-index: 1; }` will NOT place the parent 
+         `<figure>` on top of its own child `<figcaption>`! To push a child behind its parent, 
+         the child (`figcaption`) must be given a negative z-index (`z-index: -1;`).
+    */
+    .pos-context-card {
+      position: relative; /* Creates the Positioning Context for absolute children! */
+      width: 240px;
+      height: 150px;
+      background: #334155;
+      color: white;
+      padding: 12px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .pos-context-card .caption-overlay {
+      position: absolute; /* Positioned relative to .pos-context-card */
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .pos-context-card .new-ribbon {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #ef4444;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Fixed badge in bottom-right corner of browser window */
+    .fixed-badge {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+      z-index: 100;
+    }
+
+    /* =====================================================================
+       3. FLOATING ELEMENTS, HOVER THUMBNAIL POPUP & HIDING ELEMENTS
+       =====================================================================
+       - `float: left | right | none;`: Moves an element to the far left or right of its 
+         container and wraps inline text around it.
+       - CRITICAL RULE: A floated block-level element MUST have an explicit `width` specified! 
+         Otherwise, its width defaults to `auto` (100% of container), leaving no room for 
+         anything to wrap around it.
+       - Multi-column float trick: Float `<nav>` left with `width: 200px;`, then give `<main>` 
+         `margin-left: 220px;` so the main column doesn't wrap underneath the sidebar when the sidebar ends.
+       - AMPLIFICATION (Clearfix & `clear: both`): If a parent contains ONLY floated children, 
+         its height collapses to 0! Historically solved with `.clearfix::after { content: ""; display: table; clear: both; }` 
+         or modern `display: flow-root;`.
+
+       TWO WAYS TO HIDE ELEMENTS IN CSS:
+       1. `display: none;`: Removes the element completely from document flow (takes up zero space).
+       2. `visibility: hidden;`: Hides the element visually, but its empty box space REMAINS in the flow!
+    */
+    .float-figure {
+      float: left;
+      width: 150px;
+      margin: 0 16px 8px 0;
+      padding: 8px;
+      background: #e2e8f0;
+      border: 1px solid #94a3b8;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .clearfix::after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    /* Hover Thumbnail Popup using position:relative, position:absolute, and visibility */
+    figure.thumbnail {
+      position: relative;
+      display: inline-block;
+      margin: 0;
+      cursor: pointer;
+    }
+    figcaption.popup {
+      padding: 10px;
+      background: #1e293b;
+      color: #ffffff;
+      border-radius: 6px;
+      position: absolute;
+      top: -10px;
+      left: 120px;
+      width: 220px;
+      visibility: hidden; /* Hidden until hovered */
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      z-index: 20;
+    }
+    figure.thumbnail:hover figcaption.popup {
+      visibility: visible; /* Revealed on hover! */
+    }
+
+    /* =====================================================================
+       4. FLEXBOX (1D ROW OR COLUMN LAYOUT)
+       =====================================================================
+       - Flex Container Properties (applied to parent with `display: flex;`):
+         * `flex-direction`: `row` (default), `row-reverse`, `column`, `column-reverse` (defines Main Axis).
+         * `flex-wrap`: `nowrap` (default) or `wrap` (wraps items onto new lines when space runs out).
+         * `justify-content`: Alignment along the MAIN axis (`flex-start`, `flex-end`, `center`, `space-between`, `space-around`, `stretch`).
+         * `align-items`: Alignment along the CROSS axis (`flex-start`, `flex-end`, `center`, `stretch`).
+       - Flex Item Properties (applied to children):
+         * `flex-basis`: Initial size of the item before remaining space is distributed (`auto`, `200px`, `%`).
+         * `flex-grow`: Growth factor relative to siblings when extra space exists (e.g., `1`, `2`).
+         * `flex-shrink`: Shrink factor when container is too narrow.
+         * Shorthand: `flex: <flex-grow> <flex-shrink> <flex-basis>;` (e.g., `flex: 1 1 auto;`).
+    */
+    .flex-cards-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .flex-card {
+      display: flex;
+      flex-direction: column; /* Stacks content vertically so we can push footer to bottom */
+      width: 240px;
+      border: 1px solid #94a3b8;
+      border-radius: 6px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    .flex-card .card-content {
+      flex: 1 1 auto; /* Grows to fill all vertical space, pushing <footer> to the very bottom! */
+      padding: 12px;
+    }
+    .flex-card footer {
+      background: #1e3a8a;
+      color: white;
+      text-align: center;
+      padding: 8px;
+    }
+    .flex-card footer a { color: white; text-decoration: underline; }
+
+    /* =====================================================================
+       5. CSS GRID LAYOUT (2D ROW & COLUMN LAYOUT)
+       =====================================================================
+       - Grid Container Properties (`display: grid;`):
+         * `gap: 10px;` (or `grid-gap`): Space between rows and columns.
+         * `grid-template-columns`: Defines column tracks using `px`, `%`, `auto`, or `fr` (fractional unit of available space).
+           - `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr`.
+           - `repeat(auto-fill, minmax(150px, 1fr))` vs `repeat(auto-fit, minmax(150px, 1fr))`:
+             Creates responsive columns without media queries! `auto-fit` collapses empty tracks 
+             and stretches existing items to fill the row; `auto-fill` keeps empty tracks.
+         * `grid-template-rows`: Defines row heights.
+         * `grid-template-areas`: Visual ASCII-art style grid placement using named areas (`.` = empty cell).
+       - Explicit Grid Item Placement & Alignment:
+         * `grid-column: 1 / 3;` (or `1 / span 2`): Spans from Grid Line 1 to Grid Line 3 (2 columns wide!).
+         * `grid-row: 2;`: Places item in row 2.
+         * `align-self` (vertical) & `justify-self` (horizontal): Aligns an individual cell's content (`start`, `center`, `end`, `stretch`).
+    */
+    .grid-areas-demo {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: 75px 1fr 1fr 1fr 1fr;
+      grid-template-rows: 50px 70px 50px;
+      /* Notice "." in the top-left corner leaves the first cell empty! */
+      grid-template-areas:
+        ".  a1 a2 a3 a4"
+        "b1 b2 b2 b2 b3"
+        "b1 c1 c2 c2 b3";
+    }
+    .grid-areas-demo > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border-radius: 4px;
+      color: #0f172a;
+    }
+    .ga-a1 { grid-area: a1; background: #fde047; }
+    .ga-a2 { grid-area: a2; background: #fde047; }
+    .ga-a3 { grid-area: a3; background: #fde047; }
+    .ga-a4 { grid-area: a4; background: #fde047; }
+    .ga-b1 { grid-area: b1; background: #fb923c; }
+    .ga-b2 { grid-area: b2; background: #fb923c; }
+    .ga-b3 { grid-area: b3; background: #fb923c; }
+    .ga-c1 { grid-area: c1; background: #38bdf8; }
+    .ga-c2 { grid-area: c2; background: #38bdf8; }
+
+    /* =====================================================================
+       6. APPROACHES TO LAYOUT & RESPONSIVE DESIGN (@media & <picture>)
+       =====================================================================
+       - Three Layout Approaches:
+         1. Fixed Layout: Fixed pixel width (e.g., `width: 960px; margin: 0 auto;`). 
+            Predictable on desktop, but causes horizontal scrolling on mobile phones.
+         2. Liquid (Fluid) Layout: Widths specified in percentages (`%`). Adapts to window size, 
+            but lines of text can become unreadably long on huge monitors or cramped on tiny screens.
+         3. Hybrid Layout: Combines fixed pixel sidebars (e.g., for fixed-width ad banners) with 
+            percentage-width main content areas and `min-width` / `max-width` constraints.
+       
+       - Four Pillars of Responsive Design:
+         1. Liquid layout foundation (`%`, `fr`, `flexbox`/`grid`).
+         2. Fluid images (`img { max-width: 100%; height: auto; }`) and art-direction (`<picture>`).
+         3. Viewport `<meta name="viewport" content="width=device-width">` tag.
+         4. Media Queries (`@media`) using Progressive Enhancement (designing for mobile phones first, 
+            then tablet `@media only screen and (min-width: 481px)`, then desktop `(min-width: 769px)`).
+    */
+    .responsive-banner {
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      background: #dcfce7;
+      color: #14532d;
+    }
+    @media only screen and (max-width: 768px) {
+      .responsive-banner {
+        background: #fef9c3;
+        color: #713f12;
+      }
+    }
+    @media only screen and (max-width: 480px) {
+      .responsive-banner {
+        background: #fee2e2;
+        color: #7f1d1d;
+      }
+    }
+
+    /* =====================================================================
+       7. CSS FILTERS, TRANSITIONS & KEYFRAME ANIMATIONS
+       =====================================================================
+       - CSS Filters (`filter` property; multiple filters are space-separated!):
+         `grayscale(%)`, `sepia(%)`, `saturate(n)`, `hue-rotate(deg)`, `invert(%)`, 
+         `opacity(%)`, `brightness(%)`, `contrast(%)`, `blur(px)`.
+       
+       - CSS Transitions (Requires an explicit state trigger like `:hover` or `:focus`):
+         * `transition-property`: Property to animate (e.g., `background-color`, `left`, `transform`).
+         * `transition-duration`: Length of time (e.g., `0.5s`).
+         * `transition-timing-function`: Easing rate (`linear`, `ease-in`, `ease-out`, `ease-in-out`).
+         * `transition-delay`: Wait time before starting (`0s`).
+         * Shorthand: `transition: background-color 0.5s ease-out 0s;`
+
+       - CSS Keyframe Animations (No trigger needed; supports intermediate steps via `@keyframes` and infinite looping):
+         * `animation-name`: Name of the `@keyframes` rule (e.g., `bounceIn`).
+         * `animation-duration`: Duration of one cycle (`2s`).
+         * `animation-timing-function`: Easing (`ease-out`).
+         * `animation-delay`: Start delay (`0s`).
+         * `animation-iteration-count`: Number of repeats or `infinite`.
+         * `animation-play-state`: `running` or `paused` (great for pausing on `:hover` to debug!).
+    */
+    .filter-gallery {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .filter-card {
+      padding: 12px;
+      background: linear-gradient(135deg, #0284c7, #e11d48);
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      width: 165px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+
+    .btn-transition {
+      background-color: #146d37;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition-property: background-color, transform;
+      transition-duration: 0.5s;
+      transition-timing-function: ease-out;
+      transition-delay: 0s;
+    }
+    .btn-transition:hover {
+      background-color: #60b946;
+      transform: translateY(-2px);
+    }
+
+    /* AMPLIFICATION: The @keyframes rule defines intermediate steps (0% to 100%) for CSS animations */
+    @keyframes bounceIn {
+      0%   { transform: translateX(0) scale(1); background-color: #0284c7; }
+      50%  { transform: translateX(40px) scale(1.08); background-color: #16a34a; }
+      100% { transform: translateX(0) scale(1); background-color: #0284c7; }
+    }
+    .animated-box {
+      display: inline-block;
+      color: white;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 6px;
+      animation-name: bounceIn;
+      animation-duration: 2.5s;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-play-state: running;
+    }
+    .animated-box:hover {
+      animation-play-state: paused; /* Pauses the animation while hovering! */
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fixed position badge stays in the bottom-right corner as you scroll -->
+  <div class="fixed-badge">
+    <code>position: fixed;</code> (Stays on screen while scrolling)
+  </div>
+
+  <header class="page-header">
+    <h1>05 - Advanced CSS: Layout, Flexbox, Grid, Responsive &amp; Animations</h1>
+    <p>Resize your browser window and hover over the interactive demos below while reading the commented source code.</p>
+  </header>
+
+  <main>
+
+    <!-- 1. NORMAL FLOW & DISPLAY -->
+    <section class="layout-section">
+      <h2>1. Normal Flow &amp; Changing <code>display</code> (<code>block</code> vs. <code>inline</code>)</h2>
+      <div class="stage">
+        <p>By default, <code>&lt;li&gt;</code> items are block-level and stack vertically. Using <code>li { display: inline; }</code> places them on a single horizontal line:</p>
+        <ul class="inline-nav-demo">
+          <li>Home</li>
+          <li>Catalog</li>
+          <li>Gallery</li>
+          <li>Contact</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 2. POSITIONING CONTEXT & HOVER THUMBNAIL -->
+    <section class="layout-section">
+      <h2>2. Positioning Context (<code>relative</code> + <code>absolute</code>) &amp; Hover Thumbnail Popup</h2>
+      <div class="stage" style="display:flex; gap:40px; flex-wrap:wrap; align-items:center;">
+        
+        <div class="pos-context-card">
+          <span class="new-ribbon">NEW</span>
+          <p style="margin-top:0;">Parent has <code>position: relative;</code></p>
+          <div class="caption-overlay">
+            Child has <code>position: absolute;</code>
+          </div>
+        </div>
+
+        <div>
+          <p style="margin-top:0;"><strong>Hover over the thumbnail below</strong> (uses <code>visibility: hidden</code> &rarr; <code>visible</code>):</p>
+          <figure class="thumbnail">
+            <div style="width:110px; height:80px; background:#0284c7; color:white; display:flex; align-items:center; justify-content:center; border-radius:4px; font-weight:bold;">
+              Hover Me
+            </div>
+            <figcaption class="popup">
+              <strong>British Museum Popup</strong><br>
+              Revealed on <code>figure.thumbnail:hover figcaption.popup</code> using <code>visibility: visible;</code>!
+            </figcaption>
+          </figure>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. FLOATS & CLEARFIX -->
+    <section class="layout-section">
+      <h2>3. Floating Elements (<code>float: left;</code> with Explicit Width &amp; Clearfix)</h2>
+      <div class="stage clearfix">
+        <figure class="float-figure">
+          <strong>Floated Figure</strong><br>
+          <code>float: left;</code><br>
+          <code>width: 150px;</code>
+        </figure>
+        <p style="margin-top:0;">
+          When an element is floated left or right, it is shifted to the edge of its containing block and inline text 
+          reflows around it. Remember that a floated block element <strong>must have an explicit width</strong>, 
+          otherwise its width defaults to <code>auto</code> (100% of the parent container).
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. FLEXBOX EQUAL-HEIGHT CARDS -->
+    <section class="layout-section">
+      <h2>4. Flexbox: Aligning Card Footers to the Bottom (<code>flex: 1 1 auto</code>)</h2>
+      <div class="stage">
+        <div class="flex-cards-row">
+          <div class="flex-card">
+            <div class="card-content">
+              <h3 style="margin-top:0;">Albert Hall</h3>
+              <p>Short description. Even though this card has less text, its footer aligns at the bottom!</p>
+            </div>
+            <footer><a href="#flex">View Details</a></footer>
+          </div>
+
+          <div class="flex-card">
+            <div class="card-content">
+              <h3 style="margin-top:0;">Florence Duomo</h3>
+              <p>Much longer description text inside <code>.card-content</code>. Because <code>.card-content</code> has <code>flex: 1 1 auto;</code> inside a <code>flex-direction: column;</code> card, all footers stay perfectly aligned along the bottom edge.</p>
+            </div>
+            <footer><a href="#flex">View Details</a></footer>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. CSS GRID & GRID-TEMPLATE-AREAS -->
+    <section class="layout-section">
+      <h2>5. CSS Grid: Named <code>grid-template-areas</code> Layout</h2>
+      <div class="stage">
+        <div class="grid-areas-demo">
+          <div class="ga-a1">A1</div>
+          <div class="ga-a2">A2</div>
+          <div class="ga-a3">A3</div>
+          <div class="ga-a4">A4</div>
+          <div class="ga-b1">B1 (2 rows)</div>
+          <div class="ga-b2">B2 (3 cols)</div>
+          <div class="ga-b3">B3 (2 rows)</div>
+          <div class="ga-c1">C1</div>
+          <div class="ga-c2">C2 (2 cols)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. RESPONSIVE DESIGN: MEDIA QUERIES, <picture> & BOOTSTRAP GRID -->
+    <section class="layout-section">
+      <h2>6. Responsive Design: Media Queries, <code>&lt;picture&gt;</code> &amp; Bootstrap Grid</h2>
+      <div class="stage">
+        <div class="responsive-banner">
+          Resize your browser window! Desktop (&gt;768px = Green) | Tablet (481px–768px = Yellow) | Mobile (&le;480px = Red)
+        </div>
+
+        <!-- 
+          RESPONSIVE IMAGES WITH <picture> AND srcset:
+          `img { max-width: 100%; }` makes an image shrink visually, but the phone still 
+          wastes bandwidth downloading the huge desktop image file!
+          HTML5.1 `<picture>` lets the browser evaluate media queries and download ONLY 
+          the appropriate image file for the current viewport width:
+          <picture>
+            <source media="(min-width: 960px)" srcset="images/828-large.jpg">
+            <source media="(min-width: 480px)" srcset="images/828-medium.jpg">
+            <img src="images/828-small.jpg" alt="British Museum" style="max-width:100%;">
+          </picture>
+
+          CSS FRAMEWORKS (e.g., Bootstrap 12-Column Grid):
+          Frameworks provide pre-built responsive grid classes where columns in a `.row` add up to 12:
+          <div class="container">
+            <div class="row">
+              <div class="col-md-2">Left Column (2/12)</div>
+              <div class="col-md-7">Main Content (7/12)</div>
+              <div class="col-md-3">Right Column (3/12)</div>
+            </div>
+          </div>
+        -->
+      </div>
+    </section>
+
+    <!-- 7. FILTERS, TRANSITIONS & ANIMATIONS -->
+    <section class="layout-section">
+      <h2>7. CSS Filters, Transitions &amp; Keyframe Animations</h2>
+      <div class="stage">
+        <h3>A. CSS <code>filter</code> Functions (Multiple filters are space-separated)</h3>
+        <div class="filter-gallery">
+          <div class="filter-card">Original</div>
+          <div class="filter-card" style="filter: grayscale(100%);">grayscale(100%)</div>
+          <div class="filter-card" style="filter: sepia(100%);">sepia(100%)</div>
+          <div class="filter-card" style="filter: invert(100%);">invert(100%)</div>
+          <div class="filter-card" style="filter: blur(1.5px) hue-rotate(90deg) saturate(2);">blur + hue-rotate + saturate</div>
+        </div>
+
+        <h3>B. CSS Transition (Hover Trigger) vs. CSS Keyframe Animation (Automatic Loop)</h3>
+        <div style="display:flex; gap:24px; align-items:center; flex-wrap:wrap;">
+          <button type="button" class="btn-transition">
+            Hover Me (0.5s ease-out Transition)
+          </button>
+
+          <div class="animated-box">
+            Infinite @keyframes Animation (Hover to Pause!)
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="page-footer">
+    <small>Chapter 5 Documentation — Advanced CSS Layout, Responsive Design, Filters, Transitions &amp; Animations.</small>
+  </footer>
+
+</body>
+</html>

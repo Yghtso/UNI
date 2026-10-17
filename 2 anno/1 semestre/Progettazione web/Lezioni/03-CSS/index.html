@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<!-- 
+  ==========================================================================
+  TOPIC 03: CSS INTRODUCTION (SYNTAX, SELECTORS, CASCADE, BOX MODEL, TEXT)
+  Based on: Chapter 3 - Fundamentals of Web Development (Connolly & Hoar)
+  ==========================================================================
+  
+  1. WHAT IS CSS & WHY USE IT?
+  - CSS (Cascading Style Sheets) is the W3C standard language for describing 
+    the presentation (fonts, colors, sizes, borders, backgrounds, layout) of 
+    HTML elements.
+  - Benefits over HTML presentational markup:
+    * Superior degree of formatting control.
+    * High maintainability: A single external .css file can style thousands of pages.
+    * Better accessibility and faster downloads (less HTML bloat, browser caching).
+    * Adaptable to different output mediums (screen, print, mobile).
+  
+  2. CSS VERSIONS & MODULAR EVOLUTION:
+  - CSS Level 1: W3C Recommendation on Dec 17, 1996.
+  - CSS Level 2 (CSS2): W3C Recommendation on May 12, 1998.
+  - CSS 2.1: Revised CSS2 to fix errors and match browser implementations; 
+    became a W3C Recommendation on June 7, 2011.
+  - "CSS3" and Beyond: Starting with CSS3, CSS was split into independent 
+    MODULES (e.g., Selectors, Color, Box Model, Grid), each evolving at its own 
+    level and maturity status. Thus, there is no single monolithic "CSS4".
+  - CSS Snapshot 2026 provides the current consolidated definition of stable 
+    CSS specifications.
+
+  3. THREE ORIGINS OF STYLE SHEETS:
+  - Browser (User-Agent) Style Sheet: Default styles built into the browser.
+  - User Style Sheet: Custom stylesheet configured by the end-user (often for accessibility).
+  - Author Style Sheet: Styles written by the web developer (Inline, Embedded, or External).
+    * Inline (<h2 style="color:red;">): Discouraged; mixes presentation with structure.
+    * Embedded (<style> inside <head>): Useful for single-file demos (like this doc!), 
+      but discouraged for multi-page sites because styles aren't shared across pages.
+    * External (<link rel="stylesheet" href="styles.css">): Best practice! Cached by 
+      browsers and centralizes maintenance.
+  ==========================================================================
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>03 - CSS Complete Documentation & Visual Reference</title>
+
+  <style>
+    /* =====================================================================
+       SECTION 1: CSS SYNTAX, COMMENTS, COLORS & UNITS
+       =====================================================================
+       Syntax Anatomy:
+       selector {
+         property: value;   <-- Declaration (terminated by semicolon)
+         property2: value2; <-- Together inside { }, they form a Declaration Block
+       }
+       
+       COLOR FORMATS SUPPORTED IN CSS:
+       1. Named Colors: 17 standard in CSS2.1, 140+ in CSS Color 3 (e.g., red, hotpink).
+       2. RGB: rgb(255, 0, 0) — three values from 0 to 255.
+       3. Hexadecimal: #FF0000 or #FF69B4 — 6 hex digits (00 to FF per channel).
+       4. RGBA: rgba(255, 0, 0, 0.5) — adds alpha transparency from 0.0 (transparent) to 1.0 (opaque).
+       5. HSL / HSLA: hsl(330, 59%, 50%) — Hue (0-360), Saturation (%), Lightness (%).
+
+       UNITS OF MEASUREMENT:
+       - Relative Units (Recommended for screen layouts because they scale!):
+         * em: Relative to the computed font-size of the element (or parent when used on font-size).
+         * rem: Root em — relative to the font-size of the root <html> element (constant across document!).
+         * %: Relative to another value (usually the parent element's dimension or font-size).
+         * vw / vh: 1% of the viewport's width or height (0 to 100).
+         * ex / ch: Relative to the font's x-height ('ex') or width of the "0" character ('ch').
+       - Absolute Units (Avoid on screens except 'px'; best reserved for print stylesheets):
+         * px: Pixel (1/96th of an inch in CSS reference pixels).
+         * pt: Point (1/72nd of an inch).
+         * pc: Pica (1/6th of an inch = 12pt).
+         * in, cm, mm: Inches, centimeters, millimeters.
+    */
+
+    html {
+      /* Default browser root font-size is 16px. Setting 100% keeps 1rem = 16px 
+         while respecting user accessibility font preferences. */
+      font-size: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f8fafc;
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Grouped Selector: commas apply the same declaration block to multiple selectors */
+    header.doc-header, footer.doc-footer {
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    section.topic-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+
+    .example-stage {
+      background: #f1f5f9;
+      border: 1px dashed #64748b;
+      padding: 16px;
+      margin: 12px 0;
+      border-radius: 6px;
+    }
+
+    /* =====================================================================
+       SECTION 2: SELECTORS (ELEMENT, CLASS, ID, ATTRIBUTE, PSEUDO, CONTEXTUAL)
+       ===================================================================== */
+
+    /* 1. Class Selector (.classname): Targets any element with class="first" */
+    .first {
+      font-style: italic;
+      color: #dc2626;
+    }
+
+    /* 2. ID Selector (#idname): Targets the unique element with id="latestComment" */
+    #latestComment {
+      background-color: #fef2f2;
+      border-left: 4px solid #dc2626;
+      padding: 8px 12px;
+    }
+
+    /* 3. Attribute Selectors:
+       - [attr]        : Element has the attribute 'attr'
+       - [attr="val"]  : Attribute exactly matches "val"
+       - [attr~="val"] : Whitespace-separated list of words contains "val"
+       - [attr^="val"] : Attribute value BEGINS with "val"
+       - [attr*="val"] : Attribute value CONTAINS substring "val"
+       - [attr$="val"] : Attribute value ENDS with "val"
+    */
+    [title] {
+      cursor: help;
+      border-bottom: 2px dotted #0284c7;
+    }
+    a[href^="https"] { color: #059669; }
+    a[href$=".pdf"] {
+      background-color: #fee2e2;
+      color: #991b1b;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    a[href*="example"] { letter-spacing: 0.5px; }
+
+    /* 4. Pseudo-Class Selectors (Target an element's state or family relationship; single colon :):
+       LVHA Order for links (:link -> :visited -> :hover -> :active) ensures states don't override each other! */
+    a.demo-link:link { color: #2563eb; text-decoration: underline; }
+    a.demo-link:visited { color: #7c3aed; }
+    a.demo-link:hover { color: #1d4ed8; text-decoration: none; font-weight: bold; }
+    a.demo-link:active { background-color: #fef08a; }
+
+    /* 5. Pseudo-Element Selectors (Target virtual elements not explicitly in HTML tree; double colon ::):
+       ::before, ::after, ::first-letter, ::first-line */
+    .nota::before {
+      content: "★ IMPORTANT: ";
+      color: #d97706;
+      font-weight: bold;
+    }
+    .dropcap::first-letter {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #0284c7;
+    }
+
+    /* 6. Contextual (Combinator) Selectors:
+       - Descendant (A B)       : Selects B anywhere inside A (any nesting depth).
+       - Direct Child (A > B)   : Selects B only if it is an immediate child of A.
+       - Adjacent Sibling (A + B): Selects the first B that comes immediately after A (sharing same parent).
+       - General Sibling (A ~ B) : Selects ALL B elements that come after A (sharing same parent).
+    */
+    #combinator-demo > time {
+      color: #7c3aed; /* Direct child <time> of #combinator-demo */
+      font-weight: bold;
+    }
+    #combinator-demo div time {
+      color: #dc2626; /* Descendant <time> inside a <div> inside #combinator-demo */
+    }
+    #combinator-demo h4 + p {
+      background: #dcfce7; /* Only the FIRST <p> immediately following <h4> */
+      padding: 4px 8px;
+    }
+
+    /* =====================================================================
+       SECTION 3: THE CASCADE (INHERITANCE, SPECIFICITY, LOCATION)
+       =====================================================================
+       How CSS resolves conflicts between rules:
+       1. INHERITANCE:
+          - Text, color, and font properties (font-family, color, font-weight, line-height) 
+            are automatically inherited by child/descendant elements.
+          - Box-model and layout properties (border, margin, padding, background, width) 
+            are NOT inherited by default—unless you explicitly force inheritance using 
+            the keyword `inherit` (e.g., `border: inherit;`).
+       2. SPECIFICITY ALGORITHM (a - b - c - d):
+          - a = 1 if inline `style="..."` attribute, else 0.
+          - b = Number of ID selectors (#id).
+          - c = Number of Class selectors (.class), Attribute selectors ([attr]), and Pseudo-classes (:hover).
+          - d = Number of Element selectors (div, p) and Pseudo-elements (::before).
+          Examples:
+          * div                 -> 0-0-0-1 (0001)
+          * div form            -> 0-0-0-2 (0002)
+          * .example            -> 0-0-1-0 (0010)
+          * a[href$=".pdf"]     -> 0-0-1-1 (0011)
+          * #firstExample       -> 0-1-0-0 (0100)
+          * div #firstExample   -> 0-1-0-1 (0101)
+          * style="color:red;"  -> 1-0-0-0 (1000)
+       3. LOCATION (Source Order):
+          - When two rules have the EXACT SAME specificity, the one declared LATER 
+            (further down in the CSS or loaded later in HTML) wins!
+          - Exception: `!important` overrides all author rules regardless of specificity/location 
+            (only overridden by a user stylesheet's `!important`). Use sparingly!
+    */
+    .forced-inherit-parent {
+      border: 2px solid #16a34a;
+      padding: 10px;
+      font-weight: bold; /* Inherited naturally */
+    }
+    .forced-inherit-parent p {
+      border: inherit; /* Forced inheritance of a non-inherited property! */
+      padding: 6px;
+      margin: 6px 0;
+    }
+
+    .spec-test { color: #2563eb; }          /* Specificity: 0-0-1-0 */
+    p.spec-test { color: #16a34a; }         /* Specificity: 0-0-1-1 (Wins over .spec-test!) */
+    #spec-winner { color: #ea580c; }        /* Specificity: 0-1-0-0 (Wins over p.spec-test!) */
+
+    /* =====================================================================
+       SECTION 4: THE CSS BOX MODEL
+       =====================================================================
+       Every HTML element is rendered inside a rectangular box consisting of:
+       1. Content Area (width x height)
+       2. Padding (space between content and border; shows element's background)
+       3. Border (line around padding; syntax: `border: style width color;`)
+       4. Margin (transparent space outside the border separating other elements; 
+          shows parent's background)
+
+       TRBL (Top - Right - Bottom - Left) Clockwise Shorthand ("Trouble"):
+       - 4 values: `margin: 10px 20px 30px 40px;` (Top, Right, Bottom, Left)
+       - 2 values: `margin: 10px 20px;` (Top/Bottom = 10px, Left/Right = 20px)
+       - 1 value:  `margin: 10px;` (All 4 sides = 10px)
+
+       BOX-SIZING (content-box vs. border-box):
+       - `box-sizing: content-box` (Default): `width` and `height` apply ONLY to the content area.
+         True rendered width = margin-left + border-left + padding-left + width + padding-right + border-right + margin-right.
+       - `box-sizing: border-box`: `width` and `height` include content + padding + border! 
+         Much easier for predictable layouts.
+
+       COLLAPSING VERTICAL MARGINS:
+       - When vertical margins (top/bottom) of two block elements touch, they do NOT add together!
+       - Instead, the smaller margin collapses to 0 and only the LARGER margin is used (e.g., 90px bottom margin 
+         meeting 90px top margin results in 90px space, NOT 180px).
+       - Horizontal margins (left/right) NEVER collapse!
+    */
+    .box-content-mode {
+      box-sizing: content-box; /* Default */
+      width: 200px;
+      height: 60px;
+      padding: 15px;
+      border: 5px solid #0284c7;
+      margin: 10px;
+      background-color: #e0f2fe;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .box-border-mode {
+      box-sizing: border-box; /* Includes padding and border inside the 200px width */
+      width: 200px;
+      height: 60px;
+      padding: 15px;
+      border: 5px solid #dc2626;
+      margin: 10px;
+      background-color: #fee2e2;
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .overflow-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .overflow-box {
+      width: 180px;
+      height: 75px;
+      background: #e2e8f0;
+      border: 1px solid #475569;
+      padding: 6px;
+      font-size: 0.85rem;
+    }
+
+    /* =====================================================================
+       SECTION 5: TEXT STYLING, FONT STACKS, SHADOWS & EM vs. REM
+       =====================================================================
+       - Font Stack: `font-family: Cambria, Georgia, "Times New Roman", serif;`
+         Browser tries #1 (Cambria), then #2 (Georgia), then #3 ("Times New Roman" — 
+         quoted because it contains spaces), and finally falls back to the generic family (`serif`).
+       - 5 Generic Font Families: `serif`, `sans-serif`, `monospace`, `cursive`, `fantasy`.
+       - Web Fonts: `@font-face` or Google Fonts `<link>` lets browsers download fonts not installed on the user's OS.
+       - Text Shadow: `text-shadow: x-offset y-offset blur-radius color;` (can comma-separate multiple shadows).
+       - Box Shadow: `box-shadow: x-offset y-offset blur-radius color;`
+       
+       THE `em` COMPOUNDING PROBLEM vs. `rem`:
+       - `em` and `%` on `font-size` are relative to the PARENT element's font-size.
+         If `<article>` has `font-size: 75%` and a nested `<div>` inside it also has `font-size: 75%`, 
+         the text inside `<div>` shrinks to 0.75 * 0.75 = 56.25% (9px)!
+       - `rem` (Root em) is ALWAYS relative to the `<html>` root element, completely avoiding nested compounding!
+    */
+    .shadow-demo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1e1b4b;
+      /* Multiple comma-separated 3D retro shadows */
+      text-shadow: 2px 2px 0 #818cf8, 4px 4px 0 #c7d2fe;
+      box-shadow: 0 4px 14px rgba(30, 27, 75, 0.2);
+      padding: 12px;
+      background: #ffffff;
+      border-radius: 6px;
+      text-align: center;
+    }
+
+    .em-compound { font-size: 0.8em; border-left: 3px solid #dc2626; padding-left: 10px; margin: 6px 0; }
+    .rem-stable  { font-size: 0.9rem; border-left: 3px solid #16a34a; padding-left: 10px; margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+  <header class="doc-header">
+    <h1>03 - CSS: Syntax, Selectors, The Cascade, Box Model &amp; Typography</h1>
+    <p>Inspect the embedded <code>&lt;style&gt;</code> block in your editor alongside the rendered boxes below.</p>
+  </header>
+
+  <main>
+
+    <!-- 1. SELECTORS IN ACTION -->
+    <section class="topic-card">
+      <h2>1. CSS Selectors in Action</h2>
+      <div class="example-stage">
+        <h3 class="first" title="Hovering shows cursor:help and dotted blue bottom border via [title]">
+          Class (<code>.first</code>) + Attribute (<code>[title]</code>) Selector
+        </h3>
+        <div id="latestComment">
+          <p><strong>ID Selector (<code>#latestComment</code>):</strong> Targets a single unique element on the page.</p>
+        </div>
+        <p>
+          <strong>Attribute Substring Selectors:</strong>
+          <a href="https://example.org" class="demo-link">HTTPS Example Link</a> | 
+          <a href="manual.pdf">Download PDF Document (<code>a[href$=".pdf"]</code>)</a>
+        </p>
+        <p class="nota">Pseudo-element <code>::before</code> prepends the star and label automatically.</p>
+        <p class="dropcap">Pseudo-element <code>::first-letter</code> enlarges the initial letter of this paragraph.</p>
+
+        <div id="combinator-demo" style="border-top:1px solid #cbd5e1; padding-top:8px;">
+          Direct child time (<code>#combinator-demo &gt; time</code>): <time>2026-10-17 (Purple)</time>
+          <h4>Heading inside Combinator Demo</h4>
+          <p>First paragraph right after h4 (<code>h4 + p</code> gets a green background).</p>
+          <p>Second paragraph after h4 (not affected by adjacent sibling <code>+</code>).</p>
+          <div>
+            Descendant time inside nested div (<code>#combinator-demo div time</code>): <time>2026-05-23 (Red)</time>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. THE CASCADE: INHERITANCE, SPECIFICITY & LOCATION -->
+    <section class="topic-card">
+      <h2>2. The Cascade: Inheritance, Specificity (a-b-c-d) &amp; Location</h2>
+      <div class="example-stage">
+        <div class="forced-inherit-parent">
+          Parent <code>div</code> has <code>border: 2px solid green;</code> (normally NOT inherited) and <code>font-weight: bold;</code> (inherited).
+          <p>Child <code>p</code> uses <code>border: inherit;</code> to force inheritance of the parent's green border!</p>
+        </div>
+
+        <p class="spec-test" id="spec-winner" style="color: #7c3aed;">
+          <strong>Specificity Battle:</strong> This paragraph has class <code>.spec-test</code> (0-0-1-0, blue), 
+          element+class <code>p.spec-test</code> (0-0-1-1, green), ID <code>#spec-winner</code> (0-1-0-0, orange), 
+          and an inline <code>style="color: #7c3aed;"</code> (1-0-0-0, purple). <strong>Inline style wins (1000)!</strong>
+        </p>
+      </div>
+    </section>
+
+    <!-- 3. THE BOX MODEL: CONTENT-BOX vs BORDER-BOX & OVERFLOW -->
+    <section class="topic-card">
+      <h2>3. The Box Model: <code>content-box</code> vs. <code>border-box</code> &amp; <code>overflow</code></h2>
+      <div class="example-stage">
+        <div>
+          <div class="box-content-mode">
+            <strong>content-box (Default)</strong><br>
+            Declared width: 200px<br>
+            Visible box: 240px (200 + 30 pad + 10 border)
+          </div>
+          <div class="box-border-mode">
+            <strong>border-box</strong><br>
+            Declared width: 200px<br>
+            Visible box: 200px (includes padding &amp; border!)
+          </div>
+        </div>
+
+        <h3>Overflow Property (when fixed height is smaller than text content)</h3>
+        <div class="overflow-row">
+          <div class="overflow-box" style="overflow: hidden;">
+            <strong>overflow: hidden;</strong><br>
+            Every CSS rule begins with a selector. Extra text that exceeds the 75px height is clipped and hidden from view.
+          </div>
+          <div class="overflow-box" style="overflow: scroll;">
+            <strong>overflow: scroll;</strong><br>
+            Every CSS rule begins with a selector. Scrollbars are always added so you can scroll to read the overflowing text.
+          </div>
+          <div class="overflow-box" style="overflow: auto;">
+            <strong>overflow: auto;</strong><br>
+            Every CSS rule begins with a selector. Scrollbars appear automatically only on the axis that overflows.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. TEXT STYLING: SHADOWS & EM vs REM -->
+    <section class="topic-card">
+      <h2>4. Text Styling: Multi-Layer Shadows &amp; <code>em</code> Compounding vs. <code>rem</code></h2>
+      <div class="example-stage">
+        <div class="shadow-demo">
+          Multi-layered text-shadow &amp; box-shadow Demo
+        </div>
+
+        <h3>Why Nested <code>em</code> Units Compound vs. Why <code>rem</code> Stays Constant</h3>
+        <div class="em-compound">
+          Outer Div (<code>0.8em</code> = 12.8px)
+          <div class="em-compound">
+            Middle Div (<code>0.8em</code> of parent = 10.24px)
+            <div class="em-compound">
+              Inner Div (<code>0.8em</code> of parent = 8.19px — keeps shrinking!)
+            </div>
+          </div>
+        </div>
+
+        <div class="rem-stable">
+          Outer Div (<code>0.9rem</code> = 14.4px)
+          <div class="rem-stable">
+            Inner Div (<code>0.9rem</code> = still 14.4px because <code>rem</code> always references root <code>&lt;html&gt;</code>!)
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="doc-footer">
+    <small>Chapter 3 Documentation — CSS Syntax, Selectors, Cascade, Box Model &amp; Typography.</small>
+  </footer>
+
+</body>
+</html>
