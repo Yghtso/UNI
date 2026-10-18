@@ -1,0 +1,48 @@
+% =============================================================================
+%  config/macros.tex: comandi semantici
+%  Nei file di contenuto usare SEMPRE questi comandi: se si vuole cambiare la
+%  notazione basta modificarla qui.
+% =============================================================================
+
+% --- Insiemi numerici -----------------------------------------------------------
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+
+% --- Algebra lineare -----------------------------------------------------------------
+\newcommand{\transp}{^{\mathsf{T}}}                  % trasposto:  c\transp x
+\newcommand{\inv}{^{-1}}                             % inversa:    A_B\inv
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}       % \norm{x}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}        % \abs{x}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}    % \floor{x}  (tagli di Gomory)
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}       % \ceil{x}
+
+% --- Operatori -------------------------------------------------------------------------
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\conv}{conv}                    % inviluppo convesso
+\DeclareMathOperator{\cone}{cono}                    % cono generato
+\DeclareMathOperator{\rank}{rango}
+
+% --- Notazione PL / PLI ------------------------------------------------------------------
+% Problema primale e duale in forma standard del libro:
+%   (P)  max { c^T x : A x <= b }        (D)  min { y^T b : y^T A = c^T, y >= 0 }
+\newcommand{\primale}{(\mathcal{P})}
+\newcommand{\duale}{(\mathcal{D})}
+\newcommand{\vP}{v(\mathcal{P})}                     % valore ottimo del primale
+\newcommand{\vD}{v(\mathcal{D})}                     % valore ottimo del duale
+\newcommand{\regP}{\Omega}                           % regione ammissibile
+\newcommand{\vs}{v_S}                                % valutazione superiore (B&B)
+\newcommand{\vi}{v_I}                                % valutazione inferiore (B&B)
+
+% Problema di ottimizzazione su più righe:
+%   \problema{\max}{c\transp x}{A x \le b \\ x \in \Z^n}
+\newcommand{\problema}[3]{%
+  \begin{cases}
+    #1\ #2 \\
+    \begin{aligned}[t] #3 \end{aligned}
+  \end{cases}}
+
+% --- Testo ----------------------------------------------------------------------------------
+\newcommand{\termine}[1]{\textbf{#1}}                % termine definito per la prima volta
+\newcommand{\TODO}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}

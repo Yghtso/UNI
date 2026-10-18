@@ -1,0 +1,15 @@
+# latexmk configuration: run `latexmk` (or `make`) from this folder.
+@default_files = ('main.tex');
+$pdf_mode      = 4;          # 4 = LuaLaTeX
+$out_dir       = 'build';
+$aux_dir       = 'build';
+$lualatex      = 'lualatex -interaction=nonstopmode -file-line-error -synctex=1 -halt-on-error %O %S';
+$clean_ext     = 'synctex.gz run.xml bbl';
+
+# \include writes one .aux file per chapter into build/<path>, so those
+# folders have to exist before the first run.
+use File::Find;
+use File::Path qw(make_path);
+find({ no_chdir => 1,
+       wanted   => sub { make_path("$out_dir/$File::Find::name") if -d } },
+     'parts', 'frontmatter');

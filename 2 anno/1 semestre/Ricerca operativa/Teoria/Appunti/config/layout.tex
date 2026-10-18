@@ -1,0 +1,44 @@
+% =============================================================================
+%  config/layout.tex: aspetto della pagina
+% =============================================================================
+
+% --- Colori del documento (usati anche in theorems.tex) --------------------------
+\definecolor{accento}{RGB}{0, 82, 147}
+\definecolor{grigio}{gray}{0.45}
+
+% --- Pagina ---------------------------------------------------------------------
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, inner=3cm, outer=2.5cm, headheight=14pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5em}
+\setlist{nosep, leftmargin=*}
+
+% --- Intestazioni ----------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\small\leftmark}
+\fancyhead[RO]{\small\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+
+% --- Titoli -------------------------------------------------------------------------
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{accento}}
+  {\large\mdseries\scshape\color{grigio}\chaptertitlename\ \thechapter}
+  {0.5em}{}
+\titlespacing*{\chapter}{0pt}{0pt}{2em}
+\titleformat{\section}{\normalfont\Large\bfseries\color{accento}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\normalfont\large\bfseries}{\thesubsection}{0.8em}{}
+
+% --- Indice ---------------------------------------------------------------------------
+\setcounter{tocdepth}{1}       % parti, capitoli, sezioni
+\setcounter{secnumdepth}{2}
+
+% --- Collegamenti --------------------------------------------------------------------
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = accento,
+  urlcolor   = accento,
+  citecolor  = accento,
+  bookmarksnumbered = true,
+}

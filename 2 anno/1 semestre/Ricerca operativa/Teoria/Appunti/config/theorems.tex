@@ -1,0 +1,57 @@
+% =============================================================================
+%  config/theorems.tex: ambienti per definizioni, teoremi, esempi, ...
+%
+%  Uso:  \begin{teorema}[Nome opzionale]\label{thm:...} ... \end{teorema}
+%        \begin{proof} ... \end{proof}     (titolo "Dimostrazione" via babel)
+%
+%  Numerazione condivisa per capitolo: Definizione 2.1, Teorema 2.2, ...
+% =============================================================================
+
+% --- Stili ----------------------------------------------------------------------
+\declaretheoremstyle[
+  headfont = \bfseries\color{accento},
+  bodyfont = \itshape,
+  spaceabove = 0.8em, spacebelow = 0.8em,
+]{enunciato}
+
+\declaretheoremstyle[
+  headfont = \bfseries\color{accento},
+  bodyfont = \normalfont,
+  spaceabove = 0.8em, spacebelow = 0.8em,
+]{definizione}
+
+\declaretheoremstyle[
+  headfont = \bfseries\itshape,
+  bodyfont = \normalfont,
+  spaceabove = 0.6em, spacebelow = 0.6em,
+]{nota}
+
+% --- Ambienti -------------------------------------------------------------------
+% Il contatore "teorema" è condiviso da tutti gli ambienti numerati.
+\declaretheorem[style=enunciato,   name=Teorema,      numberwithin=chapter]{teorema}
+\declaretheorem[style=enunciato,   name=Lemma,        sibling=teorema]{lemma}
+\declaretheorem[style=enunciato,   name=Proposizione, sibling=teorema]{proposizione}
+\declaretheorem[style=enunciato,   name=Corollario,   sibling=teorema]{corollario}
+\declaretheorem[style=definizione, name=Definizione,  sibling=teorema]{definizione}
+\declaretheorem[style=definizione, name=Esempio,      sibling=teorema]{esempio}
+\declaretheorem[style=definizione, name=Esercizio,    sibling=teorema]{esercizio}
+\declaretheorem[style=nota,        name=Osservazione, sibling=teorema]{osservazione}
+\declaretheorem[style=nota,        name=Soluzione,    numbered=no]{soluzione}
+
+% --- Nomi per \cref (singolare/plurale) ---------------------------------------------
+\crefname{teorema}{teorema}{teoremi}
+\crefname{lemma}{lemma}{lemmi}
+\crefname{proposizione}{proposizione}{proposizioni}
+\crefname{corollario}{corollario}{corollari}
+\crefname{definizione}{definizione}{definizioni}
+\crefname{esempio}{esempio}{esempi}
+\crefname{esercizio}{esercizio}{esercizi}
+\crefname{osservazione}{osservazione}{osservazioni}
+
+% --- Algoritmi ------------------------------------------------------------------------
+% Riquadro per la descrizione a passi degli algoritmi (simplesso, B&B, ...).
+\newtcolorbox{algoritmo}[1]{
+  enhanced, breakable,
+  colback = accento!4, colframe = accento,
+  fonttitle = \bfseries, title = {Algoritmo: #1},
+}

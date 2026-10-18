@@ -1,0 +1,35 @@
+% =============================================================================
+%  Ricerca Operativa: appunti
+%  Riferimento: M. Pappalardo, M. Passacantando, "Ricerca Operativa",
+%               seconda edizione, Pisa University Press, 2012.
+%
+%  Compilazione:  make        (oppure: latexmk)
+%  Il PDF viene generato in build/main.pdf
+% =============================================================================
+\documentclass[11pt,a4paper,openany]{book}
+
+% --- Preambolo (un file per responsabilità) ---------------------------------
+\input{config/packages}
+\input{config/layout}
+\input{config/theorems}
+\input{config/macros}
+\input{config/metadata}
+
+% --- Compilazione parziale --------------------------------------------------
+% Per compilare solo alcuni capitoli, decommentare e indicare i percorsi:
+% \includeonly{parts/1-pl/ch02-teoria/chapter}
+
+\begin{document}
+
+\frontmatter
+\input{frontmatter/titlepage}
+\tableofcontents
+\include{frontmatter/introduzione}
+
+\mainmatter
+\input{parts/1-pl/part}
+\input{parts/3-pli/part}
+
+\backmatter
+
+\end{document}

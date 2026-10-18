@@ -1,0 +1,41 @@
+% =============================================================================
+%  config/packages.tex: caricamento dei pacchetti
+%  Solo \usepackage qui; la configurazione va in layout/theorems/macros.
+%  Motore: LuaLaTeX.
+% =============================================================================
+
+% --- Lingua e font ------------------------------------------------------------
+\usepackage{fontspec}                 % font OpenType (Latin Modern di default)
+\usepackage[italian]{babel}
+\usepackage[autostyle]{csquotes}      % \enquote{...} con virgolette italiane
+\usepackage{microtype}
+
+% --- Matematica ---------------------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{thmtools}
+
+% --- Pagina e struttura -------------------------------------------------------
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+% --- Tabelle, figure, algoritmi -----------------------------------------------
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, patterns, intersections}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage[italiano, ruled, vlined, linesnumbered]{algorithm2e}
+\usepackage[most]{tcolorbox}
+
+% --- Riferimenti (sempre per ultimi) ------------------------------------------
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage[italian, nameinlink, noabbrev]{cleveref}
