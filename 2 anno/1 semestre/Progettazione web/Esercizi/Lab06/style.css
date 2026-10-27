@@ -1,0 +1,7 @@
+#canvas {
+  border: 5px solid white;
+  background-color: lightblue;
+  margin: 20px auto;
+  display: block;
+  border-radius: 4%;
+}
