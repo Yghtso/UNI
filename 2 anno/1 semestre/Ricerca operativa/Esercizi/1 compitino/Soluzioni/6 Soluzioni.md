@@ -1,6 +1,6 @@
 # Soluzioni Simulazione 6
 
-Convenzioni usate (come a lezione): problema primale $\max\ c^Tx,\ Ax \le b$; $W = -A_B^{-1}$, $W^i$ è la colonna di $W$ associata all'indice $i \in B$.
+Convenzioni us2ate (come a lezione): problema primale $\max\ c^Tx,\ Ax \le b$; $W = -A_B^{-1}$, $W^i$ è la colonna di $W$ associata all'indice $i \in B$.
 Simplesso primale: $h = \min\{i \in B : y_i < 0\}$, rapporti $r_i = \dfrac{b_i - A_i x}{A_i W^h}$ per $i \notin B$ con $A_i W^h > 0$, $k = \arg\min r_i$ (Bland in caso di parità).
 
 ---
@@ -143,7 +143,7 @@ $$x_{12} + x_{14} + x_{15} + x_{32} + x_{34} + x_{35} \ge 1 \quad (\text{vale } 
 
 e analogamente quello con $S = \{2,4,5\}$: $x_{21} + x_{23} + x_{41} + x_{43} + x_{51} + x_{53} \ge 1$.
 
-**$v_S$: algoritmo delle toppe.** Tolgo un arco $(i,j)$ del primo ciclo e un arco $(k,l)$ del secondo e aggiungo $(i,l)$ e $(k,j)$:
+**$v_S$: algoritmo delle toppe.** Tolgo un arco $(i,j)$ del primo ciclo e un arco $(k,l)$ del secondo e aggiungo $(i,l)$ e2 $(k,j)$:
 
 | Tolgo | Aggiungo | Variazione |
 |---|---|---|
