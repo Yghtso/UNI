@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form id="formPreventivo">
+        <label for="tipo">Tipo di veicolo</label>
+        <select name="tipo">
+            <option value="automobile">Automobile</option>
+            <option value="furgone">Furgone</option>
+        </select><br><br>
+
+        <label for="modello">Modello</label>
+        <input type="text" name="modello" required><br><br>
+
+        <label for="tariffa">Tariffa giornaliera (€)</label>
+        <input type="number" name="tariffa" required><br><br>
+
+        <label for="giorni">Giorni di noleggio</label>
+        <input type="number" name="giorni" required><br><br>
+
+        <button type="submit">Aggiungi Preventivo</button>
+    </form>
+    <div>
+        <h1>Elenco Preventivi</h1>
+        <table id="tabellaPreventivi" visible="false">
+            <thead>
+                <tr>
+                    <th>Veicolo e opzioni</th>
+                    <th>Tariffa al giorno</th>
+                    <th>Giorni</th>
+                    <th>Costo</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+<script src="script.js"></script>
+</html>
