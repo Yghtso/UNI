@@ -25,6 +25,13 @@ Docker richiede `sudo`, lo script lo usa da solo. Da questa cartella:
 ./pweb logs web         # log di Apache/PHP (errori PHP compresi)
 ```
 
+Completamento con Tab (`./pweb <Tab>` mostra i comandi): aggiungi una volta questa riga in fondo a `~/.bashrc`
+e apri un nuovo terminale:
+
+```bash
+source "$HOME/UNI/2 anno/1 semestre/Progettazione web/pweb-env/completion.bash"
+```
+
 Il primo `start` compila PHP una volta (circa 5–10 minuti). Dopo parte in pochi secondi.
 Dopo un riavvio del PC non riparte da solo: esegui di nuovo `./pweb start`.
 Per riavviare tutto (es. dopo aver cambiato `php.ini`) usa `./pweb restart`, non `docker compose restart`.
