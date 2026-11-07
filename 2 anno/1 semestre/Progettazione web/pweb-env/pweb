@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+# Small helper around "sudo docker compose" for the Progettazione Web environment.
+set -euo pipefail
+
+CALLER_DIR="$PWD"
+cd "$(dirname "$(readlink -f "$0")")"
+dc() { sudo docker compose "$@"; }
+
+# Same browser versions as the course's portable browsers (Esercizi/pweb/browsers)
+FF_VER=152.0.6
+FF_URL="https://archive.mozilla.org/pub/firefox/releases/$FF_VER/linux-x86_64/en-US/firefox-$FF_VER.tar.xz"
+FF_SHA256=c8080dad034d8c9119651463807639c6a648cb0186909988da6acc3ef2467322
+CR_VER=150.0.7871.129
+CR_URL="https://storage.googleapis.com/chrome-for-testing-public/$CR_VER/linux64/chrome-linux64.zip"
+BR="$PWD/browsers"
+FF_BIN="$BR/firefox-$FF_VER/firefox"
+CR_BIN="$BR/chrome-$CR_VER/chrome"
+
+install_browsers() {
+  mkdir -p "$BR/.download" "$BR/profiles/firefox" "$BR/profiles/chrome"
+  cd "$BR/.download"
+  if [[ ! -x "$FF_BIN" ]]; then
+    [[ -f firefox.tar.xz ]] || curl -fL --retry 4 -o firefox.tar.xz "$FF_URL"
+    echo "$FF_SHA256  firefox.tar.xz" | sha256sum -c -   # checksum from Mozilla's SHA256SUMS
+    rm -rf "$BR/firefox-$FF_VER"; mkdir "$BR/firefox-$FF_VER"
+    tar -xf firefox.tar.xz -C "$BR/firefox-$FF_VER" --strip-components=1
+  fi
+  if [[ ! -x "$CR_BIN" ]]; then
+    if [[ ! -f chrome.zip ]]; then
+      md5=$(curl -sI "$CR_URL" | tr -d '\r' | sed -n 's/^x-goog-hash: md5=//Ip')
+      curl -fL --retry 4 -o chrome.zip "$CR_URL"
+      [[ "$(openssl md5 -binary chrome.zip | base64)" == "$md5" ]] || { rm -f chrome.zip; echo "Chrome: checksum errato"; exit 1; }
+    fi
+    rm -rf "$BR/chrome-$CR_VER" "$BR/chrome-linux64"
+    unzip -q chrome.zip -d "$BR" && mv "$BR/chrome-linux64" "$BR/chrome-$CR_VER"
+  fi
+  cd "$BR"; rm -rf .download
+  browser_config
+  "$FF_BIN" --version; "$CR_BIN" --version
+}
+
+# Settings and the course's bookmarks toolbar (bookmarks.json), like the portable browsers.
+browser_config() {
+  python3 -I - "$BR" "$FF_VER" "$CR_VER" "$PWD/../bookmarks.json" <<'EOF'
+import json, os, sys
+br, ff, cr, bm = sys.argv[1:]
+marks = json.load(open(bm))
+
+# Firefox: policies + distribution.ini (bookmarks are added once per profile, on next start)
+d = f"{br}/firefox-{ff}/distribution"
+os.makedirs(d, exist_ok=True)
+json.dump({"policies": {"DisableAppUpdate": True, "DisableTelemetry": True,
+    "DontCheckDefaultBrowser": True, "OverrideFirstRunPage": "", "OverridePostUpdatePage": "",
+    "DisplayBookmarksToolbar": "always"}}, open(f"{d}/policies.json", "w"), indent=2)
+with open(f"{d}/distribution.ini", "w") as f:
+    f.write("[Global]\nid=pweb\nversion=1.0\nabout=Progettazione Web\n\n[BookmarksToolbar]\n")
+    for i, (t, u) in enumerate(marks, 1):
+        f.write(f"item.{i}.title={t}\nitem.{i}.link={u}\n")
+
+# Chrome: bookmarks bar, only if the profile has no bookmarks yet (never overwrite yours)
+p = f"{br}/profiles/chrome/Default"
+os.makedirs(p, exist_ok=True)
+if not os.path.exists(f"{p}/Bookmarks"):
+    kids = [{"id": str(i), "type": "url", "name": t, "url": u} for i, (t, u) in enumerate(marks, 4)]
+    roots = {"bookmark_bar": {"id": "1", "type": "folder", "name": "Bookmarks bar", "children": kids},
+             "other": {"id": "2", "type": "folder", "name": "Other bookmarks", "children": []},
+             "synced": {"id": "3", "type": "folder", "name": "Mobile bookmarks", "children": []}}
+    json.dump({"roots": roots, "version": 1}, open(f"{p}/Bookmarks", "w"), indent=2)
+pf = f"{p}/Preferences"
+prefs = json.load(open(pf)) if os.path.exists(pf) else {}
+prefs.setdefault("bookmark_bar", {})["show_on_all_tabs"] = True
+json.dump(prefs, open(pf, "w"))
+EOF
+}
+
+case "${1:-help}" in
+  install-browsers) install_browsers ;;
+  browser)
+    url="${3:-http://localhost/}"
+    case "${2:-}" in
+      firefox) bin="$FF_BIN"; args=(--no-remote --profile "$BR/profiles/firefox") ;;
+      # --disable-extensions: keeps out extensions auto-installed system-wide for your normal Chrome
+      chrome)  bin="$CR_BIN"; args=(--user-data-dir="$BR/profiles/chrome" --no-first-run
+                                    --no-default-browser-check --disable-extensions
+                                    --ozone-platform-hint=auto) ;;
+      *) echo "uso: ./pweb browser firefox|chrome [url]"; exit 1 ;;
+    esac
+    [[ -x "$bin" ]] || { echo "Browser non installato: esegui ./pweb install-browsers"; exit 1; }
+    mkdir -p "$BR/profiles/$2"
+    nohup "$bin" "${args[@]}" "$url" >/dev/null 2>&1 &
+    ;;
+  start)
+    if [[ "${2:-}" == "express" ]]; then
+      [[ -n "${3:-}" ]] && export EXPRESS_DIR="$(cd "$CALLER_DIR" && readlink -f "$3")"
+      sudo --preserve-env=EXPRESS_DIR docker compose --profile express up -d --build
+    else
+      dc up -d --build
+    fi
+    echo "Sito:        http://localhost/"
+    echo "phpMyAdmin:  http://localhost:8080/"
+    echo "MariaDB:     127.0.0.1:3306  user root, nessuna password"
+    [[ "${2:-}" == "express" ]] && echo "Express:     http://localhost:3000/"
+    ;;
+  stop)    dc --profile express down ;;
+  # down + up: web and node share db's network, so they must be recreated after db
+  restart) dc --profile express down && exec "$0" start "${@:2}" ;;
+  status)  dc --profile express ps ;;
+  logs)    dc --profile express logs -f --tail=100 "${@:2}" ;;
+  mysql)   dc exec db mysql -u root "${@:2}" ;;
+  export)
+    db="${2:?uso: ./pweb export <nome_database>}"
+    out="$CALLER_DIR/$db.sql"
+    {
+      echo "-- Progettazione Web"
+      echo "-- Database esportato il $(date '+%d/%m/%Y %H:%M:%S')"
+      echo
+      echo "DROP DATABASE IF EXISTS \`$db\`;"
+      echo "CREATE DATABASE \`$db\`;"
+      echo "USE \`$db\`;"
+      echo
+      dc exec -T db mysqldump -u root --routines --triggers --events "$db"
+    } > "$out.tmp" && mv "$out.tmp" "$out" || { rm -f "$out.tmp"; echo "ERRORE: esportazione fallita."; exit 1; }
+    echo "File creato: $out"
+    ;;
+  import)
+    f="${2:?uso: ./pweb import <file.sql>}"
+    dc exec -T db mysql -u root < "$(cd "$CALLER_DIR" && readlink -f "$f")"
+    echo "Importato: $f"
+    ;;
+  reset-db)
+    read -r -p "Cancellare TUTTI i database e ripartire da zero? [s/N] " a
+    [[ "$a" == [sSyY] ]] || exit 0
+    dc --profile express down
+    sudo docker volume rm pweb_dbdata
+    echo "Fatto. Esegui ./pweb start"
+    ;;
+  *)
+    cat <<'EOF'
+Uso: ./pweb <comando>
+  start                  avvia Apache+PHP, MariaDB, phpMyAdmin
+  start express [dir]    come sopra + Express (default: ./express)
+  stop                   ferma tutto (i database restano salvati)
+  restart [express]      riavvia tutto (dopo aver cambiato php.ini o course.cnf)
+  status                 mostra i container
+  logs [servizio]        log (web, db, phpmyadmin, node)
+  mysql [db]             console MariaDB come root
+  export <db>            esporta <db>.sql (come EsportaDB.bat)
+  import <file.sql>      importa un file .sql
+  reset-db               cancella tutti i database
+  install-browsers       scarica Firefox 152.0.6 e Chrome 150.0.7871.129 (come il corso)
+  browser firefox|chrome [url]   apre quel browser (default http://localhost/)
+EOF
+    ;;
+esac

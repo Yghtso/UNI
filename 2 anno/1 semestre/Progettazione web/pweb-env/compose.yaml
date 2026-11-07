@@ -1,0 +1,64 @@
+# Progettazione Web: same versions as the course's XAMPP 8.2.12 bundle.
+name: pweb
+
+services:
+  # MariaDB 10.4.32, root with no password (like XAMPP).
+  # Web and Express share this container's network, so inside PHP/Node
+  # "127.0.0.1" and "localhost" reach the database exactly like on XAMPP.
+  # Their ports are therefore published here. Only reachable from this laptop.
+  db:
+    image: mariadb:10.4.32
+    environment:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "1"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - mysqld-sock:/run/mysqld
+      - ./db/course.cnf:/etc/mysql/conf.d/course.cnf:ro
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:80:80"       # Apache (web)
+      - "127.0.0.1:3306:3306"   # MariaDB (DBeaver)
+      - "127.0.0.1:3000:3000"   # Express (node)
+
+  # Apache 2.4.58 + PHP 8.2.12 (mod_php)
+  web:
+    build: ./web
+    image: pweb-web:apache2.4.58-php8.2.12
+    network_mode: "service:db"
+    depends_on: [db]
+    volumes:
+      - ./htdocs:/usr/local/apache2/htdocs
+      - ../Esercizi:/esercizi:ro
+      - mysqld-sock:/run/mysqld
+
+  # phpMyAdmin 5.2.1, already logged in as root (like XAMPP)
+  phpmyadmin:
+    image: phpmyadmin:5.2.1-apache
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: ""
+      # Configuration storage (Designer, relations, history), like XAMPP: see db-init/00-phpmyadmin.sql
+      PMA_PMADB: phpmyadmin
+      PMA_CONTROLUSER: pma
+      PMA_CONTROLPASS: ""
+      UPLOAD_LIMIT: 40M
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on: [db]
+
+  # Node 24.18.0 + Express. Optional: start with "./pweb start express".
+  node:
+    image: node:24.18.0-bookworm-slim
+    profiles: [express]
+    network_mode: "service:db"
+    depends_on: [db]
+    user: "1000:1000"
+    working_dir: /app
+    volumes:
+      - ${EXPRESS_DIR:-./express}:/app
+    command: sh -c "npm install && node --watch server.js"
+
+volumes:
+  dbdata:
+  mysqld-sock:

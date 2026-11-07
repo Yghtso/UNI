@@ -1,0 +1,29 @@
+# Server settings from the course's XAMPP my.ini (pweb/xampp/mysql/bin/my.ini).
+# Note: sql_mode is NOT strict, exactly like XAMPP.
+[client]
+default-character-set=utf8mb4
+
+[mysqld]
+port=3306
+key_buffer_size=16M
+max_allowed_packet=1M
+sort_buffer_size=512K
+net_buffer_length=8K
+read_buffer_size=256K
+read_rnd_buffer_size=512K
+myisam_sort_buffer_size=8M
+innodb_buffer_pool_size=16M
+innodb_log_file_size=5M
+innodb_log_buffer_size=8M
+innodb_flush_log_at_trx_commit=1
+innodb_lock_wait_timeout=50
+sql_mode=NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION
+log_bin_trust_function_creators=1
+character-set-server=utf8mb4
+collation-server=utf8mb4_general_ci
+# Windows default (not in my.ini, but XAMPP on Windows behaves like this):
+# table and database names are stored lowercase and are case-insensitive.
+lower_case_table_names=1
+
+[mysqldump]
+max_allowed_packet=16M
