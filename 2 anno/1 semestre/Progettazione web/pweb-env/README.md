@@ -29,7 +29,7 @@ Completamento con Tab (`./pweb <Tab>` mostra i comandi): aggiungi una volta ques
 e apri un nuovo terminale:
 
 ```bash
-source "$HOME/UNI/2 anno/1 semestre/Progettazione web/pweb-env/completion.bash"
+source "/path/to/folder/pweb-env/completion.bash"
 ```
 
 Il primo `start` compila PHP una volta (circa 5–10 minuti). Dopo parte in pochi secondi.
@@ -108,7 +108,7 @@ Cambia il modo di usare gli strumenti, più alcune cose di Linux a cui fare atte
 | dati del DB in `xampp\mysql\data\` | in un volume Docker: per copiarli usa `./pweb export` / `./pweb import` |
 | `EsportaDB.bat` | `./pweb export nome_db` (stesso formato del file) |
 | `node.exe server.js` nella cartella | `./pweb start express [cartella]`: fa `npm install` e si riavvia da solo a ogni salvataggio |
-| VS Code e DBeaver portable | versioni Linux installate nel sistema (più recenti, si usano allo stesso modo) |
+| VS Code e DBeaver portable | versioni da installare nel sistema (più recenti, si usano allo stesso modo) |
 
 ### Attenzione nel codice
 

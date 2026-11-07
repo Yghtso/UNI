@@ -80,9 +80,10 @@ case "${1:-help}" in
     case "${2:-}" in
       firefox) bin="$FF_BIN"; args=(--no-remote --profile "$BR/profiles/firefox") ;;
       # --disable-extensions: keeps out extensions auto-installed system-wide for your normal Chrome
+      # --disable-infobars: hides the "Chrome for Testing ... Download Chrome" banner
       chrome)  bin="$CR_BIN"; args=(--user-data-dir="$BR/profiles/chrome" --no-first-run
                                     --no-default-browser-check --disable-extensions
-                                    --ozone-platform-hint=auto) ;;
+                                    --disable-infobars --ozone-platform-hint=auto) ;;
       *) echo "uso: ./pweb browser firefox|chrome [url]"; exit 1 ;;
     esac
     [[ -x "$bin" ]] || { echo "Browser non installato: esegui ./pweb install-browsers"; exit 1; }
