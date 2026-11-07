@@ -151,3 +151,24 @@ desktop.ini
 *.sqlite3
 *.db
 *.wal
+
+# ------------------------------------------------------------------------------
+# Third-party course material (copyright): kept on disk, never in git.
+# Removed from the whole history on 2026-11-07 (backup: ~/UNI-git-backup-2026-11-07.git)
+# ------------------------------------------------------------------------------
+*.[pP][dD][fF]
+*.epub
+*.djvu
+*.mobi
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+*.odt
+*.zip
+*.rar
+*.7z
+**/Lab01/esercizio1/immagini/
+WhatsApp Image*
