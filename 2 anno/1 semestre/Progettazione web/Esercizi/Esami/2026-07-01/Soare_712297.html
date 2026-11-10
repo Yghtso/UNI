@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <title>Gioco impila numeri</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            body {
+                background-color: lightskyblue;
+            }
+
+            #gameArea {
+                display: flex;
+                align-items: flex-start;
+                gap: 30px;
+                margin-bottom: 2em;
+            }
+
+            #gameTable {
+                border: 4px solid black;
+                border-collapse: collapse;
+            }
+
+            #gameTable th,
+            #gameTable td {
+                border: 2px solid black;
+                width: 40px;
+                height: 40px;
+                text-align: center;
+                vertical-align: middle;
+                font-weight: bold;
+            }
+
+            #gameTable thead {
+                background-color: yellow;
+            }
+
+            #gameTable tbody {
+                background-color: white;
+            }
+
+            #nextSymbolMsg {
+                display: none;
+                margin-top: 1em;
+                font-weight: bold;
+            }
+
+            #loseMsg {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div id="gameArea">
+                <table id="gameTable">
+                    <thead>
+                        <tr>
+                            <th>A</th>
+                            <th>S</th>
+                            <th>D</th>
+                            <th>F</th>
+                            <th>G</th>
+                            <th>H</th>
+                        </tr>
+                    </thead>
+                    <tbody id="numberCells">
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <span id="nextSymbolMsg">Prossimo simbolo: <span id="nextSymbol"></span></span>
+            </div>
+            <button id="gameStartBtn">Avvia</button>
+            <span id="loseMsg">Hai fatto <span id="points"></span> punti</span>
+        </main>
+        <script>
+            "use strict";
+
+            const GameState = {
+                IDLE: "idle",
+                RUNNING: "running",
+                LOST: "lost"
+            };
+
+            class Grid {
+                constructor(rows, cols) {
+                    this.rows = rows;
+                    this.cols = cols;
+                    this.cells = new Array(rows);
+                    for (let r = 0; r < rows; r++) {
+                        this.cells[r] = new Array(cols);
+                    }
+                    this.clear();
+                }
+
+                clear() {
+                    for (let r = 0; r < this.rows; r++) {
+                        for (let c = 0; c < this.cols; c++) {
+                            this.cells[r][c] = null;
+                        }
+                    }
+                }
+            }
+
+            class Game {
+                constructor() {
+                    this.gameState = GameState.IDLE;
+                    this.score = 0;
+                    this.gameGrid = new Grid(4, 6);
+                    this.chosenCol = null;
+                    this.nextSymbol = null;
+                    this.timer = null;
+
+                    this.gameStartBtn = document.getElementById("gameStartBtn");
+                    this.nextSymbolMsg = document.getElementById("nextSymbolMsg");
+                    this.nextSymbolTxt = document.getElementById("nextSymbol");
+                    this.loseMsg = document.getElementById("loseMsg");
+                    this.pointsTxt = document.getElementById("points");
+
+                    this.colKeys = "";
+                    for (let th of document.querySelectorAll("#gameTable th")) {
+                        this.colKeys += th.textContent.toUpperCase();
+                    }
+
+                    this.tdCells = [];
+                    for (let tr of document.querySelectorAll("#numberCells tr")) {
+                        this.tdCells.push(tr.querySelectorAll("td"));
+                    }
+
+                    this.gameStartBtn.addEventListener("click", () => this.start());
+                    document.addEventListener("keydown", (e) => this.onKey(e));
+                }
+
+                onKey(e) {
+                    if (this.gameState !== GameState.RUNNING) return;
+                    const letter = String.fromCharCode(e.keyCode);
+                    const i = this.colKeys.indexOf(letter);
+                    if (i !== -1) this.chosenCol = i;
+                }
+
+                start() {
+                    this.score = 0;
+                    this.gameGrid.clear();
+                    for (let r = 0; r < this.gameGrid.rows; r++) {
+                        for (let c = 0; c < this.gameGrid.cols; c++) {
+                            this.tdCells[r][c].textContent = "";
+                        }
+                    }
+                    this.loseMsg.style.display = "none";
+
+                    this.gameState = GameState.RUNNING;
+                    this.gameStartBtn.disabled = true;
+                    this.nextSymbolMsg.style.display = "inline";
+
+                    this.prepareNextSymbol();
+                    this.timer = setInterval(() => this.tick(), 1000);
+                }
+
+                prepareNextSymbol() {
+                    const n = Math.floor(Math.random() * 11);
+                    if (n === 10) {
+                        this.nextSymbol = "*";
+                    } else {
+                        this.nextSymbol = String(n);
+                    }
+                    this.chosenCol = null;
+                    this.nextSymbolTxt.textContent = this.nextSymbol;
+                }
+
+                tick() {
+                    let col = this.chosenCol;
+                    if (col === null) {
+                        col = Math.floor(Math.random() * this.gameGrid.cols);
+                    }
+                    if (!this.drop(this.nextSymbol, col)) {
+                        this.endGame();
+                        return;
+                    }
+                    this.prepareNextSymbol();
+                }
+
+                drop(symbol, col) {
+                    const cells = this.gameGrid.cells;
+
+                    let top = 0;
+                    while (top < this.gameGrid.rows && cells[top][col] === null) {
+                        top++;
+                    }
+
+                    if (top === 0) return false;
+
+                    if (top < this.gameGrid.rows) {
+                        const below = cells[top][col];
+                        if (below === symbol || below === "*" || symbol === "*") {
+                            cells[top][col] = null;
+                            this.tdCells[top][col].textContent = "";
+                            this.score++;
+                            return true;
+                        }
+                    }
+
+                    cells[top - 1][col] = symbol;
+                    this.tdCells[top - 1][col].textContent = symbol;
+                    return true;
+                }
+
+                endGame() {
+                    clearInterval(this.timer);
+                    this.gameState = GameState.LOST;
+
+                    this.nextSymbolMsg.style.display = "none";
+                    this.pointsTxt.textContent = this.score;
+                    this.loseMsg.style.display = "inline";
+                    this.gameStartBtn.disabled = false;
+                }
+            }
+
+            const game = new Game();
+        </script>
+    </body>
+</html>

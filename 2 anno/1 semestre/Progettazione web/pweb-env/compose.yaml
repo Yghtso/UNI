@@ -28,6 +28,8 @@ services:
     depends_on: [db]
     volumes:
       - ./htdocs:/usr/local/apache2/htdocs
+      # Lab exercises inside htdocs, read-write: edit them on the PC, see them at http://localhost/Lab/
+      - ../Esercizi/Lab:/usr/local/apache2/htdocs/Lab
       - ../Esercizi:/esercizi:ro
       - mysqld-sock:/run/mysqld
 

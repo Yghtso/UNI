@@ -40,6 +40,7 @@ Per riavviare tutto (es. dopo aver cambiato `php.ini`) usa `./pweb restart`, non
 
 - **PHP/HTML/CSS/JS** → `htdocs/` (come `C:\xampp\htdocs`).
   `htdocs/progetto/index.php` → http://localhost/progetto/
+- I laboratori (`../Esercizi/Lab`) sono montati dentro htdocs: http://localhost/Lab/Lab08/ (modificabili dal PC, anche PHP).
 - Gli esercizi del corso (`../Esercizi`) sono visibili in sola lettura su http://localhost/esercizi/
 - **Express** → `express/` (c'è `server.js` del corso). Per un'altra cartella:
   `./pweb start express ../Esercizi/Lab08`. Si riavvia da solo quando salvi.

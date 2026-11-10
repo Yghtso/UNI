@@ -1,8 +1,361 @@
 <!DOCTYPE html>
 <html lang="it">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width-device-width, initial-scale=1">
-    </head>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bacheca delle attività</title>
+    <style>
+        body {
+            margin: 8px;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: lightyellow;
+        }
+
+        header {
+            background-color: green;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        main {
+            padding: 20px 35px;
+        }
+
+        /* Box del form: label sopra al campo, campi affiancati */
+        form {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+            padding: 15px 20px;
+            background-color: white;
+            border: 1px solid black;
+        }
+
+        form div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Il titolo occupa lo spazio rimasto, la priorità meno */
+        form div:first-child {
+            flex: 2;
+        }
+
+        form div:nth-child(2) {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        select {
+            padding: 10px;
+            font-size: 1em;
+        }
+
+        button,
+        input[type="submit"] {
+            background-color: darkgreen;
+            color: white;
+            font-weight: bold;
+            border: 2px outset gray;
+            border-radius: 3px;
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+
+        input[type="submit"] {
+            padding: 12px;
+        }
+
+        input[type="submit"]:disabled {
+            background-color: lightgray;
+            cursor: default;
+        }
+
+        /* Filtri */
+        #filtri {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        #filtri button {
+            padding: 12px;
+            font-size: 1em;
+        }
+
+        #filtri button.active {
+            background-color: darkorange;
+        }
+
+        /* Le tre colonne */
+        #tasks {
+            display: flex;
+            gap: 20px;
+        }
+
+        #tasks section {
+            flex: 1;
+            min-height: 500px;
+            padding: 0 16px;
+            background-color: white;
+            border: 1px solid black;
+            border-radius: 6px;
+        }
+
+        #tasks h2 {
+            padding-bottom: 8px;
+            border-bottom: 3px solid darkgreen;
+        }
+
+        #tasks ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Scheda di un'attività */
+        article {
+            background-color: lightgreen;
+            border: 1px solid darkgreen;
+            border-radius: 6px;
+            padding: 0 15px 15px;
+            margin-bottom: 15px;
+        }
+
+        article h3 {
+            margin: 15px 0;
+        }
+
+        article button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Bacheca delle attività</h1>
+    </header>
+    <main>
+        <form id="formAttivita">
+            <div>
+                <label for="titoloAttivita">Titolo attività</label>
+                <input type="text" id="titoloAttivita" name="titoloAttivita" placeholder="Preparare relazione">
+            </div>
+            <div>
+                <label for="priorita">Priorità</label>
+                <select name="priorita" id="priorita">
+                    <option value="bassa">Bassa</option>
+                    <option value="media">Media</option>
+                    <option value="alta">Alta</option>
+                </select>
+            </div>
+            <input type="submit" id="crea" value="Crea attività" disabled>
+        </form>
+
+        <div id="filtri">
+            <button type="button" data-priority="tutte" class="active">Tutte</button>
+            <button type="button" data-priority="alta">Alta</button>
+            <button type="button" data-priority="media">Media</button>
+            <button type="button" data-priority="bassa">Bassa</button>
+        </div>
+
+        <div id="tasks">
+            <section>
+                <h2>Da fare (<span id="countDaFare">0</span>)</h2>
+                <ul id="daFare"></ul>
+            </section>
+            <section>
+                <h2>In corso (<span id="countInCorso">0</span>)</h2>
+                <ul id="inCorso"></ul>
+            </section>
+            <section>
+                <h2>Completate (<span id="countCompletate">0</span>)</h2>
+                <ul id="completate"></ul>
+            </section>
+        </div>
+    </main>
+    <script>
+        // Le colonne in ordine: lo "stato" di un'attività è l'indice in questo array (0, 1, 2)
+        const COLONNE = [
+            { lista: "daFare", conteggio: "countDaFare" },
+            { lista: "inCorso", conteggio: "countInCorso" },
+            { lista: "completate", conteggio: "countCompletate" }
+        ];
+
+        // Da 5 a 30 caratteri: lettere, cifre e spazi, il primo deve essere lettera o cifra
+        const REGEX_TITOLO = /^[A-Za-z0-9][A-Za-z0-9 ]{4,29}$/;
+
+        const CHIAVE_STORAGE = "bachecaAttivita";
+
+        let attivita = caricaAttivita(); // array di { id, titolo, priorita, stato }
+        let filtroAttivo = "tutte";
+
+        const form = document.getElementById("formAttivita");
+        const inputTitolo = document.getElementById("titoloAttivita");
+        const selectPriorita = document.getElementById("priorita");
+        const bottoneCrea = document.getElementById("crea");
+
+        // ---------- Local storage ----------
+
+        function salvaAttivita() {
+            localStorage.setItem(CHIAVE_STORAGE, JSON.stringify(attivita));
+        }
+
+        function caricaAttivita() {
+            const testo = localStorage.getItem(CHIAVE_STORAGE);
+            if (testo === null) {
+                return []; // primo avvio: nessuna attività salvata
+            }
+            try {
+                return JSON.parse(testo);
+            } catch (e) {
+                return []; // dati corrotti: si riparte da zero
+            }
+        }
+
+        // ---------- Form ----------
+
+        // Ad ogni carattere digitato abilito/disabilito il bottone
+        inputTitolo.addEventListener("input", function () {
+            bottoneCrea.disabled = !REGEX_TITOLO.test(inputTitolo.value);
+        });
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // evita il ricaricamento della pagina
+
+            if (!REGEX_TITOLO.test(inputTitolo.value)) {
+                return;
+            }
+
+            attivita.push({
+                id: Date.now(),
+                titolo: inputTitolo.value,
+                priorita: selectPriorita.value,
+                stato: 0 // una nuova attività parte sempre da "Da fare"
+            });
+
+            salvaAttivita();
+            disegnaBacheca();
+
+            inputTitolo.value = "";
+            bottoneCrea.disabled = true;
+        });
+
+        // ---------- Filtri ----------
+
+        const bottoniFiltro = document.querySelectorAll("#filtri button");
+
+        for (const bottone of bottoniFiltro) {
+            bottone.addEventListener("click", function () {
+                filtroAttivo = bottone.dataset.priority;
+
+                for (const b of bottoniFiltro) {
+                    b.classList.remove("active");
+                }
+                bottone.classList.add("active");
+
+                disegnaBacheca();
+            });
+        }
+
+        // ---------- Azioni sulle schede ----------
+
+        function spostaAttivita(id, direzione) {
+            for (const a of attivita) {
+                if (a.id === id) {
+                    a.stato += direzione; // -1 = indietro, +1 = avanti
+                }
+            }
+            salvaAttivita();
+            disegnaBacheca();
+        }
+
+        function eliminaAttivita(id) {
+            attivita = attivita.filter(function (a) {
+                return a.id !== id;
+            });
+            salvaAttivita();
+            disegnaBacheca();
+        }
+
+        // ---------- Disegno ----------
+
+        function creaBottone(testo, azione) {
+            const bottone = document.createElement("button");
+            bottone.type = "button";
+            bottone.textContent = testo;
+            bottone.addEventListener("click", azione);
+            return bottone;
+        }
+
+        function creaScheda(a) {
+            const li = document.createElement("li");
+            const article = document.createElement("article");
+
+            const h3 = document.createElement("h3");
+            h3.textContent = a.titolo; // textContent, non innerHTML: il titolo non viene interpretato come HTML
+
+            const p = document.createElement("p");
+            p.textContent = "Priorità: " + a.priorita;
+
+            const comandi = document.createElement("div");
+
+            // Mostro "<" e ">" solo se la scheda può davvero muoversi in quella direzione
+            if (a.stato > 0) {
+                comandi.appendChild(creaBottone("<", function () {
+                    spostaAttivita(a.id, -1);
+                }));
+            }
+            if (a.stato < COLONNE.length - 1) {
+                comandi.appendChild(creaBottone(">", function () {
+                    spostaAttivita(a.id, 1);
+                }));
+            }
+            comandi.appendChild(creaBottone("Elimina", function () {
+                eliminaAttivita(a.id);
+            }));
+
+            article.appendChild(h3);
+            article.appendChild(p);
+            article.appendChild(comandi);
+            li.appendChild(article);
+            return li;
+        }
+
+        // Ricostruisce le tre colonne da zero a partire dall'array "attivita"
+        function disegnaBacheca() {
+            for (let i = 0; i < COLONNE.length; i++) {
+                const lista = document.getElementById(COLONNE[i].lista);
+                lista.innerHTML = "";
+
+                let visibili = 0;
+                for (const a of attivita) {
+                    const passaFiltro = filtroAttivo === "tutte" || a.priorita === filtroAttivo;
+                    if (a.stato === i && passaFiltro) {
+                        lista.appendChild(creaScheda(a));
+                        visibili++;
+                    }
+                }
+
+                document.getElementById(COLONNE[i].conteggio).textContent = visibili;
+            }
+        }
+
+        disegnaBacheca();
+    </script>
+</body>
 
 </html>
