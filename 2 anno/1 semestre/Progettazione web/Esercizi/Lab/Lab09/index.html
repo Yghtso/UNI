@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <header>
+        <h1>Peso e altezza di un Pokemon usando una API pubblica (https://pokeapi.co/api/v2/pokemon/nome_del_pokemon)</h1>
+        <h2>Inserisci il nome di un pokemon</h2>
+    </header>
+    <body>
+        <input type="text" id="nomePokemon">
+        <button id="download">Download</button>
+        <p>
+            peso (kg): <span id="peso"></span>
+        </p>
+        <p>
+            altezza (m): <span id="altezza"></span>
+        </p>
+    </body>
+
+    <script>
+        async function fetchPokemon(nomePokemon) {
+            const response = await fetch("https://pokeapi.co/api/v2/pokemon/" + nomePokemon.toLowerCase());
+            const pokemon = await response.json();
+
+            document.getElementById("peso").textContent = pokemon.weight / 10;
+            document.getElementById("altezza").textContent = pokemon.height / 10;
+        }
+
+        document.getElementById("download").addEventListener("click", () => {
+            const pokemonName = document.getElementById("nomePokemon").value;
+            fetchPokemon(pokemonName);
+        });
+
+    </script>
+</html>
