@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Compitino 2024-12-06</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            main {
+                display: flex;
+            }
+
+            #sinistra {
+                background-color: lightgray;
+                width: 60%;
+                padding: 2em;
+            }
+
+            #destra {
+                background-color: blue;
+                width: 40%;
+                padding: 2em;
+                display: flex;
+                justify-content: center;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1em;
+            }
+
+            th {
+                background-color: antiquewhite;
+            }
+
+            td {
+                background-color: lightblue;
+            }
+
+            .regexfailed {
+                background-color: orange;
+            }
+
+            #gioco {
+                display: none;
+                grid-template-columns: repeat(10, 1fr);
+                gap: 0.5em;
+            }
+
+            #gioco > div {
+                aspect-ratio: 1;
+                max-width: 60px;
+                background-color: white;
+                border: 1px solid black;
+                cursor: pointer;
+            }
+
+            #gioco > div.rossa {
+                background-color: red;
+            }
+        </style>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <div id="sinistra">
+                <div id="menu">
+                    <form id="formGioca">
+                        <label for="userName">Inserisci il tuo nome e gioca</label>
+                        <input type="text" id="userName" name="userName" class="regexfailed">
+                        <input type="submit" name="gioca" value="Gioca" disabled>
+                    </form>
+                </div>
+                <div id="gioco">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div id="destra">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Punteggio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderBoard">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <script>
+            "use strict";
+
+            const USERNAME_REGEX = /^[A-Z][a-zA-Z]{2,9}$/;
+
+            const DURATA_PARTITA = 20000;
+            const INTERVALLO_ROSSO = 2000;  // a box turns red every 2 seconds
+            const DURATA_ROSSO = 1000;      // and stays red for 1 second
+
+            class Classifica {
+                constructor(tbody) {
+                    this.tbody = tbody;
+                    this.giocatori = [];
+                }
+
+                contiene(nome) {
+                    for (let i = 0; i < this.giocatori.length; i++) {
+                        if (this.giocatori[i].nome === nome) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                aggiungi(nome, punteggio) {
+                    this.giocatori.push({ nome: nome, punteggio: punteggio });
+                    this.giocatori.sort((a, b) => b.punteggio - a.punteggio);
+                    this.disegna();
+                }
+
+                disegna() {
+                    this.tbody.innerHTML = "";
+                    for (let i = 0; i < this.giocatori.length; i++) {
+                        const riga = document.createElement("tr");
+
+                        const cellaNome = document.createElement("td");
+                        cellaNome.textContent = this.giocatori[i].nome;
+
+                        const cellaPunteggio = document.createElement("td");
+                        cellaPunteggio.textContent = this.giocatori[i].punteggio;
+
+                        riga.appendChild(cellaNome);
+                        riga.appendChild(cellaPunteggio);
+                        this.tbody.appendChild(riga);
+                    }
+                }
+            }
+
+            // One game: lights a random box every 2 s and counts clicks on red boxes
+            class Partita {
+                constructor(contenitore, nome, quandoFinisce) {
+                    this.caselle = contenitore.getElementsByTagName("div");
+                    this.nome = nome;
+                    this.quandoFinisce = quandoFinisce;
+                    this.punteggio = 0;
+                    this.intervallo = null;
+                    this.timeoutFine = null;
+
+                    // Arrow function so that "this" is still the Partita
+                    this.gestisciClick = (e) => {
+                        if (e.target.classList.contains("rossa")) {
+                            this.punteggio++;
+                        }
+                    };
+                }
+
+                inizia() {
+                    for (let i = 0; i < this.caselle.length; i++) {
+                        this.caselle[i].classList.remove("rossa");
+                        this.caselle[i].addEventListener("click", this.gestisciClick);
+                    }
+                    this.intervallo = setInterval(() => this.accendiCasella(), INTERVALLO_ROSSO);
+                    this.timeoutFine = setTimeout(() => this.termina(), DURATA_PARTITA);
+                }
+
+                accendiCasella() {
+                    const indice = Math.floor(Math.random() * this.caselle.length);
+                    const casella = this.caselle[indice];
+                    casella.classList.add("rossa");
+                    setTimeout(() => casella.classList.remove("rossa"), DURATA_ROSSO);
+                }
+
+                termina() {
+                    clearInterval(this.intervallo);
+                    clearTimeout(this.timeoutFine);
+                    for (let i = 0; i < this.caselle.length; i++) {
+                        this.caselle[i].classList.remove("rossa");
+                        this.caselle[i].removeEventListener("click", this.gestisciClick);
+                    }
+                    this.quandoFinisce(this.nome, this.punteggio);
+                }
+            }
+
+            const form = document.getElementById("formGioca");
+            const leaderBoard = document.getElementById("leaderBoard");
+            const gioco = document.getElementById("gioco");
+            const menu = document.getElementById("menu");
+
+            const classifica = new Classifica(leaderBoard);
+
+            let gameRunning = false;
+
+            function nomeValido(nome) {
+                return USERNAME_REGEX.test(nome) && !classifica.contiene(nome);
+            }
+
+            // Checks the name while the user types: orange field and disabled button if invalid
+            function controllaNome() {
+                const userName = form.elements.userName;
+                const valido = nomeValido(userName.value);
+
+                if (valido) {
+                    userName.classList.remove("regexfailed");
+                } else {
+                    userName.classList.add("regexfailed");
+                }
+                form.elements.gioca.disabled = !valido;
+            }
+
+            form.elements.userName.addEventListener("input", controllaNome);
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const nome = form.elements.userName.value;
+
+                if (!gameRunning && nomeValido(nome)) {
+                    gameRunning = true;
+                    startGame(nome);
+                }
+            });
+
+            function startGame(nome) {
+                menu.style.display = "none";
+                gioco.style.display = "grid";
+
+                const partita = new Partita(gioco, nome, endGame);
+                partita.inizia();
+            }
+
+            function endGame(nome, punteggio) {
+                gameRunning = false;
+                classifica.aggiungi(nome, punteggio);
+
+                gioco.style.display = "none";
+                menu.style.display = "block";
+
+                form.reset();
+                controllaNome();
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Compitino 2024-12-06</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            #sinistra {
+                background-color: lightgray;
+                width: 65%;
+                padding: 2em;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            form>input[type="submit"] {
+                margin-right: 80%;
+            }
+
+            #destra {
+                background-color: blue;
+                width: 45%;
+                padding: 2em;
+                display: flex;
+                flex-direction: column;
+            }
+
+            main {
+                display: flex;
+                height: fit-content;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                padding-right: 30%;
+                gap: 60%;
+            }
+
+            th {
+                background-color: antiquewhite;
+            }
+
+            td {
+                background-color: lightblue;
+            }
+
+            .regexfailed {
+                background-color: orange;
+            }
+
+            #gioco {
+                display: grid;
+                gap: 4%;
+            }
+
+            #gioco>div {
+                display: grid;
+                gap: 4%;
+                width: 10px;
+                height: 10px;
+                background-color: white;
+                border: 1px solid black;
+            }
+
+        </style>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <div id="sinistra">
+                <div id="menu">
+                    <p>Inserisci il tuo nome e gioca</p>
+                    <form id="formGioca">
+                        <input type="text" name="userName">
+                        <input type="submit" value="gioca">
+                    </form>
+                </div>
+                <div id="gioco" hidden>
+                    <div>
+
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div id="destra">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Punteggio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderBoard">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <script>
+            "use strict";
+
+            const form = document.getElementById("formGioca");
+            const leaderBoard = document.getElementById("leaderBoard");
+            const gioco = document.getElementById("gioco");
+            const menu = document.getElementById("menu");
+
+            let gameRunning = false;
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const REGEX = /^$/;
+                
+                if(!REGEX.test(form.elements.userName.value)) {
+                    gameRunning = true;
+                    startGame();
+                }else {
+                    gameRunning = false;
+                    form.elements.userName.classList.add("regexfailed");
+                }
+
+            });
+
+            function startGame() {
+                menu.hidden = true;
+                gioco.hidden = false;
+            }
+
+        </script>
+    </body>
+</html>

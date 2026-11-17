@@ -70,7 +70,7 @@ const contesto = tela.getContext("2d");
 const tasti = { a: false, d: false };
 const barra = { x: 0, y: tela.height - 30, w: 140, h: 14, velocita: 500 };
 barra.x = tela.width / 2 - barra.w / 2;
-// Stato globale del gioco: parole target, progresso, loop animazione e lettere attive.
+
 const stato = {
     parole: [], sequenza: "", totale: 0, fatte: 0,
     inCorso: false, terminato: false, lettere: [], ultimoTs: 0, spawnAcc: 0

@@ -74,7 +74,181 @@
             </div>
         </main>
         <script>
+            const REGEX_PAROLE = /^\s*([A-Za-z][a-z]{2,5}\s+){3}[A-Za-z][a-z]{2,5}\s*$/;
+            const parole = document.getElementById("parole");
+            const inizia = document.getElementById("inizia");
+            const menu = document.getElementById("menu");
+            const gioco = document.getElementById("gioco");
+            const listaParole = document.getElementById("listaParole");
+            const messaggio = document.getElementById("messaggio");
+            const fatte = document.getElementById("fatte");
+            const totale = document.getElementById("totale");
+            const tela = document.getElementById("areaGioco");
+            const contesto = tela.getContext("2d");
+            const tasti = { a: false, d: false };
+            const barra = { x: 0, y: tela.height - 30, w: 140, h: 14, velocita: 500 };
+            barra.x = tela.width / 2 - barra.w / 2;
 
+            const stato = {
+                parole: [], sequenza: "", totale: 0, fatte: 0,
+                inCorso: false, terminato: false, lettere: [], ultimoTs: 0, spawnAcc: 0
+            };
+
+            const GENERA_OGNI = 0.5;
+            const VELOCITA_LETTERE = 200;
+            const VELOCITA_ROTAZIONE = 3;
+            const DIMENSIONE_LETTERA = 16;
+            const ALFABETO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            class Lettera {
+                constructor(carattere, x) {
+                    this.carattere = carattere;
+                    this.x = x;
+                    this.y = 0;
+                    this.vy = VELOCITA_LETTERE;
+                    this.angolo = 0;
+                    this.colore = "red";
+                    this.colpita = false;
+                }
+
+                aggiorna(dt) {
+                    this.y += this.vy * dt;
+                    this.angolo += VELOCITA_ROTAZIONE * dt;
+                }
+
+                toccaBarra(b) {
+                    return !this.colpita && this.vy > 0
+                        && this.x >= b.x && this.x <= b.x + b.w
+                        && this.y + DIMENSIONE_LETTERA / 2 >= b.y
+                        && this.y - DIMENSIONE_LETTERA / 2 <= b.y + b.h;
+                }
+
+                rimbalza(b) {
+                    this.colpita = true;
+                    this.colore = "green";
+                    this.vy = -this.vy;
+                    this.y = b.y - DIMENSIONE_LETTERA / 2;
+                }
+
+                fuori() {
+                    return this.y - DIMENSIONE_LETTERA > tela.height || this.y + DIMENSIONE_LETTERA < 0;
+                }
+            }
+
+            parole.addEventListener("input", () => {
+                inizia.disabled = !REGEX_PAROLE.test(parole.value);
+            });
+
+            inizia.addEventListener("click", () => {
+                if (!REGEX_PAROLE.test(parole.value)) return;
+
+                const pezzi = parole.value.split(/\s+/);
+                stato.parole = [];
+                for (let i = 0; i < pezzi.length; i++) {
+                    if (pezzi[i] !== "") stato.parole.push(pezzi[i].toUpperCase());
+                }
+                stato.sequenza = stato.parole.join("");
+                stato.totale = stato.sequenza.length;
+                stato.fatte = 0;
+
+                listaParole.textContent = stato.parole.join(" ");
+                fatte.textContent = stato.fatte;
+                totale.textContent = stato.totale;
+
+                menu.style.display = "none";
+                gioco.style.display = "block";
+
+                stato.inCorso = true;
+                window.requestAnimationFrame(ciclo);
+            });
+
+            document.addEventListener("keydown", (event) => {
+                if (event.key === "a" || event.key === "A") tasti.a = true;
+                else if (event.key === "d" || event.key === "D") tasti.d = true;
+            });
+            document.addEventListener("keyup", (event) => {
+                if (event.key === "a" || event.key === "A") tasti.a = false;
+                else if (event.key === "d" || event.key === "D") tasti.d = false;
+            });
+
+            function nuovaLettera() {
+                const carattere = ALFABETO.charAt(Math.floor(Math.random() * ALFABETO.length));
+                const x = DIMENSIONE_LETTERA + Math.random() * (tela.width - 2 * DIMENSIONE_LETTERA);
+                stato.lettere.push(new Lettera(carattere, x));
+            }
+
+            function muoviBarra(dt) {
+                if (tasti.a) barra.x -= barra.velocita * dt;
+                if (tasti.d) barra.x += barra.velocita * dt;
+                if (barra.x < 0) barra.x = 0;
+                if (barra.x + barra.w > tela.width) barra.x = tela.width - barra.w;
+            }
+
+            function controllaLettera(l) {
+                if (!l.toccaBarra(barra)) return;
+                l.rimbalza(barra);
+
+                if (l.carattere === stato.sequenza.charAt(stato.fatte)) {
+                    stato.fatte++;
+                    fatte.textContent = stato.fatte;
+                    if (stato.fatte === stato.totale) {
+                        stato.terminato = true;
+                        messaggio.textContent = "COMPLETATO!";
+                    }
+                }
+            }
+
+            function ciclo(ts) {
+                if (stato.ultimoTs === 0) stato.ultimoTs = ts;
+                const dt = (ts - stato.ultimoTs) / 1000;
+                stato.ultimoTs = ts;
+
+                muoviBarra(dt);
+
+                stato.spawnAcc += dt;
+                while (stato.spawnAcc >= GENERA_OGNI) {
+                    stato.spawnAcc -= GENERA_OGNI;
+                    nuovaLettera();
+                }
+
+                const rimaste = [];
+                for (let i = 0; i < stato.lettere.length; i++) {
+                    const l = stato.lettere[i];
+                    l.aggiorna(dt);
+                    if (!stato.terminato) controllaLettera(l);
+                    if (!l.fuori()) rimaste.push(l);
+                }
+
+                stato.lettere = rimaste;
+
+                disegna();
+
+                if (stato.terminato) {
+                    stato.inCorso = false;
+                    return;
+                }
+                window.requestAnimationFrame(ciclo);
+            }
+
+            //  - la barra: rettangolo blu in barra.x, barra.y, barra.w, barra.h
+            function disegna() {
+                contesto.clearRect(0, 0, tela.width, tela.height);
+                contesto.fillStyle = "#00f";
+                contesto.fillRect(barra.x, barra.y, barra.w, barra.h);
+                
+                contesto.font = "bold 40px Arial";
+                contesto.textAlign = "center";
+                contesto.textBaseline = "middle";
+                
+                stato.lettere.forEach(l => {
+                    contesto.save();
+                    contesto.translate(l.x, l.y);
+                    contesto.rotate(l.angolo);
+                    contesto.fillStyle = l.colpita ? "#0f0" : "#f00";
+                    contesto.fillText(l.carattere, 0, 0);
+                    contesto.restore();
+                });
+            }
 
             
         </script>

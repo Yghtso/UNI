@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Compitino 2024-12-06</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            main {
+                display: flex;
+            }
+
+            #sinistra {
+                background-color: lightgray;
+                width: 60%;
+                padding: 2em;
+            }
+
+            #destra {
+                background-color: blue;
+                width: 40%;
+                padding: 2em;
+            }
+
+            form {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1em;
+            }
+
+            th {
+                background-color: antiquewhite;
+            }
+
+            td {
+                background-color: lightblue;
+            }
+
+            .regexfailed {
+                background-color: orange;
+            }
+
+            #gioco {
+                display: none;
+                grid-template-columns: repeat(10, 60px);
+                gap: 0.15em;
+            }
+
+            #gioco > div {
+                width: 50px;
+                height: 50px;
+                background-color: white;
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+        <header></header>
+        <main>
+            <div id="sinistra">
+                <div id="menu">
+                    <form id="formGioca">
+                        <label for="userName">Inserisci il tuo nome e gioca</label>
+                        <input type="text" id="userName" name="userName">
+                        <input type="submit" value="Gioca">
+                    </form>
+                </div>
+                <div id="gioco">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div id="destra">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Punteggio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderBoard">
+                    </tbody>
+                </table>
+            </div>
+        </main>
+        <script>
+            "use strict";
+
+            const form = document.getElementById("formGioca");
+            const leaderBoard = document.getElementById("leaderBoard");
+            const gioco = document.getElementById("gioco");
+            const menu = document.getElementById("menu");
+
+            const USERNAME_REGEX = /^[A-Z][a-zA-Z]{2,9}$/;
+
+            let gameRunning = false;
+            let currentPoints = 0;
+
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const userName = form.elements.userName;
+
+                if (USERNAME_REGEX.test(userName.value)) {
+                    userName.classList.remove("regexfailed");
+                    gameRunning = true;
+                    startGame();
+                } else {
+                    userName.classList.add("regexfailed");
+                    gameRunning = false;
+                }
+            });
+
+            function startGame() {
+                menu.style.display = "none";
+                gioco.style.display = "grid";
+
+                setInterval(() => { clearInterval() }, 20000);
+                setInterval(() => {}, 1000);
+
+                const randomIndex = Math.floor(Math.random() * 10)
+                pickBlock(randomIndex);
+            }
+        </script>
+    </body>
+</html>

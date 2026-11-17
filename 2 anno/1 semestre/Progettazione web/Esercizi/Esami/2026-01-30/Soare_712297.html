@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Esame 2026-01-30</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+            }
+
+            main {
+                display: flex;
+                gap: 1em;
+                height: 95vh;
+            }
+
+            .card {
+                border: 2px solid black;
+                padding: 1em;
+                border-radius: 0.6em;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                gap: 0.5em;
+                flex: 1;
+            }
+
+            .card p, .card h2 {
+                margin: 0.3em 0;
+            }
+
+            #menu {
+               background-color: lightblue;
+            }
+
+            #notesList {
+                background-color: darkkhaki;
+                align-items: flex-start;
+            }
+
+            label {
+                font-weight: bold;
+            }
+
+            form { 
+                display: flex; 
+                flex-direction: column; 
+                gap: 0.5em; 
+            }
+
+            input[type=text], textarea {
+                border-radius: 0.2em;
+                padding: 0.4em;
+            }
+
+            hr { 
+                border: none; 
+                border-top: 0.15em solid black; 
+                margin: 16px 0; 
+            }
+
+            textarea { min-height: 6em; }
+
+            #notes {
+                align-self: stretch;
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            .nota {
+                background-color: aliceblue;
+                border: 1px solid lightgray;
+                border-radius: 0.4em;
+                padding: 0.5em 0.8em;
+                margin-bottom: 0.5em;
+            }
+
+            .nota h3 {
+                margin: 0.4em 0;
+            }
+
+            .nota p {
+                margin: 0.5em 0;
+            }
+
+            #modale {
+                display: none;
+                position: fixed;
+                top: 25%;
+                left: 25%;
+                width: 12em;
+                padding: 1.5em;
+                flex-direction: column;
+                align-items: center;
+                gap: 1em;
+                text-align: center;
+                background-color: lightpink;
+                border: 2px solid black;
+                border-radius: 0.5em;
+            }
+
+            #contoRovescia {
+                font-size: 2em;
+                font-weight: bold;
+                color: crimson;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <section id="menu" class="card">
+                <p>Usa il form per creare una nuova nota o modificarne una esistente</p>
+                <form>
+                    <label for="titolo">Titolo</label>
+                    <input type="text" id="titolo" required>
+
+                    <label for="contenuto">Contenuto</label>
+                    <textarea id="contenuto" required></textarea>
+                    <div>
+                        <button type="button" id="salva">Salva nota</button>
+                        <button type="button" id="pulisci">Pulisci</button>
+                    </div>
+                </form>
+                <hr>
+
+                <label for="cerca">Cerca</label>
+                <input id="cerca" type="text" placeholder="Filtra per titolo o testo" />
+                <p>La lista si aggiorna mentre scrivi</p>
+            </section>
+            
+            <section id="notesList" class="card">
+                <h2>Note</h2>
+                <button type="button" id="elimTutte">Elimina tutte</button>
+                
+                <div id="notes">
+                </div>
+            </section>
+        </main>
+
+        <div id="modale">
+            <p>Tutte le note verranno eliminate.</p>
+            <div id="contoRovescia">10</div>
+            <button type="button" id="annulla">Annulla</button>
+        </div>
+
+        <script>
+            const inputTitolo = document.getElementById("titolo");
+            const inputContenuto = document.getElementById("contenuto");
+
+            class Nota {
+                constructor(titolo, contenuto, dataCreazione) {
+                    this.titolo = titolo;
+                    this.contenuto = contenuto;
+                    this.dataCreazione = dataCreazione;   // millisecondi (Date.now()), usato anche come id
+                }
+
+                contiene(testo) {
+                    testo = testo.toLowerCase();
+                    return this.titolo.toLowerCase().includes(testo)
+                        || this.contenuto.toLowerCase().includes(testo);
+                }
+            }
+
+            // Conto alla rovescia di "Elimina tutte"
+            class ContoRovescia {
+                constructor(secondi, quandoFinisce) {
+                    this.secondi = secondi;
+                    this.quandoFinisce = quandoFinisce;
+                    this.timer = null;
+                    this.modale = document.getElementById("modale");
+                    this.numero = document.getElementById("contoRovescia");
+                    document.getElementById("annulla").addEventListener("click", () => this.ferma());
+                }
+
+                avvia() {
+                    if (this.timer !== null) return;      // gia' in corso
+                    let rimasti = this.secondi;
+                    this.numero.textContent = rimasti;
+                    this.modale.style.display = "flex";
+                    this.timer = setInterval(() => {
+                        rimasti--;
+                        this.numero.textContent = rimasti;
+                        if (rimasti === 0) {
+                            this.ferma();
+                            this.quandoFinisce();
+                        }
+                    }, 1000);
+                }
+
+                ferma() {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                    this.modale.style.display = "none";
+                }
+            }
+
+            class AppNote {
+                constructor() {
+                    this.note = [];
+                    this.inModifica = null;               // la nota che si sta modificando, se c'e'
+                    this.lista = document.getElementById("notes");
+                    this.cerca = document.getElementById("cerca");
+                    this.conto = new ContoRovescia(10, () => this.elimina());
+
+                    document.getElementById("salva").addEventListener("click", () => this.aggiungi());
+                    document.getElementById("pulisci").addEventListener("click", () => this.pulisci());
+                    document.getElementById("elimTutte").addEventListener("click", () => this.conto.avvia());
+                    this.cerca.addEventListener("input", () => this.mostra());
+
+                    this.carica();
+                    this.mostra();
+                }
+
+                // Salva nota: nuova oppure modifica di quella esistente
+                aggiungi() {
+                    const titolo = inputTitolo.value.trim();
+                    const contenuto = inputContenuto.value.trim();
+                    if (titolo === "" || contenuto === "") return;
+
+                    if (this.inModifica !== null) {
+                        this.inModifica.titolo = titolo;
+                        this.inModifica.contenuto = contenuto;
+                    } else {
+                        this.note.push(new Nota(titolo, contenuto, Date.now()));
+                    }
+                    this.pulisci();
+                    this.salva();
+                    this.mostra();
+                }
+
+                // senza argomento elimina tutte le note, altrimenti solo quella con quella data
+                elimina(data = null) {
+                    if (data === null) {
+                        this.note = [];
+                    } else {
+                        const rimaste = [];
+                        for (let i = 0; i < this.note.length; i++) {
+                            if (this.note[i].dataCreazione !== data) rimaste.push(this.note[i]);
+                        }
+                        this.note = rimaste;
+                    }
+                    if (this.inModifica !== null && (data === null || this.inModifica.dataCreazione === data)) {
+                        this.pulisci();
+                    }
+                    this.salva();
+                    this.mostra();
+                }
+
+                modifica(nota) {
+                    this.inModifica = nota;
+                    inputTitolo.value = nota.titolo;
+                    inputContenuto.value = nota.contenuto;
+                    inputTitolo.focus();
+                }
+
+                pulisci() {
+                    this.inModifica = null;
+                    inputTitolo.value = "";
+                    inputContenuto.value = "";
+                }
+
+                // ---- local storage ----
+                salva() {
+                    localStorage.setItem("note", JSON.stringify(this.note));
+                }
+
+                carica() {
+                    const testo = localStorage.getItem("note");
+                    if (testo === null) return;
+                    const dati = JSON.parse(testo);
+                    for (let i = 0; i < dati.length; i++) {
+                        this.note.push(new Nota(dati[i].titolo, dati[i].contenuto, dati[i].dataCreazione));
+                    }
+                }
+
+                // ---- lista a destra ----
+                mostra() {
+                    this.lista.innerHTML = "";
+                    const filtro = this.cerca.value.trim();
+
+                    // ordinate dalla piu' recente
+                    const ordinate = this.note.slice();
+                    ordinate.sort((a, b) => b.dataCreazione - a.dataCreazione);
+
+                    for (let i = 0; i < ordinate.length; i++) {
+                        if (filtro === "" || ordinate[i].contiene(filtro)) {
+                            this.lista.appendChild(this.creaElemento(ordinate[i]));
+                        }
+                    }
+                }
+
+                creaElemento(nota) {
+                    const div = document.createElement("div");
+                    div.className = "nota";
+
+                    const h3 = document.createElement("h3");
+                    h3.textContent = nota.titolo;
+
+                    const p = document.createElement("p");
+                    p.textContent = nota.contenuto;
+
+                    const info = document.createElement("p");
+                    info.textContent = "Creata: " + new Date(nota.dataCreazione).toLocaleString("it-IT") + " ";
+
+                    const bModifica = document.createElement("button");
+                    bModifica.type = "button";
+                    bModifica.textContent = "Modifica";
+                    bModifica.addEventListener("click", () => this.modifica(nota));
+
+                    const bElimina = document.createElement("button");
+                    bElimina.type = "button";
+                    bElimina.textContent = "Elimina";
+                    bElimina.addEventListener("click", () => this.elimina(nota.dataCreazione));
+
+                    info.appendChild(bModifica);
+                    info.appendChild(document.createTextNode(" "));
+                    info.appendChild(bElimina);
+
+                    div.appendChild(h3);
+                    div.appendChild(p);
+                    div.appendChild(info);
+                    return div;
+                }
+            }
+
+            const app = new AppNote();
+        </script>
+    </body>
+</html>
