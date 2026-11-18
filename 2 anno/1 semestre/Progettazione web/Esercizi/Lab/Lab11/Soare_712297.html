@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Esame</title>
+        <style>
+
+            body {
+                background-color: lightgray;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            h1 {
+                background-color: cornflowerblue;
+                text-align: center;
+                padding: 2% 0px 2% 0px;
+                color: white;
+            }
+
+            main {
+                border: 2px solid black;
+                background-color: white;
+                padding: 10px 0px 20px 0px;
+            }
+
+            /* ---------- configurazione ---------- */
+
+            #pannelloUtenti {
+                margin: 0px 30% 0px 30%;
+            }
+
+            #colonne {
+                display: grid;
+                grid-template-columns: auto 1fr auto 1fr;
+                gap: 10px 15px;
+                align-items: center;
+            }
+
+            #colonne label {
+                white-space: nowrap;
+            }
+
+            .invalid_name {
+                border: 1px solid red;
+            }
+
+            .error_msg {
+                color: red;
+                text-align: center;
+            }
+
+            #utentiTorneo button,
+            #pannelloPartiteTorneo > button {
+                display: block;
+                margin: 20px auto 0px auto;
+            }
+
+            /* ---------- tabellone ---------- */
+
+            #pannelloPartiteTorneo {
+                display: none;
+            }
+
+            #tabellone {
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+            }
+
+            .turno {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                width: 200px;
+            }
+
+            .turno h3 {
+                text-align: center;
+            }
+
+            .incontro {
+                margin-bottom: 15px;
+            }
+
+            .incontro button {
+                display: block;
+                width: 100%;
+                height: 25px;
+                margin-bottom: 3px;
+                border: 1px solid gray;
+                border-radius: 3px;
+            }
+
+            .giocabile {
+                background-color: #4472c4;
+                color: white;
+                cursor: pointer;
+            }
+
+            .vincente {
+                background-color: #70ad47;
+                color: white;
+            }
+
+            .perdente,
+            .attesa {
+                background-color: lightgray;
+                color: gray;
+            }
+
+            .vuoto {
+                background-color: white;
+            }
+
+            #messaggioVincitore {
+                color: green;
+                font-weight: bold;
+                text-align: center;
+            }
+
+        </style>
+    </head>
+    <body>
+        <header><h1>TORNEO DI PING-PONG</h1></header>
+        <main>
+
+            <div id="pannelloUtenti">
+                <h2>Inserisci 8 partecipanti</h2>
+                <form id="utentiTorneo">
+                    <div id="colonne">
+                        <label for="giocatore1">Giocatore 1</label>
+                        <input type="text" id="giocatore1">
+                        <label for="giocatore2">Giocatore 2</label>
+                        <input type="text" id="giocatore2">
+                        <label for="giocatore3">Giocatore 3</label>
+                        <input type="text" id="giocatore3">
+                        <label for="giocatore4">Giocatore 4</label>
+                        <input type="text" id="giocatore4">
+                        <label for="giocatore5">Giocatore 5</label>
+                        <input type="text" id="giocatore5">
+                        <label for="giocatore6">Giocatore 6</label>
+                        <input type="text" id="giocatore6">
+                        <label for="giocatore7">Giocatore 7</label>
+                        <input type="text" id="giocatore7">
+                        <label for="giocatore8">Giocatore 8</label>
+                        <input type="text" id="giocatore8">
+                    </div>
+
+                    <p id="erroreDuplicati" class="error_msg">I nomi dei partecipanti devono essere diversi</p>
+                    <button type="submit" id="iniziaTorneo" disabled>Inizia torneo</button>
+                </form>
+            </div>
+
+            <div id="pannelloPartiteTorneo">
+                <div id="tabellone"></div>
+                <p id="messaggioVincitore"></p>
+                <button type="button" id="nuovoTorneo" disabled>Nuovo torneo</button>
+            </div>
+
+        </main>
+        <script>
+            "use strict";
+            class Incontro {
+                constructor() {
+                    this.giocatori = new Array(2);
+                    this.giocatori[0] = null;                       
+                    this.giocatori[1] = null;
+                    this.vincitore = null;
+                }
+
+                pronto() {
+                    return this.giocatori[0] !== null && this.giocatori[1] !== null;
+                }
+
+                concluso() {
+                    return this.vincitore !== null;
+                }
+
+                nomeVincitore() {
+                    return this.concluso() ? this.giocatori[this.vincitore] : null;
+                }
+            }
+
+            const NUM_GIOCATORI = 8;
+            const NOMI_TURNI = ["Quarti di finale", "Semifinali", "Finale"];
+
+            class Torneo {
+                constructor(nomi) {
+                    this.turni = new Array(NOMI_TURNI.length);
+                    let numIncontri = NUM_GIOCATORI / 2;
+                    for (let t = 0; t < this.turni.length; t++) {
+                        this.turni[t] = new Array(numIncontri);
+                        for (let i = 0; i < numIncontri; i++)
+                            this.turni[t][i] = new Incontro();
+                        numIncontri = numIncontri / 2;
+                    }
+
+                    // disposizione casuale nei quarti (mescolo una copia dei nomi)
+                    const mescolati = this.mescola(nomi);
+                    for (let k = 0; k < mescolati.length; k++)
+                        this.turni[0][Math.floor(k / 2)].giocatori[k % 2] = mescolati[k];
+
+                    this.vincitore = null;   // nome del vincitore del torneo
+                }
+
+                // Fisher-Yates su una copia dell'array
+                mescola(nomi) {
+                    const copia = new Array(nomi.length);
+                    for (let i = 0; i < nomi.length; i++)
+                        copia[i] = nomi[i];
+                    for (let i = copia.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        const tmp = copia[i];
+                        copia[i] = copia[j];
+                        copia[j] = tmp;
+                    }
+                    return copia;
+                }
+
+                turnoCompletato(t) {
+                    for (const incontro of this.turni[t])
+                        if (!incontro.concluso())
+                            return false;
+                    return true;
+                }
+
+                // un incontro e' cliccabile se non e' ancora giocato, ha entrambi
+                // i giocatori e il turno precedente e' stato completato
+                selezionabile(t, i) {
+                    const incontro = this.turni[t][i];
+                    if (incontro.concluso() || !incontro.pronto())
+                        return false;
+                    return t === 0 || this.turnoCompletato(t - 1);
+                }
+
+                // l'utente clicca il giocatore in posizione p (0/1) dell'incontro i del turno t
+                scegliVincitore(t, i, p) {
+                    if (!this.selezionabile(t, i))
+                        return false;
+
+                    const incontro = this.turni[t][i];
+                    incontro.vincitore = p;
+
+                    if (t === this.turni.length - 1)
+                        this.vincitore = incontro.nomeVincitore();    // finale: fine torneo
+                    else    // il vincitore dell'incontro i va nell'incontro i/2 del turno dopo, posto i%2
+                        this.turni[t + 1][Math.floor(i / 2)].giocatori[i % 2] = incontro.nomeVincitore();
+
+                    return true;
+                }
+
+                finito() {
+                    return this.vincitore !== null;
+                }
+            }
+
+            // ================== VISTA / CONTROLLO ==================
+
+            const pannelloUtenti = document.getElementById("pannelloUtenti");
+            const pannelloPartiteTorneo = document.getElementById("pannelloPartiteTorneo");
+            const tabellone = document.getElementById("tabellone");
+            const messaggioVincitore = document.getElementById("messaggioVincitore");
+            const buttonNuovoTorneo = document.getElementById("nuovoTorneo");
+
+            const formUtentiTorneo = document.getElementById("utentiTorneo");
+            const buttonIniziaTorneo = document.getElementById("iniziaTorneo");
+            const erroreDuplicati = document.getElementById("erroreDuplicati");
+            const inputTextUtenti = document.querySelectorAll("#utentiTorneo input");
+
+            const VALID_NAME_REGEX = /^[A-Z][a-z]{2,9}$/;
+
+            let torneo = null;
+
+            // ---------- fase 1: inserimento nomi ----------
+
+            function validaInputs() {
+
+                // chiave in minuscolo: i duplicati non distinguono maiuscole/minuscole
+                const conteggio = {};
+                for (const input of inputTextUtenti) {
+                    const chiave = input.value.toLowerCase();
+                    conteggio[chiave] = (conteggio[chiave] || 0) + 1;
+                }
+
+                let tuttiValidi = true;
+                let duplicati = false;
+
+                for (const input of inputTextUtenti) {
+                    const ripetuto = input.value !== "" && conteggio[input.value.toLowerCase()] > 1;
+                    if (ripetuto)
+                        duplicati = true;
+
+                    if (!VALID_NAME_REGEX.test(input.value) || ripetuto) {
+                        input.classList.add("invalid_name");
+                        tuttiValidi = false;
+                    }
+                    else
+                        input.classList.remove("invalid_name");
+                }
+
+                erroreDuplicati.style.visibility = duplicati ? "visible" : "hidden";
+                buttonIniziaTorneo.disabled = !tuttiValidi;
+            }
+
+            for (const inputTextUtente of inputTextUtenti)
+                inputTextUtente.addEventListener("input", validaInputs);
+
+            formUtentiTorneo.addEventListener("submit", (e) => {
+                e.preventDefault();
+
+                const nomi = new Array(inputTextUtenti.length);
+                for (let i = 0; i < inputTextUtenti.length; i++)
+                    nomi[i] = inputTextUtenti[i].value;
+
+                torneo = new Torneo(nomi);
+
+                pannelloUtenti.style.display = "none";
+                pannelloPartiteTorneo.style.display = "block";
+                disegnaTabellone();
+            });
+
+            // ---------- fase 2: tabellone ----------
+
+            // crea il bottone del posto p dell'incontro i nel turno t
+            function creaBottone(t, i, p) {
+                const incontro = torneo.turni[t][i];
+                const bottone = document.createElement("button");
+                bottone.type = "button";
+                bottone.disabled = true;
+
+                if (incontro.giocatori[p] === null) {
+                    bottone.classList.add("vuoto");
+                    return bottone;
+                }
+
+                bottone.textContent = incontro.giocatori[p];
+
+                if (incontro.concluso())
+                    bottone.classList.add(incontro.vincitore === p ? "vincente" : "perdente");
+                else if (torneo.selezionabile(t, i)) {
+                    bottone.classList.add("giocabile");
+                    bottone.disabled = false;
+                    bottone.addEventListener("click", () => {
+                        torneo.scegliVincitore(t, i, p);
+                        disegnaTabellone();
+                    });
+                }
+                else
+                    bottone.classList.add("attesa");
+
+                return bottone;
+            }
+
+            // ridisegna tutto il tabellone a partire dal modello
+            function disegnaTabellone() {
+                tabellone.innerHTML = "";
+
+                for (let t = 0; t < torneo.turni.length; t++) {
+                    const colonna = document.createElement("div");
+                    colonna.classList.add("turno");
+
+                    const titolo = document.createElement("h3");
+                    titolo.textContent = NOMI_TURNI[t];
+                    colonna.appendChild(titolo);
+
+                    for (let i = 0; i < torneo.turni[t].length; i++) {
+                        const divIncontro = document.createElement("div");
+                        divIncontro.classList.add("incontro");
+                        divIncontro.appendChild(creaBottone(t, i, 0));
+                        divIncontro.appendChild(creaBottone(t, i, 1));
+                        colonna.appendChild(divIncontro);
+                    }
+
+                    tabellone.appendChild(colonna);
+                }
+
+                if (torneo.finito()) {
+                    messaggioVincitore.textContent = "Vincitore: " + torneo.vincitore;
+                    buttonNuovoTorneo.disabled = false;
+                }
+                else {
+                    messaggioVincitore.textContent = "";
+                    buttonNuovoTorneo.disabled = true;
+                }
+            }
+
+            buttonNuovoTorneo.addEventListener("click", () => {
+                torneo = null;
+                for (const input of inputTextUtenti)
+                    input.value = "";
+                validaInputs();
+
+                pannelloPartiteTorneo.style.display = "none";
+                pannelloUtenti.style.display = "block";
+            });
+
+            validaInputs();
+
+        </script>
+    </body>
+</html>
