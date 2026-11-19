@@ -6,13 +6,17 @@
         <style>
             body {
                 background-color: lightgray;
+                font-family: Arial, sans-serif;
             }
 
+            /* Griglia esterna: pannello sinistro fisso, destro prende il resto */
             main {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-around;
-                gap: 0.3rem;
+                display: grid;
+                grid-template-columns: 250px 1fr;
+                gap: 1rem;
+                align-items: start;
+                max-width: 1100px;
+                margin: auto;
             }
 
             #menuPanel {
@@ -23,18 +27,19 @@
                 justify-content: flex-start;
                 padding: 1em;
                 gap: 1em;
-                width: 20%;
             }
 
+            /* Il pannello destro e' solo un contenitore: il box bianco e' la barra di ricerca */
             #coursesPanel {
-                background-color: white;
-                border-radius: 0.3em;
                 display: flex;
                 flex-direction: column;
-                justify-content: flex-start;
-                padding: 1em;
                 gap: 1em;
-                flex: 1;
+            }
+
+            #coursesPanelTopBar {
+                background-color: white;
+                border-radius: 0.3em;
+                padding: 1em;
             }
 
             form {
@@ -63,6 +68,45 @@
                 width: 88%;
             }
 
+            .invalid_input {
+                background-color: #ffe6e6;
+                border-color: red;
+            }
+
+            /* Griglia interna: 3 colonne di schede, vanno a capo da sole */
+            #courses {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1rem;
+                align-items: start;
+            }
+
+            .scheda {
+                border-radius: 0.3em;
+                padding: 1em;
+            }
+
+            .scheda h3 {
+                margin-top: 0;
+                font-size: 1em;
+            }
+
+            .persona {
+                background-color: white;
+                border-radius: 0.3em;
+                padding: 0.6em;
+                margin-top: 0.6em;
+            }
+
+            .persona b {
+                display: block;
+            }
+
+            .colore0 { background-color: #ffe082; }
+            .colore1 { background-color: #b2dfdb; }
+            .colore2 { background-color: #c5e1a5; }
+            .colore3 { background-color: #f8bbd0; }
+            .colore4 { background-color: #d1c4e9; }
         </style>
     </head>
     <body>
@@ -83,7 +127,7 @@
             <div id="coursesPanel">
                 <div id="coursesPanelTopBar">
                     <h2>Cerca abbonamenti</h2>
-                    <input type="text" id="searchBar">
+                    <input type="text" id="searchBar" placeholder="Cerca per nome abbonato">
                 </div>
                 <div id="courses">
 
@@ -102,16 +146,130 @@
                 constructor(partecipanti) {
                     this.partecipanti = partecipanti;
                 }
+
+                aggiungi(persona) {
+                    this.partecipanti.push(persona);
+                }
             }
-            
-            const form = document.getElementsByTagName("form");
+
+            const CHIAVE = "abbonamenti";
+
+            // getElementsByTagName restituisce una lista: serve l'elemento [0]
+            const form = document.getElementsByTagName("form")[0];
             const searchBar = document.getElementById("searchBar");
             const removeAll = document.getElementById("removeAll");
-        
+            const coursesDiv = document.getElementById("courses");
+
+            // oggetto: chiave = nome del corso, valore = oggetto Corso
+            let courses = {};
+
+            function salva() {
+                localStorage.setItem(CHIAVE, JSON.stringify(courses));
+            }
+
+            // JSON.parse restituisce oggetti "semplici": li ricostruisco come Corso e Persona
+            function carica() {
+                const testo = localStorage.getItem(CHIAVE);
+                if (testo == null) {
+                    return;
+                }
+                const dati = JSON.parse(testo);
+                for (let nomeCorso in dati) {
+                    const corso = new Corso(new Array());
+                    const lista = dati[nomeCorso].partecipanti;
+                    for (let i = 0; i < lista.length; i++) {
+                        corso.aggiungi(new Persona(lista[i].name, lista[i].age));
+                    }
+                    courses[nomeCorso] = corso;
+                }
+            }
+
+            function creaPersona(p) {
+                const div = document.createElement("div");
+                div.className = "persona";
+                const nome = document.createElement("b");
+                nome.textContent = p.name;
+                const eta = document.createElement("span");
+                eta.textContent = "Età: " + p.age;
+                div.appendChild(nome);
+                div.appendChild(eta);
+                return div;
+            }
+
+            // Ridisegna tutte le schede: la griglia CSS le dispone da sola
+            function mostra() {
+                coursesDiv.innerHTML = "";
+                const filtro = searchBar.value.toLowerCase();
+                let indice = 0;   // posizione del corso, serve per il colore
+
+                for (let nomeCorso in courses) {
+                    const scheda = document.createElement("div");
+                    scheda.className = "scheda colore" + (indice % 5);
+                    indice++;
+
+                    const titolo = document.createElement("h3");
+                    titolo.textContent = nomeCorso;
+                    scheda.appendChild(titolo);
+
+                    const lista = courses[nomeCorso].partecipanti;
+                    let trovati = 0;
+                    for (let i = 0; i < lista.length; i++) {
+                        if (lista[i].name.toLowerCase().indexOf(filtro) != -1) {
+                            scheda.appendChild(creaPersona(lista[i]));
+                            trovati++;
+                        }
+                    }
+
+                    // se la ricerca non trova nessuno nel corso, la scheda non compare
+                    if (trovati > 0) {
+                        coursesDiv.appendChild(scheda);
+                    }
+                }
+            }
+
             form.addEventListener("submit", e => {
-            e.preventDefault();
+                e.preventDefault();
+
+                const inputCorso = form.elements.nomeCorso;
+                const inputNome  = form.elements.nomeAbbonato;
+                const inputEta   = form.elements.eta;
+                const campi = [inputNome, inputEta, inputCorso];
+
+                let valido = true;
+                for (let i = 0; i < campi.length; i++) {
+                    if (campi[i].value.trim() == "") {
+                        campi[i].classList.add("invalid_input");
+                        valido = false;
+                    } else {
+                        campi[i].classList.remove("invalid_input");
+                    }
+                }
+
+                if (!valido) {
+                    return;   // l'inserimento non ha luogo
+                }
+
+                const nomeCorso = inputCorso.value.trim();
+                if (courses[nomeCorso] == undefined) {
+                    courses[nomeCorso] = new Corso(new Array());
+                }
+                courses[nomeCorso].aggiungi(new Persona(inputNome.value.trim(), inputEta.value));
+
+                salva();
+                mostra();
+                form.reset();
             });
 
+            searchBar.addEventListener("input", mostra);
+
+            removeAll.addEventListener("click", () => {
+                courses = {};
+                localStorage.removeItem(CHIAVE);
+                mostra();
+            });
+
+            carica();
+            mostra();
         </script>
     </body>
 </html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        h1 {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: chartreuse;
+        }
+
+        main {
+            display: flex;
+            gap: 1%;
+            height: fit-content;
+        }
+
+        .card {
+            border: 1px solid black;
+            padding: 1%;
+            background-color: white;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        #formPrenotazione {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        #errorMsg {
+            border: 1px solid red;
+            background-color: lightpink;
+            visibility: hidden;
+        }
+
+        .invalidInput {
+            border: 2px solid red;
+        }
+
+        #formPrenotazione input,
+        #formPrenotazione select {
+            min-height: 30px;
+        }
+
+        #errorMsg p {
+            padding-left: 3%;
+            padding-right: 3%;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gestione postazioni aula informatica</h1>
+    </header>
+    <main>
+        <div id="menuPrenotazione" class="card">
+            <h2>Prenotazione</h2>
+            <form id="formPrenotazione">
+                <label for="nomeFormPrenotazione">Nome</label>
+                <input type="text" id="nomeFormPrenotazione" name="nome" placeholder="Mario" class="invalidInput">
+
+                <label for="cognomeFormPrenotazione">Cognome</label>
+                <input type="text" id="cognomeFormPrenotazione" name="cognome" placeholder="Rossi" class="invalidInput">
+
+                <label for="numeroPostazioneFormPrenotazione">Numero postazione</label>
+                <input type="number" id="numeroPostazioneFormPrenotazione" name="numeroPostazione" placeholder="12"
+                    class="invalidInput">
+
+                <label for="fasciaOrariaFormPrenotazione">Fascia oraria</label>
+                <select id="fasciaOrariaFormPrenotazione" name="fasciaOraria" class="invalidInput">
+                    <option value="">Seleziona...</option>
+                    <option value="9-11">9-11</option>
+                    <option value="11-13">11-13</option>
+                    <option value="14-16">14-16</option>
+                    <option value="16-18">16-18</option>
+                </select>
+
+
+                <input type="submit" value="Prenota" disabled>
+            </form>
+
+            <div id="errorMsg">
+                <p>Postazione già occupata nella fascia selezionata</p>
+            </div>
+        </div>
+        <div id="grigliaPostazioni" class="card">
+            <h2>Postazioni</h2>
+        </div>
+        <div id="dettaglioPostazione" class="card">
+            <h2>Dettaglio postazione</h2>
+        </div>
+    </main>
+
+    <script>
+        "use strict";
+
+        class Postazione {
+            constructor() {
+                this.occupazioneFasceOrarie = {
+                    "9-11": null,
+                    "11-13": null,
+                    "14-16": null,
+                    "16-18": null
+                }
+            }
+        };
+
+        class PostazioniManager {
+            constructor() {
+                this.postazioni = Array.from({ length: 30 }, () => new Postazione());
+            }
+
+            occupa(numeroPostazione, fasciaOraria, nome, cognome) {
+                if (this.postazioni[numeroPostazione - 1].occupazioneFasceOrarie[fasciaOraria]) return false;
+
+                this.postazioni[numeroPostazione - 1].occupazioneFasceOrarie[fasciaOraria] = { nome, cognome };
+                return true;
+            }
+        };
+
+        const postazioniManager = new PostazioniManager();
+
+        const nomeFormPrenotazione = document.getElementById("nomeFormPrenotazione");
+        const cognomeFormPrenotazione = document.getElementById("cognomeFormPrenotazione");
+        const numeroPostazioneFormPrenotazione = document.getElementById("numeroPostazioneFormPrenotazione");
+        const fasciaOrariaFormPrenotazione = document.getElementById("fasciaOrariaFormPrenotazione");
+        const errorMsg = document.getElementById("errorMsg");
+        const pulsanteSubmitForm = document.querySelector("#formPrenotazione input[type=submit]");
+
+        const inputFields = new Array(
+            nomeFormPrenotazione,
+            cognomeFormPrenotazione,
+            numeroPostazioneFormPrenotazione,
+            fasciaOrariaFormPrenotazione
+        );
+
+        const VALID_NAME_SURNAME_REGEX = /^[A-Z][a-z]*$/
+
+        function checkInputReady() {
+
+            for (const inputField of inputFields) {
+                if (inputField.classList.contains("invalidInput")) {
+                    pulsanteSubmitForm.disabled = true;
+                    return;
+                }
+            }
+
+            pulsanteSubmitForm.disabled = false;
+        }
+
+        function addValidationEventListener(inputField, validatingConditions) {
+            inputField.addEventListener("input", () => {
+
+                if (validatingConditions(inputField.value))
+                    inputField.classList.remove("invalidInput");
+
+                else
+                    inputField.classList.add("invalidInput");
+
+                checkInputReady();
+            });
+        }
+
+        addValidationEventListener(nomeFormPrenotazione, (value) => VALID_NAME_SURNAME_REGEX.test(value));
+        addValidationEventListener(cognomeFormPrenotazione, (value) => VALID_NAME_SURNAME_REGEX.test(value));
+        addValidationEventListener(numeroPostazioneFormPrenotazione, (value) => value > 1 && value < 30);
+        addValidationEventListener(fasciaOrariaFormPrenotazione, (value) => value != "");
+
+        formPrenotazione.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            let success = postazioniManager.occupa(
+                numeroPostazioneFormPrenotazione.value,
+                fasciaOrariaFormPrenotazione.value,
+                nomeFormPrenotazione.value,
+                cognomeFormPrenotazione.value
+            );
+
+            if(!success) { 
+                errorMsg.style.visibility = "visible";
+                setTimeout(() => errorMsg.style.visibility = "hidden", 3000);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
