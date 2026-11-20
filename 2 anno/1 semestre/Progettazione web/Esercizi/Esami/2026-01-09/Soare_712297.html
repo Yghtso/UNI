@@ -56,6 +56,53 @@
             padding-left: 3%;
             padding-right: 3%;
         }
+
+        #postazioni {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 4px;
+            margin: 3%;
+        }
+
+        #postazioni div {
+            aspect-ratio: 1;
+            border: solid black 3px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .cella {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #postazioni .cellaFull {
+            background-color: red;
+        }
+
+        #postazioni .cellaPrenotata {
+            background-color: aqua;
+        }
+
+        #tabellaDettaglio {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #tabellaDettaglio th,
+        #tabellaDettaglio td {
+            border: 1px solid gray;
+            padding: 4px;
+            text-align: left;
+        }
+
+        #tabellaDettaglio th {
+            background-color: lightgray;
+        }
+
     </style>
 </head>
 
@@ -96,102 +143,292 @@
         </div>
         <div id="grigliaPostazioni" class="card">
             <h2>Postazioni</h2>
+            <div id="postazioni">
+            </div>
         </div>
         <div id="dettaglioPostazione" class="card">
             <h2>Dettaglio postazione</h2>
+            <div id="contenutoDettaglio">
+                <p>Clicca una postazione per vedere il dettaglio delle prenotazioni</p>
+            </div>
         </div>
     </main>
 
     <script>
         "use strict";
 
+        const FASCE_ORARIE = new Array("9-11", "11-13", "14-16", "16-18");
+        const NUMERO_POSTAZIONI = 30;
+        const DURATA_ERRORE = 3000;
+        const DURATA_DETTAGLIO = 5000;
+
+        // ---------- Modello ----------
+
+        class Prenotazione {
+            constructor(nome, cognome, fasciaOraria) {
+                this.nome = nome;
+                this.cognome = cognome;
+                this.fasciaOraria = fasciaOraria;
+            }
+        };
+
         class Postazione {
-            constructor() {
+            constructor(numero) {
+                this.numero = numero;
                 this.occupazioneFasceOrarie = {
                     "9-11": null,
                     "11-13": null,
                     "14-16": null,
                     "16-18": null
+                };
+            }
+
+            occupata(fasciaOraria) {
+                return this.occupazioneFasceOrarie[fasciaOraria] != null;
+            }
+
+            prenota(prenotazione) {
+                if (this.occupata(prenotazione.fasciaOraria)) return false;
+
+                this.occupazioneFasceOrarie[prenotazione.fasciaOraria] = prenotazione;
+                return true;
+            }
+
+            tuttePrenotate() {
+                for (const fascia of FASCE_ORARIE)
+                    if (!this.occupata(fascia)) return false;
+
+                return true;
+            }
+
+            almeno1Prenotata() {
+                for (const fascia of FASCE_ORARIE)
+                    if (this.occupata(fascia)) return true;
+
+                return false;
+            }
+
+            // prenotazioni nell'ordine delle fasce orarie (9-11, 11-13, ...)
+            prenotazioniOrdinate() {
+                const elenco = new Array();
+
+                for (const fascia of FASCE_ORARIE)
+                    if (this.occupata(fascia)) elenco.push(this.occupazioneFasceOrarie[fascia]);
+
+                return elenco;
+            }
+        };
+
+        // ---------- Parte sinistra: form di prenotazione ----------
+
+        class FormPrenotazione {
+            constructor(gestore) {
+                this.gestore = gestore;
+
+                this.form = document.getElementById("formPrenotazione");
+                this.nome = document.getElementById("nomeFormPrenotazione");
+                this.cognome = document.getElementById("cognomeFormPrenotazione");
+                this.numeroPostazione = document.getElementById("numeroPostazioneFormPrenotazione");
+                this.fasciaOraria = document.getElementById("fasciaOrariaFormPrenotazione");
+                this.pulsante = document.querySelector("#formPrenotazione input[type=submit]");
+                this.errorMsg = document.getElementById("errorMsg");
+                this.timerErrore = null;
+
+                this.campi = new Array(this.nome, this.cognome, this.numeroPostazione, this.fasciaOraria);
+
+                const regexNome = /^[A-Z][a-z]*$/;
+
+                this.aggiungiValidazione(this.nome, (valore) => regexNome.test(valore));
+                this.aggiungiValidazione(this.cognome, (valore) => regexNome.test(valore));
+                this.aggiungiValidazione(this.numeroPostazione, (valore) => {
+                    const n = Number(valore);
+                    return valore != "" && n == Math.floor(n) && n >= 1 && n <= NUMERO_POSTAZIONI;
+                });
+                this.aggiungiValidazione(this.fasciaOraria, (valore) => valore != "");
+
+                this.form.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    this.invia();
+                });
+            }
+
+            aggiungiValidazione(campo, condizione) {
+                campo.addEventListener("input", () => {
+                    if (condizione(campo.value))
+                        campo.classList.remove("invalidInput");
+                    else
+                        campo.classList.add("invalidInput");
+
+                    this.aggiornaPulsante();
+                });
+            }
+
+            aggiornaPulsante() {
+                for (const campo of this.campi) {
+                    if (campo.classList.contains("invalidInput")) {
+                        this.pulsante.disabled = true;
+                        return;
+                    }
+                }
+
+                this.pulsante.disabled = false;
+            }
+
+            invia() {
+                const prenotazione = new Prenotazione(this.nome.value, this.cognome.value, this.fasciaOraria.value);
+                const ok = this.gestore.prenota(Number(this.numeroPostazione.value), prenotazione);
+
+                if (!ok) {
+                    this.mostraErrore();
+                    return;
+                }
+
+                this.svuota();
+            }
+
+            mostraErrore() {
+                this.errorMsg.style.visibility = "visible";
+
+                // se l'errore era già visibile, riparte da 3 secondi
+                if (this.timerErrore != null) clearTimeout(this.timerErrore);
+
+                this.timerErrore = setTimeout(() => {
+                    this.errorMsg.style.visibility = "hidden";
+                    this.timerErrore = null;
+                }, DURATA_ERRORE);
+            }
+
+            svuota() {
+                for (const campo of this.campi) {
+                    campo.value = "";
+                    campo.classList.add("invalidInput");
+                }
+
+                this.aggiornaPulsante();
+            }
+        };
+
+        // ---------- Parte centrale: griglia delle postazioni ----------
+
+        class GrigliaPostazioni {
+            constructor(gestore) {
+                this.gestore = gestore;
+                this.contenitore = document.getElementById("postazioni");
+                this.bloccata = false;
+            }
+
+            disegna() {
+                this.contenitore.innerHTML = "";
+
+                for (const postazione of this.gestore.postazioni) {
+                    const cella = document.createElement("div");
+                    cella.textContent = postazione.numero;
+                    cella.classList.add("cella");
+
+                    if (postazione.tuttePrenotate()) cella.classList.add("cellaFull");
+                    else if (postazione.almeno1Prenotata()) cella.classList.add("cellaPrenotata");
+
+                    cella.addEventListener("click", () => {
+                        if (this.bloccata) return;
+                        this.gestore.mostraDettaglio(postazione);
+                    });
+
+                    this.contenitore.appendChild(cella);
                 }
             }
         };
 
-        class PostazioniManager {
-            constructor() {
-                this.postazioni = Array.from({ length: 30 }, () => new Postazione());
+        // ---------- Parte destra: dettaglio postazione ----------
+
+        class DettaglioPostazione {
+            constructor(griglia) {
+                this.griglia = griglia;
+                this.contenitore = document.getElementById("contenutoDettaglio");
+                this.testoIniziale = this.contenitore.innerHTML;
             }
 
-            occupa(numeroPostazione, fasciaOraria, nome, cognome) {
-                if (this.postazioni[numeroPostazione - 1].occupazioneFasceOrarie[fasciaOraria]) return false;
+            mostra(postazione) {
+                this.contenitore.innerHTML = "";
 
-                this.postazioni[numeroPostazione - 1].occupazioneFasceOrarie[fasciaOraria] = { nome, cognome };
-                return true;
+                const prenotazioni = postazione.prenotazioniOrdinate();
+
+                if (prenotazioni.length == 0) {
+                    const p = document.createElement("p");
+                    p.textContent = "Nessuna prenotazione per la postazione " + postazione.numero + ".";
+                    this.contenitore.appendChild(p);
+                } else {
+                    const titolo = document.createElement("p");
+                    titolo.innerHTML = "<b>Postazione " + postazione.numero + "</b> - prenotazioni (ordinate per fascia)";
+                    this.contenitore.appendChild(titolo);
+                    this.contenitore.appendChild(this.creaTabella(prenotazioni));
+                }
+
+                // per 5 secondi la griglia non è cliccabile, poi il dettaglio scompare
+                this.griglia.bloccata = true;
+
+                setTimeout(() => {
+                    this.griglia.bloccata = false;
+                    this.contenitore.innerHTML = this.testoIniziale;
+                }, DURATA_DETTAGLIO);
+            }
+
+            creaTabella(prenotazioni) {
+                const tabella = document.createElement("table");
+                tabella.id = "tabellaDettaglio";
+
+                const intestazione = document.createElement("tr");
+                for (const testo of new Array("Nome", "Cognome", "Fascia oraria")) {
+                    const th = document.createElement("th");
+                    th.textContent = testo;
+                    intestazione.appendChild(th);
+                }
+                tabella.appendChild(intestazione);
+
+                for (const prenotazione of prenotazioni) {
+                    const riga = document.createElement("tr");
+
+                    for (const valore of new Array(prenotazione.nome, prenotazione.cognome, prenotazione.fasciaOraria)) {
+                        const td = document.createElement("td");
+                        td.textContent = valore;
+                        riga.appendChild(td);
+                    }
+
+                    tabella.appendChild(riga);
+                }
+
+                return tabella;
+            }
+        };
+
+        // ---------- Gestore: collega modello e le tre parti ----------
+
+        class PostazioniManager {
+            constructor() {
+                this.postazioni = new Array();
+                for (let i = 1; i <= NUMERO_POSTAZIONI; i++)
+                    this.postazioni.push(new Postazione(i));
+
+                this.form = new FormPrenotazione(this);
+                this.griglia = new GrigliaPostazioni(this);
+                this.dettaglio = new DettaglioPostazione(this.griglia);
+
+                this.griglia.disegna();
+            }
+
+            prenota(numeroPostazione, prenotazione) {
+                const ok = this.postazioni[numeroPostazione - 1].prenota(prenotazione);
+
+                if (ok) this.griglia.disegna();
+
+                return ok;
+            }
+
+            mostraDettaglio(postazione) {
+                this.dettaglio.mostra(postazione);
             }
         };
 
         const postazioniManager = new PostazioniManager();
-
-        const nomeFormPrenotazione = document.getElementById("nomeFormPrenotazione");
-        const cognomeFormPrenotazione = document.getElementById("cognomeFormPrenotazione");
-        const numeroPostazioneFormPrenotazione = document.getElementById("numeroPostazioneFormPrenotazione");
-        const fasciaOrariaFormPrenotazione = document.getElementById("fasciaOrariaFormPrenotazione");
-        const errorMsg = document.getElementById("errorMsg");
-        const pulsanteSubmitForm = document.querySelector("#formPrenotazione input[type=submit]");
-
-        const inputFields = new Array(
-            nomeFormPrenotazione,
-            cognomeFormPrenotazione,
-            numeroPostazioneFormPrenotazione,
-            fasciaOrariaFormPrenotazione
-        );
-
-        const VALID_NAME_SURNAME_REGEX = /^[A-Z][a-z]*$/
-
-        function checkInputReady() {
-
-            for (const inputField of inputFields) {
-                if (inputField.classList.contains("invalidInput")) {
-                    pulsanteSubmitForm.disabled = true;
-                    return;
-                }
-            }
-
-            pulsanteSubmitForm.disabled = false;
-        }
-
-        function addValidationEventListener(inputField, validatingConditions) {
-            inputField.addEventListener("input", () => {
-
-                if (validatingConditions(inputField.value))
-                    inputField.classList.remove("invalidInput");
-
-                else
-                    inputField.classList.add("invalidInput");
-
-                checkInputReady();
-            });
-        }
-
-        addValidationEventListener(nomeFormPrenotazione, (value) => VALID_NAME_SURNAME_REGEX.test(value));
-        addValidationEventListener(cognomeFormPrenotazione, (value) => VALID_NAME_SURNAME_REGEX.test(value));
-        addValidationEventListener(numeroPostazioneFormPrenotazione, (value) => value > 1 && value < 30);
-        addValidationEventListener(fasciaOrariaFormPrenotazione, (value) => value != "");
-
-        formPrenotazione.addEventListener("submit", (e) => {
-            e.preventDefault();
-
-            let success = postazioniManager.occupa(
-                numeroPostazioneFormPrenotazione.value,
-                fasciaOrariaFormPrenotazione.value,
-                nomeFormPrenotazione.value,
-                cognomeFormPrenotazione.value
-            );
-
-            if(!success) { 
-                errorMsg.style.visibility = "visible";
-                setTimeout(() => errorMsg.style.visibility = "hidden", 3000);
-            }
-        });
 
     </script>
 </body>
