@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Esame</title>
+        <style>
+            body {
+                margin: 0;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            h1 {
+                text-align: center;
+                color: white;
+                margin: 0px;
+            }
+
+            header {
+                background-color: lightblue;
+                min-height: 10vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .interactiveSection {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                border-radius: 5px;
+                background-color: white;
+                box-shadow: 0px 0px 10px 0px black;
+                padding: 1%;
+            }
+
+            main {
+                box-sizing: border-box;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-left: 5%;
+                padding-right: 5%;
+                background-color: lightgrey;
+                min-height: 90vh;
+                padding-top: 30px;
+                padding-bottom: 30px;
+                gap: 30px;
+            }
+
+            #sectionAggiungiLibroForm {
+                display: flex;
+                min-height: 35px;
+                gap: 20px;
+                border-radius: 1%;
+            }
+
+            #sectionCercaLibriQueryField {
+                min-height: 35px;
+            }
+
+            #sectionRimuoviLibriBtn{
+                background-color: red;
+                height: 35px;
+                color: white;
+            }
+
+            #sectionMostraLibri {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+                align-items: start;
+            }
+
+            .card {
+                display: flex;
+                flex-direction: column;
+                padding: 5%;
+                border-radius: 2%;
+                gap: 5px;
+            }
+
+            .cardElement {
+                padding: 3px;
+                background-color: white;
+                border-radius: 5px;
+            }
+
+            .cardTitle {
+                font-weight: bold;
+                margin: 3px;
+            }
+
+            .cardAutor {
+                margin: 3px;
+            }
+
+            .colorecartella-0 { background: #ffe082; }
+            .colorecartella-1 { background: #b2dfdb; }
+            .colorecartella-2 { background: #c5e1a5; }
+            .colorecartella-3 { background: #f8bbd0; }
+            .colorecartella-4 { background: #d1c4e9; }
+            .colorecartella-5 { background: #ffccbc; }
+            .colorecartella-6 { background: #b3e5fc; }
+            .colorecartella-7 { background: #dcedc8; }
+            .colorecartella-8 { background: #f0f4c3; }
+            .colorecartella-9 { background: #f5e1a4; }
+
+            .invalidInput {
+                background-color: pink;
+                border: 3px solid red;
+            }
+
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Biblioteca personale</h1>
+        </header>
+        <main>
+            <div id="sectionAggiungiLibro" class="interactiveSection">
+                <h2>Aggiungi un nuovo libro</h2>
+                <form id="sectionAggiungiLibroForm">
+                    <input type="text" name="titolo" placeholder="Titolo">
+                    <input type="text" name="autore" placeholder="Autore">
+                    <input type="text" name="cartella" placeholder="Cartella (es. Storia,Arte)">
+                    <button>Aggiungi libro</button>
+                </form>
+            </div>
+
+            <div id="sectionCercaLibri" class="interactiveSection">
+                <h2>Cerca libri</h2>
+                <input id="sectionCercaLibriQueryField" type="text" placeholder="Cerca per titolo o autore">
+            </div>
+
+            <div id="sectionMostraLibri"></div>
+
+            <div id="sectionRimuoviLibri" class="interactiveSection">
+                <button id="sectionRimuoviLibriBtn">Rimuovi tutti i libri</button>
+            </div>
+        </main>
+    <script>
+        class Libro {
+            constructor(autore, titolo) {
+                this.autore = autore;
+                this.titolo = titolo;
+            }
+        }
+
+        const sectionAggiungiLibroForm = document.getElementById("sectionAggiungiLibroForm");
+        const sectionMostraLibri = document.getElementById("sectionMostraLibri");
+        const sectionCercaLibriQueryField = document.getElementById("sectionCercaLibriQueryField");
+        const sectionRimuoviLibriBtn = document.getElementById("sectionRimuoviLibriBtn");
+
+        // Al caricamento recupero le cartelle salvate (se ci sono)
+        let cartelle = {};
+        const salvate = localStorage.getItem("cartelle");
+        if (salvate !== null) cartelle = JSON.parse(salvate);
+
+        function salvaCartelle() {
+            localStorage.setItem("cartelle", JSON.stringify(cartelle));
+        }
+
+        sectionCercaLibriQueryField.addEventListener("input", () => {
+            displayCartelle();
+        });
+
+        sectionRimuoviLibriBtn.addEventListener("click", () => {
+            localStorage.removeItem("cartelle");
+            cartelle = {};
+            displayCartelle();
+        });
+
+        sectionAggiungiLibroForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const formElements = sectionAggiungiLibroForm.elements;
+            const inputs = new Array(formElements.titolo, formElements.autore, formElements.cartella);
+
+            let validInput = true;
+
+            for (const input of inputs) {
+                if (input.value.trim() === "") {
+                    input.classList.add("invalidInput");
+                    validInput = false;
+                }
+                else
+                    input.classList.remove("invalidInput");
+            }
+
+            if (!validInput) return;
+
+            const titolo = formElements.titolo.value.trim();
+            const autore = formElements.autore.value.trim();
+            const cartella = formElements.cartella.value.trim();
+
+            if (!(cartella in cartelle)) cartelle[cartella] = [];
+            cartelle[cartella].push(new Libro(autore, titolo));
+
+            salvaCartelle();
+            sectionAggiungiLibroForm.reset();
+            displayCartelle();
+        });
+
+        function displayCartelle() {
+            sectionMostraLibri.innerHTML = "";
+            const query = sectionCercaLibriQueryField.value.trim().toLowerCase();
+            let i = 0;
+
+            for (const nome in cartelle) {
+                // Libri della cartella che contengono la stringa nel titolo e/o nell'autore
+                const libri = new Array();
+                for (const libro of cartelle[nome]) {
+                    if (libro.titolo.toLowerCase().includes(query) || libro.autore.toLowerCase().includes(query))
+                        libri.push(libro);
+                }
+
+                const colore = i % 10;
+                i++;
+
+                // Se nessun libro corrisponde alla ricerca, la cartella non viene mostrata
+                if (libri.length === 0) continue;
+
+                const card = document.createElement("div");
+                card.classList.add("card", "colorecartella-" + colore);
+
+                const h3 = document.createElement("h3");
+                h3.textContent = nome;
+                card.appendChild(h3);
+
+                for (const libro of libri) {
+                    const cardElement = document.createElement("div");
+                    const title = document.createElement("p");
+                    const autor = document.createElement("p");
+                    cardElement.classList.add("cardElement");
+                    title.classList.add("cardTitle");
+                    autor.classList.add("cardAutor");
+                    title.textContent = libro.titolo;
+                    autor.textContent = "di " + libro.autore;
+
+                    cardElement.appendChild(title);
+                    cardElement.appendChild(autor);
+                    card.appendChild(cardElement);
+                }
+
+                sectionMostraLibri.appendChild(card);
+            }
+        }
+
+        displayCartelle();
+    </script>
+    </body>
+</html>
