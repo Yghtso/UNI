@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width initial-scale=1">
+        <style>
+            .inputInvalid {
+                background-color: orange;
+                border: 2px solid black;
+            }
+
+            body {
+                margin: 0px;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #formSchermataMenu {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: flex-start;
+                gap: 50px;
+                padding: 10%;
+            }
+
+            #schermataMenu {
+                background-color: skyblue;
+                flex: 1;
+            }
+
+            #schermataGioco {
+                background-color: antiquewhite;
+                flex: 1;
+                position: relative;
+                display: 0, 0;
+            }
+
+            #bersaglio {
+                background-color: red;
+                border-radius: 50%;
+                position: absolute;
+                width: 3%;
+                aspect-ratio: 1;
+            }
+
+            #schermataClassifica {
+                background-color: chartreuse;
+                flex: 1;
+                display: none;
+                align-items: flex-start;
+                justify-content: center;
+                padding: 20px;
+            }
+
+            #schermataClassifica>table {
+                border-collapse: collapse;
+                width: 40%; 
+                table-layout: fixed;
+            }
+
+            #schermataClassifica thead {
+                background-color: sandybrown;
+            }
+
+            #schermataClassifica tbody {
+                background-color: lightblue;
+                text-align: center;
+            }
+            
+            #schermataClassifica td, #schermataClassifica th {
+                border: 1px solid black;
+                text-align: center;
+            }
+
+        </style>
+    </head>
+    <body>
+        <header></header>
+        
+        <body>
+
+            <div id="schermataMenu">
+                <form id="formSchermataMenu">
+                    <label for="nomeUtenteFormSchermataMenu">Inserisci il tuo nome e gioca</label>
+                    <input type="text" class="inputInvalid" id="nomeUtenteFormSchermataMenu">
+                    <button id="btnFormSchermataMenu" disabled>Gioca</button>
+                </form>
+            </div>
+
+            <div id="schermataGioco" hidden></div>
+
+            <div id="schermataClassifica">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Punteggio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+        </body>
+
+        <script>
+            "use strict";
+
+            const nomeUtenteFormSchermataMenu = document.getElementById("nomeUtenteFormSchermataMenu");
+            const btnFormSchermataMenu = document.getElementById("btnFormSchermataMenu");
+            const formSchermataMenu = document.getElementById("formSchermataMenu");
+
+            const schermataMenu = document.getElementById("schermataMenu");
+            const schermataGioco = document.getElementById("schermataGioco");
+            const schermataClassifica = document.getElementById("schermataClassifica");
+            const VALID_NAME_REGEX = /^[A-Z][a-z]{2,9}$/;
+            let nomePlayer = "";
+            let punteggio = 0;
+            let classifica = [];
+
+            nomeUtenteFormSchermataMenu.addEventListener("input", () => {
+                const nome = nomeUtenteFormSchermataMenu.value;
+
+                if(!VALID_NAME_REGEX.test(nome) || classifica.some(record => record.nomePlayer === nome)) {
+                    nomeUtenteFormSchermataMenu.classList.add("inputInvalid");
+                    btnFormSchermataMenu.disabled = true;
+                } 
+               
+                else {
+                    nomeUtenteFormSchermataMenu.classList.remove("inputInvalid");
+                    btnFormSchermataMenu.disabled = false;
+                } 
+
+            });
+
+            formSchermataMenu.addEventListener("submit", (e) => {
+                e.preventDefault();
+                nomePlayer = nomeUtenteFormSchermataMenu.value;
+                
+                schermataMenu.hidden = true;
+                schermataGioco.hidden = false;
+
+                iniziaGioco();
+            });
+
+            function iniziaGioco() {
+                punteggio = 0;
+                spawnNuovoBersaglio();
+                const timerNuovoBersaglio = setInterval(() => { spawnNuovoBersaglio() }, 1000);
+                setTimeout(() => { 
+                    clearInterval(timerNuovoBersaglio);  
+                    schermataGioco.hidden = true;
+                    schermataClassifica.style.display = "flex";
+
+                    updateDisplayClassifica();
+                    
+                    setTimeout(() => {
+                        schermataClassifica.style.display = "none";
+                        schermataMenu.hidden = false;
+
+                        nomeUtenteFormSchermataMenu.value = "";
+                        nomeUtenteFormSchermataMenu.classList.add("inputInvalid");
+                        btnFormSchermataMenu.disabled = true;
+                    }, 10000);
+
+                }, 10000);
+            }
+
+            function spawnNuovoBersaglio() {
+                schermataGioco.innerHTML = "";
+                                
+                const bersaglio = document.createElement("div");
+                bersaglio.id = "bersaglio";
+                schermataGioco.appendChild(bersaglio);
+
+                const maxX = schermataGioco.clientWidth  - bersaglio.offsetWidth;
+                const maxY = schermataGioco.clientHeight - bersaglio.offsetHeight;
+                bersaglio.style.left = `${Math.random() * maxX}px`;
+                bersaglio.style.top  = `${Math.random() * maxY}px`;
+                bersaglio.onclick = () => { punteggio++; console.log("colpito") };
+            }
+
+            function updateDisplayClassifica() {
+                classifica.push({ nomePlayer, punteggio })
+                
+                const tbody = document.querySelector("#schermataClassifica>table>tbody");
+                tbody.innerHTML = "";
+                
+                classifica.sort((record1, record2) => record2.punteggio - record1.punteggio);
+
+                if(classifica.length > 10) {
+                    classifica.pop();
+                }
+
+                for(const record of classifica) {
+                    const tr = document.createElement("tr");
+                    const tdNome = document.createElement("td");
+                    tdNome.textContent = record.nomePlayer;
+                    const tdPunteggio = document.createElement("td");
+                    tdPunteggio.textContent = record.punteggio;
+                    tr.appendChild(tdNome);
+                    tr.appendChild(tdPunteggio);
+                    tbody.appendChild(tr);
+                }
+            }
+
+        </script>
+    </body>
+</html>
